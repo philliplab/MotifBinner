@@ -1,6 +1,8 @@
 MotifBinner
 ===========
 
+Development to start in Dec 2014
+
 Bins reads from NGS sequencing machines by a motif. Motif are identified by
 special affixes. Binned sequences can be aligned and consensus sequences
 extracted.
