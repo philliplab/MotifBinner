@@ -1,3 +1,6 @@
+#' Extracts motifs from a set of reads
+#' @export
+
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
