@@ -10,7 +10,7 @@ motif_length <- 9
 max.mismatch <- 5
 fixed = FALSE
 
-extract_motif <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
+extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
   motif_n <- paste(rep("N", motif_length), collapse="")
