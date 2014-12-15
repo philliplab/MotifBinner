@@ -11,13 +11,12 @@ extracted.
 extract_motif <- function(the_seq, prefix, suffix,
                           extra_transformation_options,
                           extra_location_options){
-  the_seq <- transform(the_seq) # TODO what transforms? reverse compelment?
-                                # pair end reads?
   the_seq <- substr(the_seq) # TODO can more information be know about the
     # location of the motif? should this be used in this function?
-  motif <- 1 #TODO research partial matching in bioconductor
-             # how to handle degeneracy?
-             # regular expressions and BStrings?
+    # Issue number 7
+  motif <- subseq(vmatchPattern(...)) # More complicated version of this
+    # Need to think carefully about the data structure. Should we look at
+    # IRanges::List?
   return(motif)
 }
 
