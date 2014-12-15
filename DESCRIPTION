@@ -1,0 +1,16 @@
+Package: MotifBinner
+Title: Bin reads by Motif
+Description: Groups reads into bins based on a motif extracted by specifying
+    the prefix and suffix for the motif. Binned sequences are checked for
+    contamination and a consensus sequence is constructed.
+Version: 0.1
+Author: Phillip Labuschagne <philliplab@gmail.com>
+Maintainer: Phillip Labuschagne <philliplab@gmail.com>
+Depends:
+    Biostrings,
+    ShortRead,
+    testthat
+Imports:
+    shiny
+License: GPL-3
+URL: https://github.com/philliplab/MotifBinner

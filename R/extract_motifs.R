@@ -1,15 +1,3 @@
-library(Biostrings)
-library(ShortRead)
-
-x <- readFastq("~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq")
-x <- x@sread
-seq_data <- x
-prefix <- "CCAGCTGGTTATGCGATTCTMARGTG"
-suffix <- "CTGAGCGTGTGGCAAGGCCC"
-motif_length <- 9
-max.mismatch <- 5
-fixed = FALSE
-
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
