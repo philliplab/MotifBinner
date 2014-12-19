@@ -22,7 +22,11 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)
   motifs <- padAndClip(matched_seq, shifted_matches, Lpadding.letter="+", 
                        Rpadding.letter="+")
-  names(matched_seq) <- motifs
-  return(list(matched_seq = matched_seq,
+  end(matches) <- start(matches) - 1
+  start(matches) <- 1
+  motif_free_matched_seq <- padAndClip(matched_seq, matches, Lpadding.letter="+", 
+                       Rpadding.letter="+")
+  names(motif_free_matched_seq) <- motifs
+  return(list(matched_seq = motif_free_matched_seq,
               unmatched_seq = unmatched_seq))
 }
