@@ -1,8 +1,6 @@
 MotifBinner
 ===========
 
-Development to start in Dec 2014
-
 Bins reads from NGS sequencing machines by a motif. Motif are identified by
 special affixes. Binned sequences can be aligned and consensus sequences
 extracted.
@@ -17,22 +15,23 @@ extract_motif <- function(the_seq, prefix, suffix,
   motif <- subseq(vmatchPattern(...)) # More complicated version of this
     # Need to think carefully about the data structure. Should we look at
     # IRanges::List?
+  names(the_seq) <- motif # Currently passing motif info via the names
+    # attribute. No original data from the FASTA headers are required
+    # to be included in the final result.
   return(motif)
 }
 
-bin_by_motif <- function(seq_data, ...){
-  bins <- list() # TODO more efficient data structure however, much of this we
-# will want to run in parallel, so the data structure must have things like
-# lapply defined for it in packages like snowfall.
-  for (the_seq in seq_dat){
-    motif <- extract_motif(the_seq, ...)
-    bins[[motif]] <- c(bins[[motif]], the_seq)
+bin_by_name <- function(seq_dat){
+  bins <- list()
+  for (motif in unique(names(seq_dat))){
+    bins[[motif]] <- seq_dat[names(seq_dat) == motif]
   }
+  return(bins)
 }
 
-# should contaminated sequences be removed before alignment?
-# This allows a simple distance criteria to be used instead
-#   of performing a complicated alignment due to poorly matched sequences?
+# Now check for mislabeled seqences. This is done by checking for outliers in
+# the distance matrix
+# See Issue number 9
 
 align_bins <- function(bins){
   aligned_bins <- list()
