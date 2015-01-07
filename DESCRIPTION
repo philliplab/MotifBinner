@@ -7,11 +7,14 @@ Version: 0.1
 Author: Phillip Labuschagne <philliplab@gmail.com>
 Maintainer: Phillip Labuschagne <philliplab@gmail.com>
 Depends:
-    ape,
-    Biostrings,
     ShortRead,
+    ape,
+    shiny,
     testthat
 Imports:
-    shiny
+    Biostrings
+Suggests:
+    knitr
+VignetteBuilder: knitr
 License: GPL-3
 URL: https://github.com/philliplab/MotifBinner

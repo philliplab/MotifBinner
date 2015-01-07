@@ -1,0 +1,55 @@
+# Investigation of various approach to treating mislabel detection
+
+## Overview
+
+Given a bin of sequences that are theoretically from only a single virus
+molecule, remove all of those that are actually from a different molecule.
+
+This is accomplished by looking at the distances between each of the sequences
+and removing the outliers.
+
+The difficult parts are deciding how to compute the distances efficiently and
+setting the thresholds that start and stop the process.
+
+This process is further complicated by these concerns:
+1) bin sizes varies from 1 to several hundred
+2) We have to deal with indels
+3) This process must be completely automated
+4) This process must be very computationally efficient
+
+## Testing strategy
+
+We need to test the system using bins with known answers. As always, the design
+data structure for the test data is important. Use a structure like this:
+
+list('test1' = list('in' = DNAStringSet(...),
+                    'out' = DNAStringSet(...)),
+     'test2' = ...)
+
+Using this data for a 'bin' by putting the in and out data together and check
+that only the 'out' data is removed and all the 'in' data is kept.
+
+## The different strategies
+
+Design and implement a who set of strategies and then benchmark them to find
+the best ones.
+
+### Remove None
+
+This strategy keeps all the data
+
+### Remove Random
+
+This strategy removes x% of the sample at random
+
+### Information Variance Balance
+
+This strategy will keep on removing the most outlying sequence as long as is
+leads to a percentage reduction in variance that is x times larger than the
+percentage of information that was discarded
+
+### The silver bullet
+
+To be devised
+
+

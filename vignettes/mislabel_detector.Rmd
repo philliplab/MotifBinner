@@ -1,0 +1,12 @@
+<!--                                                                                                
+%\VignetteEngine{knitr::knitr}                                                                      
+%\VignetteIndexEntry{Mislabel Detector}                                                           
+-->
+
+# Mislabel Detector
+
+```{r}
+plot(hist(rnorm(100)))
+```
+
+Yo!
