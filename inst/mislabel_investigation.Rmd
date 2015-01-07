@@ -38,6 +38,19 @@ the best ones.
 
 This strategy keeps all the data
 
+```{r}
+test_dat <- get_mislabel_test_data()
+results <- list()
+for (test_num in names(test_dat)){
+  all_dat <- c(test_dat[[test_num]]$in,
+               test_dat[[test_num]]$out)
+  pure_dat <- remove_contamination(all_dat)
+  results(test_num) <- c(sum(test_dat[[test_num]]$in %in% pure_dat)/length(test_dat[[test_num]]$in),
+                         sum(test_dat[[test_num]]$out %in% pure_dat)/min(1,length(test_dat[[test_num]]$out)))
+
+}
+```
+
 ### Remove Random
 
 This strategy removes x% of the sample at random

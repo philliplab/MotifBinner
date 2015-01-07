@@ -3,4 +3,5 @@
 export(bin_by_name)
 export(bin_contaminated)
 export(extract_motifs)
+export(get_mislabel_test_data)
 import(Biostrings)
