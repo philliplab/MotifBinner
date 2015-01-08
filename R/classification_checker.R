@@ -32,9 +32,6 @@ check_classification <- function(bin, classified){
   if (any(classified$src %in% classified$out)){
     stop("None of the 'src' sequences may be in the 'out' sequences")
   }
-  if (any(classified$out %in% classified$src)){
-    stop("None of the 'out' sequences may be in the 'src' sequences")
-  }
   tbin <- table(bin)
   tclass <- table(c(classified$src, classified$out))
   for (seq_name in names(tbin)){
