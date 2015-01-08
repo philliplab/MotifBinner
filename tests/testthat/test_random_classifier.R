@@ -8,6 +8,11 @@ test_that('The random classifier works', {
   expect_that(length(classified$src) > 0, is_true())
   expect_that(length(classified$out) > 0, is_true())
 
+  classified <- classify_bin(bin, technique='random', params=list(n= 0.25))
+  expect_that(check_classification(bin, classified), is_true())
+  expect_that(length(classified$src) > 0, is_true())
+  expect_that(length(classified$out) > 0, is_true())
+
   classified <- classify_bin_random(bin, 0)
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$out) == 0, is_true())

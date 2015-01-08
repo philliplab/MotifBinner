@@ -15,6 +15,12 @@
 #' @export
 
 classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
+  params[['bin']] <- bin
+  classified <- FALSE
+  if (technique == 'random'){
+    classified <- do.call(classify_bin_random, params)
+  }
+  return(classified)
 }
 
 #' Randomly classify a number of unique sequences to the 'out' group
