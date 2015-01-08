@@ -13,7 +13,7 @@ classify_bin(bin, technique = "random", params = list(n = 0.2))
 classification}
 
 \item{params}{A list of parameters used by the specific
-classification technique}
+classification techniques}
 }
 \value{
 A list with two elements 'src' and 'out'

@@ -11,7 +11,7 @@
 #' @param technique A string selecting which technique to use for the
 #' classification
 #' @param params A list of parameters used by the specific
-#' classification technique
+#' classification techniques
 #' @export
 
 classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
@@ -33,9 +33,14 @@ classify_bin_random <- function(bin, n){
   ubin <- unique(bin)
   n_elements <- length(ubin)
   n_to_remove <- trunc(n * n_elements)
-  to_remove <- sample(1:n_elements, n_to_remove)
-  usrc <- ubin[-to_remove]
-  uout <- ubin[to_remove]
+  if (n_to_remove > 0) {
+    to_remove <- sample(1:n_elements, n_to_remove)
+    usrc <- ubin[-to_remove]
+    uout <- ubin[to_remove]
+  } else {
+    usrc <- ubin
+    uout <- DNAStringSet(NULL)
+  }
 
   return(list('src' = bin[bin %in% usrc],
               'out' = bin[bin %in% uout]))
