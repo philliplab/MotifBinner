@@ -17,3 +17,4 @@ test_that('The random classifier works', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$out) == 0, is_true())
 })
+
