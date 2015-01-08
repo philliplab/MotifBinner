@@ -19,14 +19,11 @@ This process is further complicated by these concerns:
 
 ## Testing strategy
 
-We need to test the system using bins with known answers. 
+We need to test the system using bins with known answers. As always, the design
+data structure for the test data is important. Use a structure like this:
 
-### Test Data
 
-As always, the design data structure for the test data is important. Use a
-structure like this:
-
-```{r eval=FALSE}
+```r
 list('test1' = list('in' = DNAStringSet(...),
                     'out' = DNAStringSet(...)),
      'test2' = ...)
@@ -35,11 +32,10 @@ list('test1' = list('in' = DNAStringSet(...),
 Using this data for a 'bin' by putting the in and out data together and check
 that only the 'out' data is removed and all the 'in' data is kept.
 
-### Basic Code for running tests
-
 Basic code to run the tests:
 
-```{r, eval=FALSE}
+
+```r
 test_dat <- get_mislabel_test_data()
 results <- list()
 for (test_num in names(test_dat)){
@@ -51,39 +47,6 @@ for (test_num in names(test_dat)){
 
 }
 ```
-
-### Metrics of interest
-
-A number of metrics must be considered when looking at the accuracy of
-classification.
-
-Keep it basic. 
-
-Consider these standard classification metrics:
-
-#### Sensitivity:
-Number of true 'in' classifications / (Total size of true 'in' population)
-
-#### Specificity:
-Number of true 'out' classifications / (Total size of the 'out' population)
-
-Maximize both simultaneously
-
-Now, in addition to these two, there are other metrics of interest that we can
-derive based on our knowledge of the system.
-
-#### Maximum distance in the final dataset: 
-We know that the only source of errors
-should be the sequencing process. We have access to data about the error rates
-of the sequencing process. We can use this to make a statement like:
-
-The sequencing process is accurate to such a degree that no two reads of the
-same molecule should differ by more than one base per 100 bases. Build a metric
-around this information.
-
-#### Speed
-
-The time it took to classify the reads in the bin.
 
 ## The different strategies
 
