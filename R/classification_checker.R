@@ -44,3 +44,30 @@ check_classification <- function(bin, classified){
   }
   return(TRUE)
 }
+
+#' Given a test dataset and a classification strategy, apply the strategy and compute metrics
+#'
+#' @param test_bin The input test bin as a list of two DNAStringSets.
+#' @param technique A string selecting which technique to use for the
+#' classification
+#' @param params A list of parameters used by the specific
+#' classification techniques
+#' @export
+
+score_classification <- function(test_bin, technique, params){
+  bin <- c(test_bin$src, test_bin$out)
+  classified <- classify_bin(bin, technique, params)
+  # Compute Sensitivity
+  tp <- sum(classified$src %in% test_bin$src)
+  total_src <- length(test_bin$src)
+  sn <- tp/total_src
+  # Compute Specificity
+  tn <- sum(classified$out %in% test_bin$out)
+  total_out <- length(test_bin$out)
+  sp <- tn/total_out
+  # Compute max distance
+  max_dist <- max(stringDist(unique(classified$src)))
+  return(list(sn = sn, 
+              sp = sp,
+              max_dist = max_dist))
+}

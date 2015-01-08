@@ -2,7 +2,7 @@
 #' @export
 
 get_mislabel_test_data <- function(){
-  x <- list('test1' = list('in' = DNAStringSet(c('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
+  x <- list('test1' = list('src' = DNAStringSet(c('AAAAAAAAAAAAAAAAAAAAAAAAAAAAA',
                                                'AAAAAAAAAAAAAAAAAAAAAAAAAAAAA')),
                            'out' = DNAStringSet('CCCCCCCCCCCCCCCCCCCCCCCCCCCCC')
                            )
