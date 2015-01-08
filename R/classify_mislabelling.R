@@ -1,4 +1,4 @@
-#' Classify a bin's sequences into 'in' and 'out'
+#' Classify a bin's sequences into 'src' and 'out'
 #'
 #' Using a specified method, split a bin into a list of two DNAStringSets. One
 #' containing the sequences that we believe represents reads of the molecule of
@@ -6,7 +6,7 @@
 #' molecule.
 #'
 #' @return
-#' A list with two elements 'in' and 'out'
+#' A list with two elements 'src' and 'out'
 #' @param bin The input bin as a single DNAStringSet.
 #' @param technique A string selecting which technique to use for the
 #' classification
@@ -34,9 +34,9 @@ classify_bin_random <- function(bin, n){
   n_elements <- length(ubin)
   n_to_remove <- trunc(n * n_elements)
   to_remove <- sample(1:n_elements, n_to_remove)
-  uin <- ubin[-to_remove]
+  usrc <- ubin[-to_remove]
   uout <- ubin[to_remove]
 
-  return(list('in' = bin[bin %in% uin],
+  return(list('src' = bin[bin %in% usrc],
               'out' = bin[bin %in% uout]))
 }

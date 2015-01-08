@@ -2,7 +2,7 @@
 % Please edit documentation in R/classify_mislabelling.R
 \name{classify_bin}
 \alias{classify_bin}
-\title{Classify a bin's sequences into 'in' and 'out'}
+\title{Classify a bin's sequences into 'src' and 'out'}
 \usage{
 classify_bin(bin, technique = "random", params = list(n = 0.2))
 }
@@ -16,7 +16,7 @@ classification}
 classification technique}
 }
 \value{
-A list with two elements 'in' and 'out'
+A list with two elements 'src' and 'out'
 }
 \description{
 Using a specified method, split a bin into a list of two DNAStringSets. One

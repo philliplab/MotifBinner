@@ -2,16 +2,21 @@
 % Please edit documentation in R/classify_mislabelling.R
 \name{classify_bin_random}
 \alias{classify_bin_random}
-\title{Randomly classify a number of sequences to the 'out' group}
+\title{Randomly classify a number of unique sequences to the 'out' group}
 \usage{
 classify_bin_random(bin, n)
 }
 \arguments{
 \item{bin}{The input bin as a single DNAStringSet.}
 
-\item{n}{The proportion of the bin to remove.}
+\item{n}{The proportion of the unique sequences in the bin to remove.}
 }
 \description{
-A very poor strategy included as a baseline
+A very poor strategy included as a baseline.
+}
+\details{
+First all the unique sequences in a bin is found. Then a percentage of then
+is assigned to the unique-out group. Then all sequences in the original bin
+that match sequences in the unique-out group is moved to the out bin.
 }
 

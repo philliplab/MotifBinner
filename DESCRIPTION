@@ -12,6 +12,7 @@ Depends:
     shiny,
     testthat
 Imports:
+    BiocGenerics, 
     Biostrings
 Suggests:
     knitr
