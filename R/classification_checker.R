@@ -45,4 +45,5 @@ check_classification <- function(bin, classified){
   if (any(!(unique(names(tclass)) %in% unique(names(tbin))))){
     stop('Classification process may not introduce new sequences')
   }
+  return(TRUE)
 }

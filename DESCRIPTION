@@ -6,16 +6,17 @@ Description: Groups reads into bins based on a motif extracted by specifying
 Version: 0.1
 Author: Phillip Labuschagne <philliplab@gmail.com>
 Maintainer: Phillip Labuschagne <philliplab@gmail.com>
-Depends:
+Depends: 
     ShortRead,
     ape,
     shiny,
     testthat
-Imports:
+Imports: 
     BiocGenerics, 
     Biostrings
-Suggests:
-    knitr
+Suggests: 
+    knitr,
+    testthat
 VignetteBuilder: knitr
 License: GPL-3
 URL: https://github.com/philliplab/MotifBinner
