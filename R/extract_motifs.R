@@ -1,4 +1,9 @@
 #' Extracts motifs from a set of reads
+#' @param seq_data The sequences whose motifs must be extracted
+#' @param prefix The prefix that is used to identify the motif
+#' @param suffix The suffix that is used to identify the motif
+#' @param max.mismatch See ?vmatchPattern
+#' @param fixed See ?vmatchPattern
 #' @export
 
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,

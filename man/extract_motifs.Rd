@@ -7,6 +7,17 @@
 extract_motifs(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
   fixed = FALSE)
 }
+\arguments{
+\item{seq_data}{The sequences whose motifs must be extracted}
+
+\item{prefix}{The prefix that is used to identify the motif}
+
+\item{suffix}{The suffix that is used to identify the motif}
+
+\item{max.mismatch}{See ?vmatchPattern}
+
+\item{fixed}{See ?vmatchPattern}
+}
 \description{
 Extracts motifs from a set of reads
 }
