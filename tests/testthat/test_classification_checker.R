@@ -40,4 +40,11 @@ test_that('The classification check detects various issues', {
                "Classification process may not introduce new sequences")
 })
 
+test_that('The score_classification function correctly computes the metrics', {
+  t1 <- get_mislabel_test_data()[['test1']]
+  metrics <- score_classification(t1, 'random', params = list(n=0))
+  expect_equal(metrics$sn, 1)
+  expect_equal(metrics$sp, 0)
+  expect_equal(metrics$max_dist, 29)
+})
 
