@@ -201,6 +201,55 @@ hr {
 </head>
 
 <body>
+<pre><code class="r">library(MotifBinner)
+</code></pre>
+
+<pre><code>## Loading required package: ShortRead
+## Loading required package: BiocGenerics
+## Loading required package: parallel
+## 
+## Attaching package: &#39;BiocGenerics&#39;
+## 
+## The following objects are masked from &#39;package:parallel&#39;:
+## 
+##     clusterApply, clusterApplyLB, clusterCall, clusterEvalQ,
+##     clusterExport, clusterMap, parApply, parCapply, parLapply,
+##     parLapplyLB, parRapply, parSapply, parSapplyLB
+## 
+## The following object is masked from &#39;package:stats&#39;:
+## 
+##     xtabs
+## 
+## The following objects are masked from &#39;package:base&#39;:
+## 
+##     anyDuplicated, append, as.data.frame, as.vector, cbind,
+##     colnames, do.call, duplicated, eval, evalq, Filter, Find, get,
+##     intersect, is.unsorted, lapply, Map, mapply, match, mget,
+##     order, paste, pmax, pmax.int, pmin, pmin.int, Position, rank,
+##     rbind, Reduce, rep.int, rownames, sapply, setdiff, sort,
+##     table, tapply, union, unique, unlist
+## 
+## Loading required package: BiocParallel
+## Loading required package: Biostrings
+## Loading required package: IRanges
+## Loading required package: XVector
+## Loading required package: Rsamtools
+## Loading required package: GenomicRanges
+## Loading required package: GenomeInfoDb
+## Loading required package: GenomicAlignments
+## Loading required package: BSgenome
+## Loading required package: ape
+## 
+## Attaching package: &#39;ape&#39;
+## 
+## The following object is masked from &#39;package:ShortRead&#39;:
+## 
+##     zoom
+## 
+## Loading required package: shiny
+## Loading required package: testthat
+</code></pre>
+
 <h1>Investigation of various approach to treating mislabel detection</h1>
 
 <h2>Overview</h2>
@@ -222,30 +271,68 @@ setting the thresholds that start and stop the process.</p>
 
 <h2>Testing strategy</h2>
 
-<p>We need to test the system using bins with known answers. As always, the design
-data structure for the test data is important. Use a structure like this:</p>
+<p>We need to test the system using bins with known answers. </p>
+
+<h3>Test Data</h3>
+
+<p>As always, the design data structure for the test data is important. Use a
+structure like this:</p>
 
 <pre><code class="r">list(&#39;test1&#39; = list(&#39;in&#39; = DNAStringSet(...),
                     &#39;out&#39; = DNAStringSet(...)),
      &#39;test2&#39; = ...)
 </code></pre>
 
-<p>Using this data for a &#39;bin&#39; by putting the in and out data together and check
-that only the &#39;out&#39; data is removed and all the &#39;in&#39; data is kept.</p>
-
-<p>Basic code to run the tests:</p>
+<p>The data is available in the package:</p>
 
 <pre><code class="r">test_dat &lt;- get_mislabel_test_data()
-results &lt;- list()
-for (test_num in names(test_dat)){
-  all_dat &lt;- c(test_dat[[test_num]]$in,
-               test_dat[[test_num]]$out)
-  pure_dat &lt;- remove_contamination(all_dat)
-  results(test_num) &lt;- c(sum(test_dat[[test_num]]$in %in% pure_dat)/length(test_dat[[test_num]]$in),
-                         sum(test_dat[[test_num]]$out %in% pure_dat)/min(1,length(test_dat[[test_num]]$out)))
-
-}
 </code></pre>
+
+<p>Using this data for a &#39;bin&#39; by putting the &#39;src&#39; and &#39;out&#39; data together and check
+that only the &#39;out&#39; data is removed and all the &#39;src&#39; data is kept.</p>
+
+<h3>Basic Code for running tests</h3>
+
+<p>Basic code to run the tests is available from the package:</p>
+
+<pre><code class="r">score_classification()
+</code></pre>
+
+<h3>Metrics of interest</h3>
+
+<p>A number of metrics must be considered when looking at the accuracy of
+classification.</p>
+
+<p>Keep it basic. </p>
+
+<p>Consider these standard classification metrics:</p>
+
+<h4>Sensitivity:</h4>
+
+<p>Number of true &#39;in&#39; classifications / (Total size of true &#39;in&#39; population)</p>
+
+<h4>Specificity:</h4>
+
+<p>Number of true &#39;out&#39; classifications / (Total size of the &#39;out&#39; population)</p>
+
+<p>Maximize both simultaneously</p>
+
+<p>Now, in addition to these two, there are other metrics of interest that we can
+derive based on our knowledge of the system.</p>
+
+<h4>Maximum distance in the final dataset:</h4>
+
+<p>We know that the only source of errors
+should be the sequencing process. We have access to data about the error rates
+of the sequencing process. We can use this to make a statement like:</p>
+
+<p>The sequencing process is accurate to such a degree that no two reads of the
+same molecule should differ by more than one base per 100 bases. Build a metric
+around this information.</p>
+
+<h4>Speed</h4>
+
+<p>The time it took to classify the reads in the bin.</p>
 
 <h2>The different strategies</h2>
 
@@ -255,6 +342,93 @@ the best ones.</p>
 <h3>Remove None</h3>
 
 <p>This strategy keeps all the data</p>
+
+<p>Use the random strategy but set the parameter &#39;n&#39; to 0. So that 0 percent of
+the data will be randomly removed.</p>
+
+<pre><code class="r">kable(score_all_classifications(test_dat, &#39;random&#39;, params = list(n=0)))
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">name</th>
+<th align="right">sn</th>
+<th align="right">sp</th>
+<th align="right">max_dist</th>
+<th align="right">time_taken</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">test1</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">29</td>
+<td align="right">0.031</td>
+</tr>
+<tr>
+<td align="left">test2</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">8</td>
+<td align="right">0.015</td>
+</tr>
+<tr>
+<td align="left">test3</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">13</td>
+<td align="right">0.014</td>
+</tr>
+<tr>
+<td align="left">test4</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">23</td>
+<td align="right">0.012</td>
+</tr>
+<tr>
+<td align="left">test5</td>
+<td align="right">1</td>
+<td align="right">1</td>
+<td align="right">3</td>
+<td align="right">0.013</td>
+</tr>
+<tr>
+<td align="left">test6</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">13</td>
+<td align="right">0.014</td>
+</tr>
+<tr>
+<td align="left">test7</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">26</td>
+<td align="right">0.013</td>
+</tr>
+<tr>
+<td align="left">test8</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">28</td>
+<td align="right">0.017</td>
+</tr>
+<tr>
+<td align="left">test9</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">17</td>
+<td align="right">0.012</td>
+</tr>
+<tr>
+<td align="left">test10</td>
+<td align="right">1</td>
+<td align="right">0</td>
+<td align="right">37</td>
+<td align="right">0.018</td>
+</tr>
+</tbody></table>
 
 <h3>Remove Random</h3>
 

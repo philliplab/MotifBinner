@@ -1,3 +1,7 @@
+```{r Setup}
+library(MotifBinner)
+```
+
 # Investigation of various approach to treating mislabel detection
 
 ## Overview
@@ -33,8 +37,8 @@ list('test1' = list('in' = DNAStringSet(...),
 ```
 
 The data is available in the package:
-```{r eval=FALSE, echo=TRUE}
-get_mislabel_test_data()
+```{r echo=TRUE}
+test_dat <- get_mislabel_test_data()
 ```
 
 Using this data for a 'bin' by putting the 'src' and 'out' data together and check
@@ -93,7 +97,9 @@ This strategy keeps all the data
 Use the random strategy but set the parameter 'n' to 0. So that 0 percent of
 the data will be randomly removed.
 
-
+```{r}
+kable(score_all_classifications(test_dat, 'random', params = list(n=0)))
+```
 
 ### Remove Random
 
