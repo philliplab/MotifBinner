@@ -56,7 +56,11 @@ check_classification <- function(bin, classified){
 
 score_classification <- function(test_bin, technique, params){
   bin <- c(test_bin$src, test_bin$out)
+  ptm <- proc.time()
   classified <- classify_bin(bin, technique, params)
+  time_taken <- proc.time() - ptm
+  time_taken <- time_taken['user.self']
+  names(time_taken) <- NULL
   # Compute Sensitivity
   tp <- sum(classified$src %in% test_bin$src)
   total_src <- length(test_bin$src)
@@ -69,5 +73,6 @@ score_classification <- function(test_bin, technique, params){
   max_dist <- max(stringDist(unique(classified$src)))
   return(list(sn = sn, 
               sp = sp,
-              max_dist = max_dist))
+              max_dist = max_dist,
+              time_taken = time_taken))
 }

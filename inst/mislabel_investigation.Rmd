@@ -26,30 +26,26 @@ We need to test the system using bins with known answers.
 As always, the design data structure for the test data is important. Use a
 structure like this:
 
-```{r eval=FALSE}
+```{r eval=FALSE, echo=TRUE}
 list('test1' = list('in' = DNAStringSet(...),
                     'out' = DNAStringSet(...)),
      'test2' = ...)
 ```
 
-Using this data for a 'bin' by putting the in and out data together and check
-that only the 'out' data is removed and all the 'in' data is kept.
+The data is available in the package:
+```{r eval=FALSE, echo=TRUE}
+get_mislabel_test_data()
+```
+
+Using this data for a 'bin' by putting the 'src' and 'out' data together and check
+that only the 'out' data is removed and all the 'src' data is kept.
 
 ### Basic Code for running tests
 
-Basic code to run the tests:
+Basic code to run the tests is available from the package:
 
-```{r, eval=FALSE}
-test_dat <- get_mislabel_test_data()
-results <- list()
-for (test_num in names(test_dat)){
-  all_dat <- c(test_dat[[test_num]]$in,
-               test_dat[[test_num]]$out)
-  pure_dat <- remove_contamination(all_dat)
-  results(test_num) <- c(sum(test_dat[[test_num]]$in %in% pure_dat)/length(test_dat[[test_num]]$in),
-                         sum(test_dat[[test_num]]$out %in% pure_dat)/min(1,length(test_dat[[test_num]]$out)))
-
-}
+```{r, eval=FALSE, echo=TRUE}
+score_classification()
 ```
 
 ### Metrics of interest
@@ -107,5 +103,4 @@ percentage of information that was discarded
 ### The silver bullet
 
 To be devised
-
 
