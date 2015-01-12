@@ -64,15 +64,58 @@ score_classification <- function(test_bin, technique, params){
   # Compute Sensitivity
   tp <- sum(classified$src %in% test_bin$src)
   total_src <- length(test_bin$src)
-  sn <- tp/total_src
+  if ((total_src == 0) & (tp == 0)){
+    sn <- 1
+  } else {
+    sn <- tp/total_src
+  }
   # Compute Specificity
   tn <- sum(classified$out %in% test_bin$out)
   total_out <- length(test_bin$out)
-  sp <- tn/total_out
+  if ((total_out == 0) & (tn == 0)){
+    sp <- 1
+  } else {
+    sp <- tn/total_out
+  }
   # Compute max distance
-  max_dist <- max(stringDist(unique(classified$src)))
+  if (length(unique(classified$src)) < 2){
+    max_dist <- 0
+  } else {
+    max_dist <- max(stringDist(unique(classified$src)))
+  }
   return(list(sn = sn, 
               sp = sp,
               max_dist = max_dist,
               time_taken = time_taken))
 }
+
+#' Given a list of datasets and a classification strategy, apply the strategy
+#' to all datasets and compute the metrics
+#' @param test_bins The list of input test bins.
+#' @param technique A string selecting which technique to use for the
+#' classification
+#' @param params A list of parameters used by the specific
+#' classification techniques
+#' @export
+
+score_all_classifications <- function(test_bins, technique, params){
+  metrics <- data.frame(name = character(0),
+                        sn = numeric(0),
+                        sp = numeric(0),
+                        max_dist = numeric(0),
+                        time_taken = numeric(0))
+  for (i in 1:length(test_bins)){
+    test_bin <- test_bins[[i]]
+    bin_name <- names(test_bins)[[i]]
+    x <- score_classification(test_bin, technique, params)
+    metrics <- rbind(metrics,
+                     data.frame(name = bin_name,
+                                sn = x$sn,
+                                sp = x$sp,
+                                max_dist = x$max_dist,
+                                time_taken = x$time_taken)) 
+
+  }
+  return(metrics)
+}
+

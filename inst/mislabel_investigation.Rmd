@@ -90,6 +90,11 @@ the best ones.
 
 This strategy keeps all the data
 
+Use the random strategy but set the parameter 'n' to 0. So that 0 percent of
+the data will be randomly removed.
+
+
+
 ### Remove Random
 
 This strategy removes x% of the sample at random
