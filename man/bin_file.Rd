@@ -6,7 +6,7 @@
 \usage{
 
   bin_file(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq",
-  add_sequence_uniqueness_id = TRUE, number_of_front_bases_to_discard = 28,
+  add_uniq_id = TRUE, number_of_front_bases_to_discard = 28,
   prefix = "CCAGCTGGTTATGCGATTCTMARGTG", suffix = "CTGAGCGTGTGGCAAGGCCC",
   motif_length = 9, max.mismatch = 5, fixed = FALSE,
   write_files = FALSE)
@@ -14,7 +14,7 @@
 \arguments{
 \item{file_name}{The file name}
 
-\item{add_sequence_uniqueness_id}{If True, an integer will be appended to
+\item{add_uniq_id}{If True, an integer will be appended to
 the end of each sequence's name so that all identical sequences in a bin
 gets the same number and sequences who are not identical will get different
 numbers.}

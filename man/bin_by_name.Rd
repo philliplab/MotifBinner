@@ -4,16 +4,17 @@
 \alias{bin_by_name}
 \title{Groups sequences together into bins based on their names}
 \usage{
-bin_by_name(seq_dat, add_sequence_uniqueness_id = FALSE)
+bin_by_name(seq_dat, add_uniq_id = FALSE)
 }
 \arguments{
 \item{seq_dat}{The sequence data whose names indicate what bins they belong
 to}
 
-\item{add_sequence_uniqueness_id}{If True, an integer will be appended to
+\item{add_uniq_id}{If True, an integer will be appended to
 the end of each sequence's name so that all identical sequences in a bin
 gets the same number and sequences who are not identical will get different
-numbers.}
+numbers. Another integer will be added to ensure that each sequence name is
+unique}
 }
 \description{
 Groups sequences together into bins based on their names
