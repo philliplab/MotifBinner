@@ -75,13 +75,15 @@ score_classification <- function(test_bin, technique, params){
   if ((total_out == 0) & (tn == 0)){
     sp <- 1
   } else {
-    sp <- tn/total_out
+    sp <- tn / total_out
   }
   # Compute max distance
   if (length(unique(classified$src)) < 2){
     max_dist <- 0
   } else {
     max_dist <- max(stringDist(unique(classified$src)))
+    seq_length <- max(width(classified$src))
+    max_dist <- (max_dist / seq_length) * 100
   }
   return(list(sn = sn, 
               sp = sp,

@@ -45,6 +45,6 @@ test_that('The score_classification function correctly computes the metrics', {
   metrics <- score_classification(t1, 'random', params = list(n=0))
   expect_equal(metrics$sn, 1)
   expect_equal(metrics$sp, 0)
-  expect_equal(metrics$max_dist, 29)
+  expect_equal(metrics$max_dist, 100)
 })
 
