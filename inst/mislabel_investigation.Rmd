@@ -103,8 +103,11 @@ kable(score_all_classifications(test_dat, 'random', params = list(n=0)))
 
 ### Remove Random
 
-This strategy removes x% of the sample at random
+This strategy removes 40% of the sample at random
 
+```{r}
+kable(score_all_classifications(test_dat, 'random', params = list(n=0.4)))
+```
 ### Information Variance Balance
 
 This strategy will keep on removing the most outlying sequence as long as is
