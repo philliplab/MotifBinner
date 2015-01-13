@@ -15,6 +15,9 @@
 #' @export
 
 classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
+  if (is.list(bin) & all(sort(c('src', 'out')) == sort(names(bin)))){
+    bin <- c(bin$src, bin$out)
+  }
   params[['bin']] <- bin
   classified <- FALSE
   if (technique == 'random'){
