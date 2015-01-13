@@ -4,7 +4,7 @@
 \alias{classify_bin_infovar_balance}
 \title{Hi there}
 \usage{
-classify_bin_infovar_balance(bin, params = NULL)
+classify_bin_infovar_balance(bin, threshold)
 }
 \description{
 Hi there

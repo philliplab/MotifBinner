@@ -15,8 +15,10 @@
 #' @export
 
 classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
-  if (is.list(bin) & all(sort(c('src', 'out')) == sort(names(bin)))){
-    bin <- c(bin$src, bin$out)
+  if (is.list(bin)){
+    if (all(sort(c('src', 'out')) == sort(names(bin)))){
+      bin <- c(bin$src, bin$out)
+    }
   }
   params[['bin']] <- bin
   classified <- FALSE
@@ -61,7 +63,7 @@ classify_bin_random <- function(bin, n){
 #' Hi there
 #' @export
 
-classify_bin_infovar_balance <- function(bin, params = NULL){
+classify_bin_infovar_balance <- function(bin, threshold){
   dists <- NULL
   bin_dists <- stringDist(bin)
   dmat <- as.matrix(bin_dists)
@@ -69,25 +71,19 @@ classify_bin_infovar_balance <- function(bin, params = NULL){
   removed_sequences <- NULL
   orig_dmat <- dmat
   pdr_psr_rat <- 1000
-  threshold <- 2
   while((nrow(unique(dmat)) > 1) & (pdr_psr_rat > threshold)){
     dists <- c(dists, mean(dmat))
     dvec <- apply(dmat, 1, sum)
     max_indx <- which(dvec == max(dvec))
     new_dmat <- dmat[-max_indx, -max_indx]
-    
-#    print(dim(dmat))
-#    print(mean(dmat))
-#    print(max_indx)
-#    print('percentage sequences removed')
-#    psr <- length(max_indx) / nrow(dmat)
-#    print(psr)
-#    print('percentage distance reduction')
-#    pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
-#    print(pdr)
-#    pdr_psr_rat <- pdr / psr
-#    print(pdr_psr_rat)
-#    print('--------------------------------------')
+    psr <- length(max_indx) / nrow(dmat)
+    if (nrow(new_dmat) == 0){
+      pdr <- pdr # Since all data was removed, set this to the amount of data
+                 # that was left in the prev iteration
+    } else {
+      pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
+    }
+    pdr_psr_rat <- pdr / psr
 
     if (pdr_psr_rat > threshold){
       removed_sequences <- c(removed_sequences, row.names(dmat)[max_indx])

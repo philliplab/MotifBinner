@@ -1,4 +1,4 @@
-```{r Setup}
+```{r Setup, include=FALSE}
 library(MotifBinner)
 ```
 
@@ -114,8 +114,19 @@ This strategy will keep on removing the most outlying sequence as long as is
 leads to a percentage reduction in variance that is x times larger than the
 percentage of information that was discarded
 
+#### Threshold of 1
 ```{r}
-kable(score_all_classifications(test_dat, 'infovar_balance', params = list()))
+kable(score_all_classifications(test_dat, 'infovar_balance', params = list(threshold = 1)), digits = 2)
+```
+
+#### Threshold of 2
+```{r}
+kable(score_all_classifications(test_dat, 'infovar_balance', params = list(threshold = 2)), digits = 2)
+```
+
+#### Threshold of 3
+```{r}
+kable(score_all_classifications(test_dat, 'infovar_balance', params = list(threshold = 3)), digits = 2)
 ```
 
 ### The silver bullet
