@@ -114,6 +114,10 @@ This strategy will keep on removing the most outlying sequence as long as is
 leads to a percentage reduction in variance that is x times larger than the
 percentage of information that was discarded
 
+```{r}
+kable(score_all_classifications(test_dat, 'infovar_balance', params = list()))
+```
+
 ### The silver bullet
 
 To be devised
