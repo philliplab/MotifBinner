@@ -85,10 +85,17 @@ score_classification <- function(test_bin, technique, params){
     seq_length <- max(width(classified$src))
     max_dist <- (max_dist / seq_length) * 100
   }
+  input_n <- length(bin)
+  output_n <- length(classified$src)
+  true_n <- length(test_bin$src)
   return(list(sn = sn, 
               sp = sp,
+              combined = ((sn - 1)^2 + (sp -1)^2)^(1/2),
               max_dist = max_dist,
-              time_taken = time_taken))
+              time_taken = time_taken,
+              input_n = input_n,
+              output_n = output_n,
+              true_n = true_n))
 }
 
 #' Given a list of datasets and a classification strategy, apply the strategy
@@ -104,8 +111,12 @@ score_all_classifications <- function(test_bins, technique, params){
   metrics <- data.frame(name = character(0),
                         sn = numeric(0),
                         sp = numeric(0),
+                        combined = numeric(0),
                         max_dist = numeric(0),
-                        time_taken = numeric(0))
+                        time_taken = numeric(0),
+                        input_n = numeric(0),
+                        output_n = numeric(0),
+                        true_n = numeric(0))
   for (i in 1:length(test_bins)){
     test_bin <- test_bins[[i]]
     bin_name <- names(test_bins)[[i]]
@@ -114,10 +125,22 @@ score_all_classifications <- function(test_bins, technique, params){
                      data.frame(name = bin_name,
                                 sn = x$sn,
                                 sp = x$sp,
+                                combined = x$combined,
                                 max_dist = x$max_dist,
-                                time_taken = x$time_taken)) 
-
+                                time_taken = x$time_taken,
+                                input_n = x$input_n,
+                                output_n = x$output_n,
+                                true_n = x$true_n))
   }
+  metrics <- rbind(metrics,
+                   data.frame(name = 'summary',
+                              sn = NA_real_,
+                              sp = NA_real_,
+                              combined = mean(metrics$combined),
+                              max_dist = NA_real_,
+                              time_taken = mean(metrics$time_taken),
+                              input_n = NA_real_,
+                              output_n = NA_real_,
+                              true_n = NA_real_))
   return(metrics)
 }
-

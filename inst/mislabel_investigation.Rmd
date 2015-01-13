@@ -85,6 +85,13 @@ around this information.
 
 The time it took to classify the reads in the bin.
 
+#### Last words about the metrics
+
+The euclidean distance from the sensitivity and specificity from (1, 1) will be
+reports as 'combo' for each test. If the average of this column for all test
+datasets is 0, then we have a perfect classifier. This is the metric of
+interest to be on the lookout for.
+
 ## The different strategies
 
 Design and implement a who set of strategies and then benchmark them to find
