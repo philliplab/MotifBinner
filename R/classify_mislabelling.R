@@ -60,7 +60,19 @@ classify_bin_random <- function(bin, n){
               'out' = bin[bin %in% uout]))
 }
 
-#' Hi there
+#' Finds the outliers in a bin by balancing the amount of information that is
+#' lost with the variance reduction that is realized.
+#'
+#' This approach removes outliers from a bin by finding the sequence with the
+#' highest average distance to all other sequences in the bin. It is then
+#' removed. The ratio of the reduction in the average distance between the
+#' sequences and the reduction in the information available is then computed.
+#' The process will continue until either all data has been removed or the
+#' ratio drops below some threshold
+#'
+#' @param bin The input bin as a single DNAStringSet.
+#' @param threshold Outlier sequences are removed from the bin until the
+#' distanct / information ratio drops below this threshold.
 #' @export
 
 classify_bin_infovar_balance <- function(bin, threshold){
@@ -95,5 +107,3 @@ classify_bin_infovar_balance <- function(bin, threshold){
   return(list(src = src_seq,
               out = out_seq))
 }
-
-
