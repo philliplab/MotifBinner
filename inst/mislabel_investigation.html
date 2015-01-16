@@ -285,6 +285,13 @@ around this information.</p>
 
 <p>The time it took to classify the reads in the bin.</p>
 
+<h4>Last words about the metrics</h4>
+
+<p>The euclidean distance from the sensitivity and specificity from (1, 1) will be
+reports as &#39;combo&#39; for each test. If the average of this column for all test
+datasets is 0, then we have a perfect classifier. This is the metric of
+interest to be on the lookout for.</p>
+
 <h2>The different strategies</h2>
 
 <p>Design and implement a who set of strategies and then benchmark them to find
@@ -297,7 +304,7 @@ the best ones.</p>
 <p>Use the random strategy but set the parameter &#39;n&#39; to 0. So that 0 percent of
 the data will be randomly removed.</p>
 
-<pre><code class="r">kable(score_all_classifications(test_dat, &#39;random&#39;, params = list(n=0)))
+<pre><code class="r">kable(score_all_classifications(test_dat, &#39;random&#39;, params = list(n=0)), digits = 2)
 </code></pre>
 
 <table><thead>
@@ -318,8 +325,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">100.000000</td>
-<td align="right">0.026</td>
+<td align="right">100.00</td>
+<td align="right">0.03</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">2</td>
@@ -329,8 +336,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">2.941177</td>
-<td align="right">0.015</td>
+<td align="right">2.94</td>
+<td align="right">0.02</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">2</td>
@@ -340,8 +347,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">4.779412</td>
-<td align="right">0.011</td>
+<td align="right">4.78</td>
+<td align="right">0.01</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">0</td>
@@ -351,8 +358,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">8.185053</td>
-<td align="right">0.014</td>
+<td align="right">8.19</td>
+<td align="right">0.02</td>
 <td align="right">4</td>
 <td align="right">4</td>
 <td align="right">3</td>
@@ -362,8 +369,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">1</td>
 <td align="right">0.0</td>
-<td align="right">1.102941</td>
-<td align="right">0.012</td>
+<td align="right">1.10</td>
+<td align="right">0.01</td>
 <td align="right">4</td>
 <td align="right">4</td>
 <td align="right">4</td>
@@ -373,8 +380,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">4.779412</td>
-<td align="right">0.012</td>
+<td align="right">4.78</td>
+<td align="right">0.01</td>
 <td align="right">8</td>
 <td align="right">8</td>
 <td align="right">7</td>
@@ -384,8 +391,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">9.252669</td>
-<td align="right">0.012</td>
+<td align="right">9.25</td>
+<td align="right">0.01</td>
 <td align="right">8</td>
 <td align="right">8</td>
 <td align="right">7</td>
@@ -395,8 +402,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">10.294118</td>
-<td align="right">0.013</td>
+<td align="right">10.29</td>
+<td align="right">0.02</td>
 <td align="right">20</td>
 <td align="right">20</td>
 <td align="right">19</td>
@@ -406,8 +413,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">6.250000</td>
-<td align="right">0.012</td>
+<td align="right">6.25</td>
+<td align="right">0.01</td>
 <td align="right">20</td>
 <td align="right">20</td>
 <td align="right">18</td>
@@ -417,8 +424,8 @@ the data will be randomly removed.</p>
 <td align="right">1</td>
 <td align="right">0</td>
 <td align="right">1.0</td>
-<td align="right">11.783440</td>
-<td align="right">0.013</td>
+<td align="right">11.78</td>
+<td align="right">0.01</td>
 <td align="right">30</td>
 <td align="right">30</td>
 <td align="right">25</td>
@@ -429,7 +436,7 @@ the data will be randomly removed.</p>
 <td align="right">NA</td>
 <td align="right">0.9</td>
 <td align="right">NA</td>
-<td align="right">0.014</td>
+<td align="right">0.02</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -440,7 +447,7 @@ the data will be randomly removed.</p>
 
 <p>This strategy removes 40% of the sample at random</p>
 
-<pre><code class="r">kable(score_all_classifications(test_dat, &#39;random&#39;, params = list(n=0.4)))
+<pre><code class="r">kable(score_all_classifications(test_dat, &#39;random&#39;, params = list(n=0.4)), digits = 2)
 </code></pre>
 
 <table><thead>
@@ -458,121 +465,121 @@ the data will be randomly removed.</p>
 </thead><tbody>
 <tr>
 <td align="left">test1</td>
-<td align="right">1.0000000</td>
-<td align="right">0.0000000</td>
-<td align="right">1.0000000</td>
-<td align="right">100.0000000</td>
-<td align="right">0.0130</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">100.00</td>
+<td align="right">0.01</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">2</td>
 </tr>
 <tr>
 <td align="left">test2</td>
-<td align="right">1.0000000</td>
-<td align="right">0.0000000</td>
-<td align="right">1.0000000</td>
-<td align="right">2.9411765</td>
-<td align="right">0.0130</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">1.00</td>
+<td align="right">2.94</td>
+<td align="right">0.02</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">2</td>
 </tr>
 <tr>
 <td align="left">test3</td>
-<td align="right">1.0000000</td>
-<td align="right">0.3333333</td>
-<td align="right">0.6666667</td>
-<td align="right">0.7352941</td>
-<td align="right">0.0200</td>
+<td align="right">1.00</td>
+<td align="right">0.33</td>
+<td align="right">0.67</td>
+<td align="right">4.78</td>
+<td align="right">0.02</td>
 <td align="right">3</td>
 <td align="right">2</td>
 <td align="right">0</td>
 </tr>
 <tr>
 <td align="left">test4</td>
-<td align="right">0.6666667</td>
-<td align="right">0.0000000</td>
-<td align="right">1.0540926</td>
-<td align="right">8.1850534</td>
-<td align="right">0.0200</td>
+<td align="right">0.67</td>
+<td align="right">0.00</td>
+<td align="right">1.05</td>
+<td align="right">7.12</td>
+<td align="right">0.02</td>
 <td align="right">4</td>
 <td align="right">3</td>
 <td align="right">3</td>
 </tr>
 <tr>
 <td align="left">test5</td>
-<td align="right">0.5000000</td>
-<td align="right">1.0000000</td>
-<td align="right">0.5000000</td>
-<td align="right">1.1029412</td>
-<td align="right">0.0180</td>
+<td align="right">0.50</td>
+<td align="right">1.00</td>
+<td align="right">0.50</td>
+<td align="right">1.10</td>
+<td align="right">0.02</td>
 <td align="right">4</td>
 <td align="right">2</td>
 <td align="right">4</td>
 </tr>
 <tr>
 <td align="left">test6</td>
-<td align="right">0.8571429</td>
-<td align="right">0.0000000</td>
-<td align="right">1.0101525</td>
-<td align="right">4.4117647</td>
-<td align="right">0.0200</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">0.37</td>
+<td align="right">0.02</td>
 <td align="right">8</td>
 <td align="right">7</td>
 <td align="right">7</td>
 </tr>
 <tr>
 <td align="left">test7</td>
-<td align="right">0.8571429</td>
-<td align="right">1.0000000</td>
-<td align="right">0.1428571</td>
-<td align="right">0.7117438</td>
-<td align="right">0.0180</td>
+<td align="right">0.29</td>
+<td align="right">0.00</td>
+<td align="right">1.23</td>
+<td align="right">9.25</td>
+<td align="right">0.02</td>
 <td align="right">8</td>
-<td align="right">6</td>
+<td align="right">3</td>
 <td align="right">7</td>
 </tr>
 <tr>
 <td align="left">test8</td>
-<td align="right">0.8947368</td>
-<td align="right">1.0000000</td>
-<td align="right">0.1052632</td>
-<td align="right">1.8382353</td>
-<td align="right">0.0180</td>
+<td align="right">0.84</td>
+<td align="right">0.00</td>
+<td align="right">1.01</td>
+<td align="right">9.93</td>
+<td align="right">0.02</td>
 <td align="right">20</td>
 <td align="right">17</td>
 <td align="right">19</td>
 </tr>
 <tr>
 <td align="left">test9</td>
-<td align="right">0.7222222</td>
-<td align="right">0.0000000</td>
-<td align="right">1.0378634</td>
-<td align="right">6.2500000</td>
-<td align="right">0.0190</td>
+<td align="right">0.39</td>
+<td align="right">0.00</td>
+<td align="right">1.17</td>
+<td align="right">6.25</td>
+<td align="right">0.02</td>
 <td align="right">20</td>
-<td align="right">15</td>
+<td align="right">9</td>
 <td align="right">18</td>
 </tr>
 <tr>
 <td align="left">test10</td>
-<td align="right">0.8400000</td>
-<td align="right">0.6000000</td>
-<td align="right">0.4308132</td>
-<td align="right">8.2802548</td>
-<td align="right">0.0180</td>
+<td align="right">0.44</td>
+<td align="right">1.00</td>
+<td align="right">0.56</td>
+<td align="right">3.50</td>
+<td align="right">0.03</td>
 <td align="right">30</td>
-<td align="right">23</td>
+<td align="right">11</td>
 <td align="right">25</td>
 </tr>
 <tr>
 <td align="left">summary</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
-<td align="right">0.6947709</td>
+<td align="right">0.82</td>
 <td align="right">NA</td>
-<td align="right">0.0177</td>
+<td align="right">0.02</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -620,7 +627,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">0.00</td>
-<td align="right">0.01</td>
+<td align="right">0.02</td>
 <td align="right">3</td>
 <td align="right">2</td>
 <td align="right">2</td>
@@ -642,7 +649,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">1.78</td>
-<td align="right">0.01</td>
+<td align="right">0.02</td>
 <td align="right">4</td>
 <td align="right">3</td>
 <td align="right">3</td>
@@ -664,7 +671,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">0.37</td>
-<td align="right">0.02</td>
+<td align="right">0.03</td>
 <td align="right">8</td>
 <td align="right">7</td>
 <td align="right">7</td>
@@ -675,7 +682,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">1.07</td>
-<td align="right">0.02</td>
+<td align="right">0.03</td>
 <td align="right">8</td>
 <td align="right">7</td>
 <td align="right">7</td>
@@ -686,7 +693,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.05</td>
 <td align="right">1.47</td>
-<td align="right">0.10</td>
+<td align="right">0.12</td>
 <td align="right">20</td>
 <td align="right">18</td>
 <td align="right">19</td>
@@ -697,7 +704,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.28</td>
 <td align="right">1.10</td>
-<td align="right">0.11</td>
+<td align="right">0.12</td>
 <td align="right">20</td>
 <td align="right">13</td>
 <td align="right">18</td>
@@ -708,7 +715,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.04</td>
 <td align="right">2.87</td>
-<td align="right">0.30</td>
+<td align="right">0.34</td>
 <td align="right">30</td>
 <td align="right">24</td>
 <td align="right">25</td>
@@ -719,7 +726,7 @@ percentage of information that was discarded</p>
 <td align="right">NA</td>
 <td align="right">0.15</td>
 <td align="right">NA</td>
-<td align="right">0.06</td>
+<td align="right">0.07</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -783,7 +790,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">1.78</td>
-<td align="right">0.01</td>
+<td align="right">0.02</td>
 <td align="right">4</td>
 <td align="right">3</td>
 <td align="right">3</td>
@@ -805,7 +812,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">0.37</td>
-<td align="right">0.02</td>
+<td align="right">0.03</td>
 <td align="right">8</td>
 <td align="right">7</td>
 <td align="right">7</td>
@@ -827,7 +834,7 @@ percentage of information that was discarded</p>
 <td align="right">1.00</td>
 <td align="right">0.00</td>
 <td align="right">1.84</td>
-<td align="right">0.10</td>
+<td align="right">0.11</td>
 <td align="right">20</td>
 <td align="right">19</td>
 <td align="right">19</td>
@@ -838,7 +845,7 @@ percentage of information that was discarded</p>
 <td align="right">0.50</td>
 <td align="right">0.50</td>
 <td align="right">2.94</td>
-<td align="right">0.10</td>
+<td align="right">0.12</td>
 <td align="right">20</td>
 <td align="right">19</td>
 <td align="right">18</td>
@@ -849,7 +856,7 @@ percentage of information that was discarded</p>
 <td align="right">0.80</td>
 <td align="right">0.20</td>
 <td align="right">4.78</td>
-<td align="right">0.30</td>
+<td align="right">0.35</td>
 <td align="right">30</td>
 <td align="right">26</td>
 <td align="right">25</td>
@@ -860,7 +867,7 @@ percentage of information that was discarded</p>
 <td align="right">NA</td>
 <td align="right">0.16</td>
 <td align="right">NA</td>
-<td align="right">0.06</td>
+<td align="right">0.07</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
 <td align="right">NA</td>
@@ -913,7 +920,7 @@ percentage of information that was discarded</p>
 <td align="right">0.0</td>
 <td align="right">1.00</td>
 <td align="right">4.78</td>
-<td align="right">0.01</td>
+<td align="right">0.02</td>
 <td align="right">3</td>
 <td align="right">3</td>
 <td align="right">0</td>
@@ -957,7 +964,7 @@ percentage of information that was discarded</p>
 <td align="right">1.0</td>
 <td align="right">0.00</td>
 <td align="right">1.07</td>
-<td align="right">0.02</td>
+<td align="right">0.03</td>
 <td align="right">8</td>
 <td align="right">7</td>
 <td align="right">7</td>
@@ -968,7 +975,7 @@ percentage of information that was discarded</p>
 <td align="right">1.0</td>
 <td align="right">0.00</td>
 <td align="right">1.84</td>
-<td align="right">0.10</td>
+<td align="right">0.11</td>
 <td align="right">20</td>
 <td align="right">19</td>
 <td align="right">19</td>
@@ -979,7 +986,7 @@ percentage of information that was discarded</p>
 <td align="right">0.5</td>
 <td align="right">0.50</td>
 <td align="right">2.94</td>
-<td align="right">0.10</td>
+<td align="right">0.11</td>
 <td align="right">20</td>
 <td align="right">19</td>
 <td align="right">18</td>
@@ -990,7 +997,7 @@ percentage of information that was discarded</p>
 <td align="right">0.8</td>
 <td align="right">0.20</td>
 <td align="right">4.78</td>
-<td align="right">0.30</td>
+<td align="right">0.31</td>
 <td align="right">30</td>
 <td align="right">26</td>
 <td align="right">25</td>
@@ -1008,9 +1015,183 @@ percentage of information that was discarded</p>
 </tr>
 </tbody></table>
 
+<h3>Most Frequent Sequence</h3>
+
+<pre><code class="r">kable(score_all_classifications(test_dat, &#39;most_frequent&#39;, params = list()), digits = 2)
+</code></pre>
+
+<table><thead>
+<tr>
+<th align="left">name</th>
+<th align="right">sn</th>
+<th align="right">sp</th>
+<th align="right">combined</th>
+<th align="right">max_dist</th>
+<th align="right">time_taken</th>
+<th align="right">input_n</th>
+<th align="right">output_n</th>
+<th align="right">true_n</th>
+</tr>
+</thead><tbody>
+<tr>
+<td align="left">test1</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">test2</td>
+<td align="right">1.00</td>
+<td align="right">1.00</td>
+<td align="right">0.00</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">3</td>
+<td align="right">2</td>
+<td align="right">2</td>
+</tr>
+<tr>
+<td align="left">test3</td>
+<td align="right">1.00</td>
+<td align="right">0.67</td>
+<td align="right">0.33</td>
+<td align="right">0</td>
+<td align="right">0.02</td>
+<td align="right">3</td>
+<td align="right">1</td>
+<td align="right">0</td>
+</tr>
+<tr>
+<td align="left">test4</td>
+<td align="right">0.33</td>
+<td align="right">1.00</td>
+<td align="right">0.67</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">4</td>
+<td align="right">1</td>
+<td align="right">3</td>
+</tr>
+<tr>
+<td align="left">test5</td>
+<td align="right">0.50</td>
+<td align="right">1.00</td>
+<td align="right">0.50</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">4</td>
+<td align="right">2</td>
+<td align="right">4</td>
+</tr>
+<tr>
+<td align="left">test6</td>
+<td align="right">0.86</td>
+<td align="right">1.00</td>
+<td align="right">0.14</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">8</td>
+<td align="right">6</td>
+<td align="right">7</td>
+</tr>
+<tr>
+<td align="left">test7</td>
+<td align="right">0.57</td>
+<td align="right">1.00</td>
+<td align="right">0.43</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">8</td>
+<td align="right">4</td>
+<td align="right">7</td>
+</tr>
+<tr>
+<td align="left">test8</td>
+<td align="right">0.63</td>
+<td align="right">1.00</td>
+<td align="right">0.37</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">20</td>
+<td align="right">12</td>
+<td align="right">19</td>
+</tr>
+<tr>
+<td align="left">test9</td>
+<td align="right">0.39</td>
+<td align="right">1.00</td>
+<td align="right">0.61</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">20</td>
+<td align="right">7</td>
+<td align="right">18</td>
+</tr>
+<tr>
+<td align="left">test10</td>
+<td align="right">0.52</td>
+<td align="right">1.00</td>
+<td align="right">0.48</td>
+<td align="right">0</td>
+<td align="right">0.03</td>
+<td align="right">30</td>
+<td align="right">13</td>
+<td align="right">25</td>
+</tr>
+<tr>
+<td align="left">summary</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">0.35</td>
+<td align="right">NA</td>
+<td align="right">0.03</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+<td align="right">NA</td>
+</tr>
+</tbody></table>
+
 <h3>The silver bullet</h3>
 
 <p>To be devised</p>
+
+<h2>Meeting Agenda</h2>
+
+<ul>
+<li>Simulation of test data for MotifBinner
+
+<ul>
+<li>grinder</li>
+<li>GemSim</li>
+<li>Evolveagene</li>
+<li>poorly understood and supremely complex MiSeq error profiles</li>
+<li>Why am I trying to duplicate the entire process, I should consider a more focussed simulation approach (Available software forces me to, but I should rather adapt polyester?)</li>
+</ul></li>
+<li>Testing strategies for MotifBinner
+
+<ul>
+<li>Benchmarking system demonstration</li>
+<li>Why am I benchmarking the mislabel detection? Should I just benchmark the entire process?</li>
+</ul></li>
+<li>Mislabel detection strategies for MotifBinner
+
+<ul>
+<li>Why kinky diagrams failed</li>
+<li>Distance computation inefficiencies caused by duplicates and possible hacks</li>
+<li>Describe the information variance balance strategy</li>
+<li>How relevant are the metrics Im using for mislabel detection? Since
+technically we only care about the consensus sequence. Is all that
+matters that none of the &#39;out&#39; sequences makes it into the &#39;src&#39; bin?</li>
+<li>The most &ldquo;frequent&rdquo; strategy and some brainstorming about what can go wrong</li>
+<li>Two+ variant versions</li>
+</ul></li>
+<li>Gaps and consensus sequences and homopolymer errors</li>
+</ul>
 
 </body>
 

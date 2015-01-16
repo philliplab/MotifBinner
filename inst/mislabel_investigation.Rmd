@@ -105,7 +105,7 @@ Use the random strategy but set the parameter 'n' to 0. So that 0 percent of
 the data will be randomly removed.
 
 ```{r}
-kable(score_all_classifications(test_dat, 'random', params = list(n=0)))
+kable(score_all_classifications(test_dat, 'random', params = list(n=0)), digits = 2)
 ```
 
 ### Remove Random
@@ -113,7 +113,7 @@ kable(score_all_classifications(test_dat, 'random', params = list(n=0)))
 This strategy removes 40% of the sample at random
 
 ```{r}
-kable(score_all_classifications(test_dat, 'random', params = list(n=0.4)))
+kable(score_all_classifications(test_dat, 'random', params = list(n=0.4)), digits = 2)
 ```
 ### Information Variance Balance
 
@@ -136,7 +136,33 @@ kable(score_all_classifications(test_dat, 'infovar_balance', params = list(thres
 kable(score_all_classifications(test_dat, 'infovar_balance', params = list(threshold = 3)), digits = 2)
 ```
 
+### Most Frequent Sequence
+```{r}
+kable(score_all_classifications(test_dat, 'most_frequent', params = list()), digits = 2)
+```
+
 ### The silver bullet
 
 To be devised
 
+## Meeting Agenda
+
+- Simulation of test data for MotifBinner
+  - grinder
+  - GemSim
+  - Evolveagene
+  - poorly understood and supremely complex MiSeq error profiles
+  - Why am I trying to duplicate the entire process, I should consider a more focussed simulation approach (Available software forces me to, but I should rather adapt polyester?)
+- Testing strategies for MotifBinner
+  - Benchmarking system demonstration
+  - Why am I benchmarking the mislabel detection? Should I just benchmark the entire process?
+- Mislabel detection strategies for MotifBinner
+  - Why kinky diagrams failed
+  - Distance computation inefficiencies caused by duplicates and possible hacks
+  - Describe the information variance balance strategy
+  - How relevant are the metrics Im using for mislabel detection? Since
+    technically we only care about the consensus sequence. Is all that
+    matters that none of the 'out' sequences makes it into the 'src' bin?
+  - The most "frequent" strategy and some brainstorming about what can go wrong
+    - Two+ variant versions
+- Gaps and consensus sequences and homopolymer errors

@@ -4,7 +4,7 @@
 \alias{classify_bin}
 \title{Classify a bin's sequences into 'src' and 'out'}
 \usage{
-classify_bin(bin, technique = "random", params = list(n = 0.2))
+classify_bin(bin, technique = "random", params = list())
 }
 \arguments{
 \item{bin}{The input bin as a single DNAStringSet.}

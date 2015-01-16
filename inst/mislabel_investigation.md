@@ -86,6 +86,13 @@ around this information.
 
 The time it took to classify the reads in the bin.
 
+#### Last words about the metrics
+
+The euclidean distance from the sensitivity and specificity from (1, 1) will be
+reports as 'combo' for each test. If the average of this column for all test
+datasets is 0, then we have a perfect classifier. This is the metric of
+interest to be on the lookout for.
+
 ## The different strategies
 
 Design and implement a who set of strategies and then benchmark them to find
@@ -100,24 +107,24 @@ the data will be randomly removed.
 
 
 ```r
-kable(score_all_classifications(test_dat, 'random', params = list(n=0)))
+kable(score_all_classifications(test_dat, 'random', params = list(n=0)), digits = 2)
 ```
 
 
 
-|name    | sn| sp| combined|   max_dist| time_taken| input_n| output_n| true_n|
-|:-------|--:|--:|--------:|----------:|----------:|-------:|--------:|------:|
-|test1   |  1|  0|      1.0| 100.000000|      0.026|       3|        3|      2|
-|test2   |  1|  0|      1.0|   2.941177|      0.015|       3|        3|      2|
-|test3   |  1|  0|      1.0|   4.779412|      0.011|       3|        3|      0|
-|test4   |  1|  0|      1.0|   8.185053|      0.014|       4|        4|      3|
-|test5   |  1|  1|      0.0|   1.102941|      0.012|       4|        4|      4|
-|test6   |  1|  0|      1.0|   4.779412|      0.012|       8|        8|      7|
-|test7   |  1|  0|      1.0|   9.252669|      0.012|       8|        8|      7|
-|test8   |  1|  0|      1.0|  10.294118|      0.013|      20|       20|     19|
-|test9   |  1|  0|      1.0|   6.250000|      0.012|      20|       20|     18|
-|test10  |  1|  0|      1.0|  11.783440|      0.013|      30|       30|     25|
-|summary | NA| NA|      0.9|         NA|      0.014|      NA|       NA|     NA|
+|name    | sn| sp| combined| max_dist| time_taken| input_n| output_n| true_n|
+|:-------|--:|--:|--------:|--------:|----------:|-------:|--------:|------:|
+|test1   |  1|  0|      1.0|   100.00|       0.03|       3|        3|      2|
+|test2   |  1|  0|      1.0|     2.94|       0.02|       3|        3|      2|
+|test3   |  1|  0|      1.0|     4.78|       0.01|       3|        3|      0|
+|test4   |  1|  0|      1.0|     8.19|       0.02|       4|        4|      3|
+|test5   |  1|  1|      0.0|     1.10|       0.01|       4|        4|      4|
+|test6   |  1|  0|      1.0|     4.78|       0.01|       8|        8|      7|
+|test7   |  1|  0|      1.0|     9.25|       0.01|       8|        8|      7|
+|test8   |  1|  0|      1.0|    10.29|       0.02|      20|       20|     19|
+|test9   |  1|  0|      1.0|     6.25|       0.01|      20|       20|     18|
+|test10  |  1|  0|      1.0|    11.78|       0.01|      30|       30|     25|
+|summary | NA| NA|      0.9|       NA|       0.02|      NA|       NA|     NA|
 
 ### Remove Random
 
@@ -125,24 +132,24 @@ This strategy removes 40% of the sample at random
 
 
 ```r
-kable(score_all_classifications(test_dat, 'random', params = list(n=0.4)))
+kable(score_all_classifications(test_dat, 'random', params = list(n=0.4)), digits = 2)
 ```
 
 
 
-|name    |        sn|        sp|  combined|    max_dist| time_taken| input_n| output_n| true_n|
-|:-------|---------:|---------:|---------:|-----------:|----------:|-------:|--------:|------:|
-|test1   | 1.0000000| 0.0000000| 1.0000000| 100.0000000|     0.0130|       3|        3|      2|
-|test2   | 1.0000000| 0.0000000| 1.0000000|   2.9411765|     0.0130|       3|        3|      2|
-|test3   | 1.0000000| 0.3333333| 0.6666667|   0.7352941|     0.0200|       3|        2|      0|
-|test4   | 0.6666667| 0.0000000| 1.0540926|   8.1850534|     0.0200|       4|        3|      3|
-|test5   | 0.5000000| 1.0000000| 0.5000000|   1.1029412|     0.0180|       4|        2|      4|
-|test6   | 0.8571429| 0.0000000| 1.0101525|   4.4117647|     0.0200|       8|        7|      7|
-|test7   | 0.8571429| 1.0000000| 0.1428571|   0.7117438|     0.0180|       8|        6|      7|
-|test8   | 0.8947368| 1.0000000| 0.1052632|   1.8382353|     0.0180|      20|       17|     19|
-|test9   | 0.7222222| 0.0000000| 1.0378634|   6.2500000|     0.0190|      20|       15|     18|
-|test10  | 0.8400000| 0.6000000| 0.4308132|   8.2802548|     0.0180|      30|       23|     25|
-|summary |        NA|        NA| 0.6947709|          NA|     0.0177|      NA|       NA|     NA|
+|name    |   sn|   sp| combined| max_dist| time_taken| input_n| output_n| true_n|
+|:-------|----:|----:|--------:|--------:|----------:|-------:|--------:|------:|
+|test1   | 1.00| 0.00|     1.00|   100.00|       0.01|       3|        3|      2|
+|test2   | 1.00| 0.00|     1.00|     2.94|       0.02|       3|        3|      2|
+|test3   | 1.00| 0.33|     0.67|     4.78|       0.02|       3|        2|      0|
+|test4   | 0.67| 0.00|     1.05|     7.12|       0.02|       4|        3|      3|
+|test5   | 0.50| 1.00|     0.50|     1.10|       0.02|       4|        2|      4|
+|test6   | 1.00| 1.00|     0.00|     0.37|       0.02|       8|        7|      7|
+|test7   | 0.29| 0.00|     1.23|     9.25|       0.02|       8|        3|      7|
+|test8   | 0.84| 0.00|     1.01|     9.93|       0.02|      20|       17|     19|
+|test9   | 0.39| 0.00|     1.17|     6.25|       0.02|      20|        9|     18|
+|test10  | 0.44| 1.00|     0.56|     3.50|       0.03|      30|       11|     25|
+|summary |   NA|   NA|     0.82|       NA|       0.02|      NA|       NA|     NA|
 ### Information Variance Balance
 
 This strategy will keep on removing the most outlying sequence as long as is
@@ -160,16 +167,16 @@ kable(score_all_classifications(test_dat, 'infovar_balance', params = list(thres
 |name    |   sn|   sp| combined| max_dist| time_taken| input_n| output_n| true_n|
 |:-------|----:|----:|--------:|--------:|----------:|-------:|--------:|------:|
 |test1   | 1.00| 1.00|     0.00|     0.00|       0.01|       3|        2|      2|
-|test2   | 1.00| 1.00|     0.00|     0.00|       0.01|       3|        2|      2|
+|test2   | 1.00| 1.00|     0.00|     0.00|       0.02|       3|        2|      2|
 |test3   | 1.00| 0.33|     0.67|     0.74|       0.01|       3|        2|      0|
-|test4   | 1.00| 1.00|     0.00|     1.78|       0.01|       4|        3|      3|
+|test4   | 1.00| 1.00|     0.00|     1.78|       0.02|       4|        3|      3|
 |test5   | 0.50| 1.00|     0.50|     0.00|       0.01|       4|        2|      4|
-|test6   | 1.00| 1.00|     0.00|     0.37|       0.02|       8|        7|      7|
-|test7   | 1.00| 1.00|     0.00|     1.07|       0.02|       8|        7|      7|
-|test8   | 0.95| 1.00|     0.05|     1.47|       0.10|      20|       18|     19|
-|test9   | 0.72| 1.00|     0.28|     1.10|       0.11|      20|       13|     18|
-|test10  | 0.96| 1.00|     0.04|     2.87|       0.30|      30|       24|     25|
-|summary |   NA|   NA|     0.15|       NA|       0.06|      NA|       NA|     NA|
+|test6   | 1.00| 1.00|     0.00|     0.37|       0.03|       8|        7|      7|
+|test7   | 1.00| 1.00|     0.00|     1.07|       0.03|       8|        7|      7|
+|test8   | 0.95| 1.00|     0.05|     1.47|       0.12|      20|       18|     19|
+|test9   | 0.72| 1.00|     0.28|     1.10|       0.12|      20|       13|     18|
+|test10  | 0.96| 1.00|     0.04|     2.87|       0.34|      30|       24|     25|
+|summary |   NA|   NA|     0.15|       NA|       0.07|      NA|       NA|     NA|
 
 #### Threshold of 2
 
@@ -184,14 +191,14 @@ kable(score_all_classifications(test_dat, 'infovar_balance', params = list(thres
 |test1   | 1.00| 1.00|     0.00|     0.00|       0.01|       3|        2|      2|
 |test2   | 1.00| 1.00|     0.00|     0.00|       0.01|       3|        2|      2|
 |test3   | 1.00| 0.33|     0.67|     0.74|       0.01|       3|        2|      0|
-|test4   | 1.00| 1.00|     0.00|     1.78|       0.01|       4|        3|      3|
+|test4   | 1.00| 1.00|     0.00|     1.78|       0.02|       4|        3|      3|
 |test5   | 0.75| 1.00|     0.25|     0.37|       0.01|       4|        3|      4|
-|test6   | 1.00| 1.00|     0.00|     0.37|       0.02|       8|        7|      7|
+|test6   | 1.00| 1.00|     0.00|     0.37|       0.03|       8|        7|      7|
 |test7   | 1.00| 1.00|     0.00|     1.07|       0.03|       8|        7|      7|
-|test8   | 1.00| 1.00|     0.00|     1.84|       0.10|      20|       19|     19|
-|test9   | 1.00| 0.50|     0.50|     2.94|       0.10|      20|       19|     18|
-|test10  | 1.00| 0.80|     0.20|     4.78|       0.30|      30|       26|     25|
-|summary |   NA|   NA|     0.16|       NA|       0.06|      NA|       NA|     NA|
+|test8   | 1.00| 1.00|     0.00|     1.84|       0.11|      20|       19|     19|
+|test9   | 1.00| 0.50|     0.50|     2.94|       0.12|      20|       19|     18|
+|test10  | 1.00| 0.80|     0.20|     4.78|       0.35|      30|       26|     25|
+|summary |   NA|   NA|     0.16|       NA|       0.07|      NA|       NA|     NA|
 
 #### Threshold of 3
 
@@ -205,17 +212,60 @@ kable(score_all_classifications(test_dat, 'infovar_balance', params = list(thres
 |:-------|--:|---:|--------:|--------:|----------:|-------:|--------:|------:|
 |test1   |  1| 0.0|     1.00|   100.00|       0.01|       3|        3|      2|
 |test2   |  1| 0.0|     1.00|     2.94|       0.01|       3|        3|      2|
-|test3   |  1| 0.0|     1.00|     4.78|       0.01|       3|        3|      0|
+|test3   |  1| 0.0|     1.00|     4.78|       0.02|       3|        3|      0|
 |test4   |  1| 1.0|     0.00|     1.78|       0.01|       4|        3|      3|
 |test5   |  1| 1.0|     0.00|     1.10|       0.01|       4|        4|      4|
 |test6   |  1| 1.0|     0.00|     0.37|       0.02|       8|        7|      7|
-|test7   |  1| 1.0|     0.00|     1.07|       0.02|       8|        7|      7|
-|test8   |  1| 1.0|     0.00|     1.84|       0.10|      20|       19|     19|
-|test9   |  1| 0.5|     0.50|     2.94|       0.10|      20|       19|     18|
-|test10  |  1| 0.8|     0.20|     4.78|       0.30|      30|       26|     25|
+|test7   |  1| 1.0|     0.00|     1.07|       0.03|       8|        7|      7|
+|test8   |  1| 1.0|     0.00|     1.84|       0.11|      20|       19|     19|
+|test9   |  1| 0.5|     0.50|     2.94|       0.11|      20|       19|     18|
+|test10  |  1| 0.8|     0.20|     4.78|       0.31|      30|       26|     25|
 |summary | NA|  NA|     0.37|       NA|       0.06|      NA|       NA|     NA|
+
+### Most Frequent Sequence
+
+```r
+kable(score_all_classifications(test_dat, 'most_frequent', params = list()), digits = 2)
+```
+
+
+
+|name    |   sn|   sp| combined| max_dist| time_taken| input_n| output_n| true_n|
+|:-------|----:|----:|--------:|--------:|----------:|-------:|--------:|------:|
+|test1   | 1.00| 1.00|     0.00|        0|       0.03|       3|        2|      2|
+|test2   | 1.00| 1.00|     0.00|        0|       0.03|       3|        2|      2|
+|test3   | 1.00| 0.67|     0.33|        0|       0.02|       3|        1|      0|
+|test4   | 0.33| 1.00|     0.67|        0|       0.03|       4|        1|      3|
+|test5   | 0.50| 1.00|     0.50|        0|       0.03|       4|        2|      4|
+|test6   | 0.86| 1.00|     0.14|        0|       0.03|       8|        6|      7|
+|test7   | 0.57| 1.00|     0.43|        0|       0.03|       8|        4|      7|
+|test8   | 0.63| 1.00|     0.37|        0|       0.03|      20|       12|     19|
+|test9   | 0.39| 1.00|     0.61|        0|       0.03|      20|        7|     18|
+|test10  | 0.52| 1.00|     0.48|        0|       0.03|      30|       13|     25|
+|summary |   NA|   NA|     0.35|       NA|       0.03|      NA|       NA|     NA|
 
 ### The silver bullet
 
 To be devised
 
+## Meeting Agenda
+
+- Simulation of test data for MotifBinner
+  - grinder
+  - GemSim
+  - Evolveagene
+  - poorly understood and supremely complex MiSeq error profiles
+  - Why am I trying to duplicate the entire process, I should consider a more focussed simulation approach (Available software forces me to, but I should rather adapt polyester?)
+- Testing strategies for MotifBinner
+  - Benchmarking system demonstration
+  - Why am I benchmarking the mislabel detection? Should I just benchmark the entire process?
+- Mislabel detection strategies for MotifBinner
+  - Why kinky diagrams failed
+  - Distance computation inefficiencies caused by duplicates and possible hacks
+  - Describe the information variance balance strategy
+  - How relevant are the metrics Im using for mislabel detection? Since
+    technically we only care about the consensus sequence. Is all that
+    matters that none of the 'out' sequences makes it into the 'src' bin?
+  - The most "frequent" strategy and some brainstorming about what can go wrong
+    - Two+ variant versions
+- Gaps and consensus sequences and homopolymer errors

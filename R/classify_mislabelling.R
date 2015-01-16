@@ -14,7 +14,7 @@
 #' classification techniques
 #' @export
 
-classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
+classify_bin <- function(bin, technique = 'random', params = list()){
   if (is.list(bin)){
     if (all(sort(c('src', 'out')) == sort(names(bin)))){
       bin <- c(bin$src, bin$out)
@@ -27,6 +27,9 @@ classify_bin <- function(bin, technique = 'random', params = list(n=0.2)){
   }
   if (technique == 'infovar_balance'){
     classified <- do.call(classify_bin_infovar_balance, params)
+  }
+  if (technique == 'most_frequent'){
+    classified <- do.call(classify_bin_most_frequent, params)
   }
   return(classified)
 }
@@ -106,4 +109,17 @@ classify_bin_infovar_balance <- function(bin, threshold){
   out_seq <- bin[as.integer(removed_sequences)]
   return(list(src = src_seq,
               out = out_seq))
+}
+
+#' Bins based on most frequent sequence
+#' @export
+
+classify_bin_most_frequent <- function(bin){
+  tab <- table(bin)
+  max_occ <- max(tab)
+  src_seq <- names(tab)[which(tab == max_occ)[1]]
+  src <- bin[bin == src_seq]
+  out <- bin[bin != src_seq]
+  return(list(src = src,
+              out = out))
 }
