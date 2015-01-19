@@ -111,7 +111,13 @@ classify_bin_infovar_balance <- function(bin, threshold){
               out = out_seq))
 }
 
-#' Bins based on most frequent sequence
+#' Classifies the sequences in a set by only choosing the most frequent
+#' sequence.
+#'
+#' Given a set of sequences, pick the most frequently occurring sequence as the
+#' only sequence that belongs to that bin and label all other sequences as
+#' outliers.
+#' @param bin The input bin as a single DNAStringSet
 #' @export
 
 classify_bin_most_frequent <- function(bin){

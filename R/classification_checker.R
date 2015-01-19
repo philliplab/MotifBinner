@@ -134,8 +134,8 @@ score_all_classifications <- function(test_bins, technique, params){
   }
   metrics <- rbind(metrics,
                    data.frame(name = 'summary',
-                              sn = NA_real_,
-                              sp = NA_real_,
+                              sn = mean(metrics$sn),
+                              sp = mean(metrics$sp),
                               combined = mean(metrics$combined),
                               max_dist = NA_real_,
                               time_taken = mean(metrics$time_taken),

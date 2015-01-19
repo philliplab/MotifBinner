@@ -2,11 +2,17 @@
 % Please edit documentation in R/classify_mislabelling.R
 \name{classify_bin_most_frequent}
 \alias{classify_bin_most_frequent}
-\title{Bins based on most frequent sequence}
+\title{Classifies the sequences in a set by only choosing the most frequent
+sequence.}
 \usage{
 classify_bin_most_frequent(bin)
 }
+\arguments{
+\item{bin}{The input bin as a single DNAStringSet}
+}
 \description{
-Bins based on most frequent sequence
+Given a set of sequences, pick the most frequently occurring sequence as the
+only sequence that belongs to that bin and label all other sequences as
+outliers.
 }
 
