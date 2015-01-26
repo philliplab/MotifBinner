@@ -1,5 +1,16 @@
 # Useful functions for applying functions to files or folders
 
+#' @include align_sequences.R
+#' @include bin_by_name.R
+#' @include classification_checker.R
+#' @include classify_mislabelling.R
+#' @include consensus_string.R
+#' @include datasets.R
+#' @include extract_motifs.R
+#' @include imports.R
+#' @include process_bin.R
+NULL
+
 #' Bins a given FASTA file and outputs each bin as a seperate file
 #'
 #' @param file_name The file name
@@ -50,6 +61,48 @@ bin_file <- function(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merg
     }
   }
   return(bin_seqs)
+}
+
+#' Randomizes the order of the items of a list
+#'
+#' @param x The list to randomize
+#' @export
+
+randomize_list <- function(x){
+  if (is.null(names(x))){
+    names(x) <- 1:length(x)
+  }
+  y <- list()
+  for (i in sample(names(x), length(names(x)), replace = FALSE)){
+    y <- c(y, x[[i]])
+  }
+  return(y)
+}
+
+#' Bins and constructs consensus sequences for an entire fastq file
+#'
+#' Running process_bin in parallel yields 3x improvement in execution speed on
+#' my laptop (213 sec -> 64 sec)
+#'
+#' @param file_name The file name
+#' @export
+
+file_to_consensus <- function(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq",
+                              ...){
+  x <- bin_file(file_name, write_files = FALSE, ...)
+  y <- randomize_list(x)
+  sfInit(parallel = TRUE, cpus = 6)
+  sfLibrary(MotifBinner)
+  z <- sfLapply(y, process_bin)
+  sfStop()
+  consensuses <- DNAStringSet()
+  for (i in seq_along(z)){
+    dss <- DNAStringSet(z[[i]])
+    if (length(dss) > 0){
+      consensuses <- c(consensuses, dss)
+    }
+  }
+  return(consensuses)
 }
 
 #' Reads a classified binned file and splits it into bins

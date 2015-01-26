@@ -17,8 +17,9 @@ distanct / information ratio drops below this threshold.}
 This approach removes outliers from a bin by finding the sequence with the
 highest average distance to all other sequences in the bin. It is then
 removed. The ratio of the reduction in the average distance between the
-sequences and the reduction in the information available is then computed.
-The process will continue until either all data has been removed or the
-ratio drops below some threshold
+sequences and the reduction in the information available (where the number
+of DNA sequences in the bin is taken as the measure of the amount of
+information) is then computed.  The process will continue until either all
+data has been removed or the ratio drops below some threshold
 }
 

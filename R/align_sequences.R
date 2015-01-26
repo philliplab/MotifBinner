@@ -11,6 +11,6 @@
 align_sequences <- function(seqs, technique = 'muscle', params = list()){
   seqs <- as.DNAbin(seqs)
   aligned_seqs <- muscle(seqs)
-  seqs <- DNAStringSet(toupper(apply(as.character(y), 1, paste0, collapse="")))
+  seqs <- DNAStringSet(toupper(apply(as.character(aligned_seqs), 1, paste0, collapse="")))
   return(seqs)
 }

@@ -69,9 +69,10 @@ classify_bin_random <- function(bin, n){
 #' This approach removes outliers from a bin by finding the sequence with the
 #' highest average distance to all other sequences in the bin. It is then
 #' removed. The ratio of the reduction in the average distance between the
-#' sequences and the reduction in the information available is then computed.
-#' The process will continue until either all data has been removed or the
-#' ratio drops below some threshold
+#' sequences and the reduction in the information available (where the number
+#' of DNA sequences in the bin is taken as the measure of the amount of
+#' information) is then computed.  The process will continue until either all
+#' data has been removed or the ratio drops below some threshold
 #'
 #' @param bin The input bin as a single DNAStringSet.
 #' @param threshold Outlier sequences are removed from the bin until the
@@ -86,17 +87,25 @@ classify_bin_infovar_balance <- function(bin, threshold){
   removed_sequences <- NULL
   orig_dmat <- dmat
   pdr_psr_rat <- 1000
-  while((nrow(unique(dmat)) > 1) & (pdr_psr_rat > threshold)){
+  pdr <- 1000*1000
+  nrow_uniq_dmat_gt_1 <- nrow(unique(dmat)) > 1
+  while((nrow_uniq_dmat_gt_1) & (pdr_psr_rat > threshold)){
     dists <- c(dists, mean(dmat))
     dvec <- apply(dmat, 1, sum)
     max_indx <- which(dvec == max(dvec))
     new_dmat <- dmat[-max_indx, -max_indx]
     psr <- length(max_indx) / nrow(dmat)
-    if (nrow(new_dmat) == 0){
-      pdr <- pdr # Since all data was removed, set this to the amount of data
-                 # that was left in the prev iteration
+    if (is.null(nrow(new_dmat))){
+      pdr <- pdr
+      nrow_uniq_dmat_gt_1 <- FALSE
     } else {
-      pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
+      if (nrow(new_dmat) == 0){
+        pdr <- pdr # Since all data was removed, set this to the amount of data
+                   # that was left in the prev iteration
+      } else {
+        pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
+      }
+      nrow_uniq_dmat_gt_1 <- nrow(unique(new_dmat)) > 1
     }
     pdr_psr_rat <- pdr / psr
 

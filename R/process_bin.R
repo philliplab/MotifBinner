@@ -11,12 +11,13 @@ process_bin <- function(seqs){
       seqs <- c(seqs$src, seqs$out)
     }
   }
-
   x <- classify_bin(seqs, technique = 'infovar_balance', params = list(threshold = 1))
   x <- x$src
-
-  x <- align_sequences(x)
-
-  x <- construct_consensus(x)
-  return(x)
+  if (length(x) == 0){
+    return(DNAStringSet(NULL))
+  } else {
+    x <- align_sequences(x)
+    x <- construct_consensus(x)
+    return(x)
+  }
 }
