@@ -2,7 +2,7 @@
 % Please edit documentation in R/process_bin.R
 \name{process_bin}
 \alias{process_bin}
-\title{Given a groups of sequences that were binned together, throw out oitliers,
+\title{Given a groups of sequences that were binned together, throw out outliers,
 align them and construct a consensus sequence}
 \usage{
 process_bin(seqs)
@@ -11,7 +11,7 @@ process_bin(seqs)
 \item{seqs}{The sequences that were binned together}
 }
 \description{
-Given a groups of sequences that were binned together, throw out oitliers,
+Given a groups of sequences that were binned together, throw out outliers,
 align them and construct a consensus sequence
 }
 

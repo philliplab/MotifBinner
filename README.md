@@ -2,7 +2,7 @@ MotifBinner
 ===========
 
 Bins reads from NGS sequencing machines by a motif. Motif are identified by
-special affixes. Binned sequences can be aligned and consensus sequences
+special affixes. Binned sequences are aligned and consensus sequences
 extracted.
 
 ```r
@@ -29,21 +29,27 @@ bin_by_name <- function(seq_dat){
   return(bins)
 }
 
-# Now check for mislabeled seqences. This is done by checking for outliers in
-# the distance matrix
-# See Issue number 9
-
-align_bins <- function(bins){
-  aligned_bins <- list()
-  for (motif in names(bins)){
-    alignment <- fancy_aligner(bins[[motif]])
-    aligned_bins[[motif]] <- alignment
-  }
-  return(aligned_bins)
+process_bin <- function(bin){
+  x <- classify_bin()
+  x <- align_sequences(x$src)
+  x <- construct_consensus(x)
+  return(x)
 }
 
-# A function that computes distances based on a MSA and report on poorly
-#   aligned bins
+classify_bin <- function(bin, technique, params){
+  # The bin will be split into a list with 2 element 'src' and 'out'.
+  # The elements of 'out' are to be discarded as mislabelled sequences
+  # Several techniques are implemented
+}
 
-# A function that returns only the consensus sequences of each bin
+align_sequences <- function(seqs, technique, params){
+  # just a wrapper for various different multiple alignment programs
+  # Returns a DNAStringSet of aligned sequences
+}
+
+construct_consensus <- function(seqs, technique , params){
+  # just a wrapper for various consensus string functions
+  # Given a MSA, return the consensus sequence
+  # Would be great to use qualities in this process
+}
 ```

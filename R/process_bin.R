@@ -1,6 +1,6 @@
 # Goes from sequences binned together to a consensus sequence
 
-#' Given a groups of sequences that were binned together, throw out oitliers,
+#' Given a groups of sequences that were binned together, throw out outliers,
 #' align them and construct a consensus sequence
 #' @param seqs The sequences that were binned together
 #' @export
