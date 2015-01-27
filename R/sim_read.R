@@ -9,17 +9,66 @@
 
 gen_error_profile <- function(technique = 'uniform', 
                               params = list(read_len = 1000,
-                                            A_mut_rates = list('A' = 0.997, 'C' = 0.001,
+                                            A_err_rates = list('A' = 0.997, 'C' = 0.001,
                                                                'G' = 0.001, 'T' = 0.001),
-                                            C_mut_rates = list('C' = 0.997, 'A' = 0.001,
+                                            C_err_rates = list('C' = 0.997, 'A' = 0.001,
                                                                'G' = 0.001, 'T' = 0.001),
-                                            G_mut_rates = list('G' = 0.997, 'C' = 0.001,
+                                            G_err_rates = list('G' = 0.997, 'C' = 0.001,
                                                                'A' = 0.001, 'T' = 0.001),
-                                            T_mut_rates = list('T' = 0.997, 'C' = 0.001,
-                                                               'G' = 0.001, 'T' = 0.001))){
+                                            T_err_rates = list('T' = 0.997, 'C' = 0.001,
+                                                               'G' = 0.001, 'A' = 0.001))){
   if (technique == 'uniform'){
     err_prof <- do.call(gen_error_profile_uniform, params)
   }
   return(err_prof)
 }
 
+#' Generates a read error profile by assigning a constant probability of an
+#' error at all positions
+#' @param read_len The length of the profile
+#' @param A_err_rates The probabilities that an A will be read as each of the
+#' four nucleotides. Must sum to 1.
+#' @param C_err_rates The probabilities that a C will be read as each of the
+#' four nucleotides. Must sum to 1.
+#' @param G_err_rates The probabilities that a G will be read as each of the
+#' four nucleotides. Must sum to 1.
+#' @param T_err_rates The probabilities that a T will be read as each of the
+#' four nucleotides. Must sum to 1.
+#' @export
+
+gen_error_profile_uniform <- function(read_len, A_err_rates, C_err_rates, 
+                                      G_err_rates, T_err_rates){
+  error_rates <- data.frame(from_let = 'A',
+                            to_let = c('A', 'C', 'G', 'T'),
+                            prob = c(A_err_rates[['A']],
+                                     A_err_rates[['C']],
+                                     A_err_rates[['G']],
+                                     A_err_rates[['T']]))
+  error_rates <- rbind(error_rates,
+                       data.frame(from_let = 'C',
+                                  to_let = c('A', 'C', 'G', 'T'),
+                                  prob = c(C_err_rates[['A']],
+                                           C_err_rates[['C']],
+                                           C_err_rates[['G']],
+                                           C_err_rates[['T']])))
+  error_rates <- rbind(error_rates,
+                       data.frame(from_let = 'G',
+                                  to_let = c('A', 'C', 'G', 'T'),
+                                  prob = c(G_err_rates[['A']],
+                                           G_err_rates[['C']],
+                                           G_err_rates[['G']],
+                                           G_err_rates[['T']])))
+  error_rates <- rbind(error_rates,
+                       data.frame(from_let = 'T',
+                                  to_let = c('A', 'C', 'G', 'T'),
+                                  prob = c(T_err_rates[['A']],
+                                           T_err_rates[['C']],
+                                           T_err_rates[['G']],
+                                           T_err_rates[['T']])))
+  pos <- rep(1:read_len, each=16)
+  error_rates <- data.frame(pos = pos,
+                            from_let = error_rates$from_let,
+                            to_let = error_rates$to_let,
+                            prob = error_rates$prob)
+  return(error_rates)
+}
