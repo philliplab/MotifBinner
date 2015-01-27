@@ -6,7 +6,8 @@
 align them and construct a consensus sequence}
 \usage{
 process_bin(seqs, classification_technique = "infovar_balance",
-  classification_params = list(threshold = 1))
+  classification_params = list(threshold = 1),
+  alignment_technique = "muscle", alignment_params = list())
 }
 \arguments{
 \item{seqs}{The sequences that were binned together}
@@ -15,6 +16,10 @@ process_bin(seqs, classification_technique = "infovar_balance",
 mislabelled sequences}
 
 \item{classification_params}{The parameters for the classification technique}
+
+\item{alignment_technique}{The alignment technique to use}
+
+\item{alignment_params}{The alignment parameters to use}
 }
 \description{
 Given a groups of sequences that were binned together, throw out outliers,
