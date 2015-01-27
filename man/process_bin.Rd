@@ -5,10 +5,16 @@
 \title{Given a groups of sequences that were binned together, throw out outliers,
 align them and construct a consensus sequence}
 \usage{
-process_bin(seqs)
+process_bin(seqs, classification_technique = "infovar_balance",
+  classification_params = list(threshold = 1))
 }
 \arguments{
 \item{seqs}{The sequences that were binned together}
+
+\item{classification_technique}{The technique to use to search for
+mislabelled sequences}
+
+\item{classification_params}{The parameters for the classification technique}
 }
 \description{
 Given a groups of sequences that were binned together, throw out outliers,
