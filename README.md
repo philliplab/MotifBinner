@@ -53,3 +53,26 @@ construct_consensus <- function(seqs, technique , params){
   # Would be great to use qualities in this process
 }
 ```
+
+## Benchmarking System
+
+In order to benchmark the system, simulate reads from a sequence. Possibly
+contaminate the reads. See if the input sequence can be reconstructed.
+
+Generating reads are achieved through two functions:
+```r
+mut_seq <- function(the_seq, n_reads, error_profile){
+  for (i in nchar(the_seq)){
+    x <- runif(1)
+    if (x > error_profile[i, the_seq[i]]){
+      mutate_at_position(i)
+    }
+   }
+  }
+}
+
+gen_error_profile <- function(...){
+  # Generates an error profile indicating how likely it is to mutate from base
+  # x to base y at position i based on a variety of inputs
+}
+```

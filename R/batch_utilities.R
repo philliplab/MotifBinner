@@ -102,6 +102,9 @@ file_to_consensus <- function(file_name = "~/projects/MotifBinner/data/CAP177_20
       consensuses <- c(consensuses, dss)
     }
   }
+  if (is.null(names(consensuses))){
+    names(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
+  }
   return(consensuses)
 }
 
