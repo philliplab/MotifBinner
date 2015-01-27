@@ -7,7 +7,9 @@ align them and construct a consensus sequence}
 \usage{
 process_bin(seqs, classification_technique = "infovar_balance",
   classification_params = list(threshold = 1),
-  alignment_technique = "muscle", alignment_params = list())
+  alignment_technique = "muscle", alignment_params = list(),
+  consensus_technique = "Biostrings::consensusString",
+  consensus_params = list())
 }
 \arguments{
 \item{seqs}{The sequences that were binned together}
@@ -20,6 +22,11 @@ mislabelled sequences}
 \item{alignment_technique}{The alignment technique to use}
 
 \item{alignment_params}{The alignment parameters to use}
+
+\item{consensus_technique}{The technique to use when generating the
+consensus sequence}
+
+\item{consensus_params}{The parameters for the consensus generator}
 }
 \description{
 Given a groups of sequences that were binned together, throw out outliers,
