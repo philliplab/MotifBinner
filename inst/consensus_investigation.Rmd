@@ -45,16 +45,15 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
 
 ```{r}
 err_profiles <- list()
-err_profiles[['unif_1_1000']] <- list(technique = 'uniform', 
-                                      params = list(read_len = 1000,
-                                                    A_err_rates = list('A' = 0.997, 'C' = 0.001,
-                                                                       'G' = 0.001, 'T' = 0.001),
-                                                    C_err_rates = list('C' = 0.997, 'A' = 0.001,
-                                                                       'G' = 0.001, 'T' = 0.001),
-                                                    G_err_rates = list('G' = 0.997, 'C' = 0.001,
-                                                                       'A' = 0.001, 'T' = 0.001),
-                                                    T_err_rates = list('T' = 0.997, 'C' = 0.001,
-                                                                       'G' = 0.001, 'A' = 0.001)))
+x <- list(read_len = 1000,
+          A_err_rates = list('A' = 0.997, 'C' = 0.001, 'G' = 0.001, 'T' = 0.001),
+          C_err_rates = list('C' = 0.997, 'A' = 0.001, 'G' = 0.001, 'T' = 0.001),
+          G_err_rates = list('G' = 0.997, 'C' = 0.001, 'A' = 0.001, 'T' = 0.001),
+          T_err_rates = list('T' = 0.997, 'C' = 0.001, 'G' = 0.001, 'A' = 0.001))
+params <- list()
+params[['params']] <- x
+params[['technique']] <- 'uniform'
+err_profiles[['unif_1_1000']] <- do.call(gen_error_profile, params)
 ```
 
 ## The test scenarios
@@ -71,5 +70,13 @@ scenarios[['stupid_easy']] <- list(ref_seq = paste(rep('A', 50), collapse = ""),
 ## Results
 
 ```{r}
-test_bin <- 
+params <- scenarios[['stupid_easy']]
+params[['seed']] <- 1
+
+test_bin <- do.call( gen_and_contaminate_reads, params)
+
+params <- setups[['base']]
+params$test_bin <- test_bin
+result <- do.call(score_consensus, params)
+print(result$edit_dist)
 ```
