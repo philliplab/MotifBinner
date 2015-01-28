@@ -1,0 +1,75 @@
+```{r Setup, include=FALSE}
+library(MotifBinner)
+```
+
+# Investigation of various approach to constructing a consensus string
+
+## Overview
+
+Three important steps needs to be optimized:
+* mislabel classification
+* alignment
+* consensus string construction
+
+This document investigates all three steps simultaneously by a simulation
+process:
+* Given an input string and a read error profile
+* Potentatially given a contamination string
+* Simulate reads from both strings and form a bin
+* Use mislabel classification to throw out outliers
+* Align the remaining sequences
+* Construct a final sequence
+* Compare the reconstructed sequence to the input sequence with edit distance
+
+We need very clear terminology to keep track of the different aspects of the
+simulations:
+* All the parameters that goes into the three steps are called a 'setup'
+* A input sequence, number of reads, contamination sequence, number of
+  contamination reads and the error profile is called a 'scenario' or 'test
+  scenario'.
+* A test scenario, setup and a seed is called a 'case' or 'test case'.
+
+## The setups
+
+```{r}
+setups <- list()
+setups[['base']] <- list(classification_technique = 'infovar_balance', 
+                         classification_params = list(threshold = 1), 
+                         alignment_technique = 'muscle', 
+                         alignment_params = list(), 
+                         consensus_technique = 'Biostrings::consensusString', 
+                         consensus_params = list())
+```
+
+## The error profiles
+
+```{r}
+err_profiles <- list()
+err_profiles[['unif_1_1000']] <- list(technique = 'uniform', 
+                                      params = list(read_len = 1000,
+                                                    A_err_rates = list('A' = 0.997, 'C' = 0.001,
+                                                                       'G' = 0.001, 'T' = 0.001),
+                                                    C_err_rates = list('C' = 0.997, 'A' = 0.001,
+                                                                       'G' = 0.001, 'T' = 0.001),
+                                                    G_err_rates = list('G' = 0.997, 'C' = 0.001,
+                                                                       'A' = 0.001, 'T' = 0.001),
+                                                    T_err_rates = list('T' = 0.997, 'C' = 0.001,
+                                                                       'G' = 0.001, 'A' = 0.001)))
+```
+
+## The test scenarios
+
+```{r}
+scenarios <- list()
+scenarios[['stupid_easy']] <- list(ref_seq = paste(rep('A', 50), collapse = ""), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[['unif_1_1000']], 
+                                   contam_seq = NULL, 
+                                   n_contam = 0)
+```
+
+## Results
+
+```{r}
+test_bin <- 
+```
