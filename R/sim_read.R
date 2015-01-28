@@ -117,10 +117,20 @@ gen_and_contaminate_reads <- function(ref_seq,
                                       n_reads,
                                       error_rates,
                                       contam_seq,
-                                      n_contam){
+                                      n_contam,
+                                      seed = NULL){
+  if (!is.null(seed)){
+    set.seed(seed)
+  }
   src_seq <- gen_reads(ref_seq, n_reads, error_rates, name_prefix = 'src')
-  contam_seq <- gen_reads(contam_seq, n_contam, error_rates, name_prefix = 'out')
-  return(list(src = src_seq,
-              out = contam_seq,
-              true_consensus = ref_seq))
+  if (is.null(contam_seq) | n_contam == 0){
+    return(list(src = src_seq,
+                out = DNAStringSet(NULL),
+                true_consensus = ref_seq))
+  } else {
+    contam_seq <- gen_reads(contam_seq, n_contam, error_rates, name_prefix = 'out')
+    return(list(src = src_seq,
+                out = contam_seq,
+                true_consensus = ref_seq))
+  }
 }

@@ -29,5 +29,7 @@ score_consensus <- function(test_bin,
   aligned <- pairwiseAlignment(input_seq, result)
   return(list(result = result,
               input_seq = input_seq, 
-              score = score(aligned)))
+              score = score(aligned),
+              edit_dist = nedit(aligned),
+              alignment = aligned))
 }
