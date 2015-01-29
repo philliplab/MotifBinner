@@ -67,16 +67,25 @@ scenarios[['stupid_easy']] <- list(ref_seq = paste(rep('A', 50), collapse = ""),
                                    n_contam = 0)
 ```
 
+## The test runner
+
+```{r}
+run_test <- function(scenario, seed, setup){
+  params <- scenario
+  params[['seed']] <- seed
+
+  test_bin <- do.call( gen_and_contaminate_reads, params)
+
+  params <- setup
+  params$test_bin <- test_bin
+  result <- do.call(score_consensus, params)
+  return(result$edit_dist)
+
+}
+```
+
 ## Results
 
 ```{r}
-params <- scenarios[['stupid_easy']]
-params[['seed']] <- 1
-
-test_bin <- do.call( gen_and_contaminate_reads, params)
-
-params <- setups[['base']]
-params$test_bin <- test_bin
-result <- do.call(score_consensus, params)
-print(result$edit_dist)
+run_test(scenarios[['stupid_easy']], 1, setups[['base']])
 ```
