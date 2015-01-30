@@ -43,8 +43,11 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
 
 ## The error profiles
 
+### Three very basic error profiles
+
 ```{r}
 err_profiles <- list()
+
 x <- list(read_len = 1000,
           A_err_rates = list('A' = 0.997, 'C' = 0.001, 'G' = 0.001, 'T' = 0.001),
           C_err_rates = list('C' = 0.997, 'A' = 0.001, 'G' = 0.001, 'T' = 0.001),
@@ -54,6 +57,27 @@ params <- list()
 params[['params']] <- x
 params[['technique']] <- 'uniform'
 err_profiles[['unif_1_1000']] <- do.call(gen_error_profile, params)
+
+
+x <- list(read_len = 1000,
+          A_err_rates = list('A' = 0.97, 'C' = 0.01, 'G' = 0.01, 'T' = 0.01),
+          C_err_rates = list('C' = 0.97, 'A' = 0.01, 'G' = 0.01, 'T' = 0.01),
+          G_err_rates = list('G' = 0.97, 'C' = 0.01, 'A' = 0.01, 'T' = 0.01),
+          T_err_rates = list('T' = 0.97, 'C' = 0.01, 'G' = 0.01, 'A' = 0.01))
+params <- list()
+params[['params']] <- x
+params[['technique']] <- 'uniform'
+err_profiles[['unif_1_100']] <- do.call(gen_error_profile, params)
+
+x <- list(read_len = 1000,
+          A_err_rates = list('A' = 0.7, 'C' = 0.1, 'G' = 0.1, 'T' = 0.1),
+          C_err_rates = list('C' = 0.7, 'A' = 0.1, 'G' = 0.1, 'T' = 0.1),
+          G_err_rates = list('G' = 0.7, 'C' = 0.1, 'A' = 0.1, 'T' = 0.1),
+          T_err_rates = list('T' = 0.7, 'C' = 0.1, 'G' = 0.1, 'A' = 0.1))
+params <- list()
+params[['params']] <- x
+params[['technique']] <- 'uniform'
+err_profiles[['unif_1_10']] <- do.call(gen_error_profile, params)
 ```
 
 ## The test scenarios
@@ -65,6 +89,15 @@ scenarios[['stupid_easy']] <- list(ref_seq = paste(rep('A', 50), collapse = ""),
                                    error_rates = err_profiles[['unif_1_1000']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
+```
+
+## The test cases
+
+```{r}
+cases <- list()
+cases[['t1']] <- list(scenario = scenarios[['stupid_easy']],
+                      seed = 1,
+                      setup = setups[['base']])
 ```
 
 ## The test runner
@@ -87,5 +120,13 @@ run_test <- function(scenario, seed, setup){
 ## Results
 
 ```{r}
+
 run_test(scenarios[['stupid_easy']], 1, setups[['base']])
+
+
+for (tc in names(cases)){
+  x <- do.call(run_test, cases[[tc]])
+  print(x)
+}
+
 ```
