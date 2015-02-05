@@ -38,6 +38,14 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
                          consensus_params = list())
+
+setups[['base1']] <- list(classification_technique = 'infovar_balance', 
+                         classification_params = list(threshold = 1,
+                                          start_threshold = 0.02), 
+                         alignment_technique = 'muscle', 
+                         alignment_params = list(), 
+                         consensus_technique = 'Biostrings::consensusString', 
+                         consensus_params = list())
 ```
 
 ## The error profiles
@@ -116,6 +124,15 @@ cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
 cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
                       seed = 1,
                       setup = setups[['base']])
+cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
+                      seed = 1,
+                      setup = setups[['base1']])
+cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
+                      seed = 1,
+                      setup = setups[['base1']])
+cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
+                      seed = 1,
+                      setup = setups[['base1']])
 ```
 
 ## The test runner
@@ -158,11 +175,14 @@ kable(results)
 
 
 
-|case    | mismatch| input_len| mismatch_rate|
-|:-------|--------:|---------:|-------------:|
-|ur1_b_1 |        1|       500|         0.002|
-|ur2_b_1 |        0|       500|         0.000|
-|ur3_b_1 |      220|       500|         0.440|
+|case     | mismatch| input_len| mismatch_rate|
+|:--------|--------:|---------:|-------------:|
+|ur1_b_1  |        1|       500|         0.002|
+|ur2_b_1  |        0|       500|         0.000|
+|ur3_b_1  |      220|       500|         0.440|
+|ur1_b1_1 |        0|       500|         0.000|
+|ur2_b1_1 |        0|       500|         0.000|
+|ur3_b1_1 |      220|       500|         0.440|
 
 
 ## Fixes resulting from benchmarking

@@ -246,6 +246,14 @@ setups[[&#39;base&#39;]] &lt;- list(classification_technique = &#39;infovar_bala
                          alignment_params = list(), 
                          consensus_technique = &#39;Biostrings::consensusString&#39;, 
                          consensus_params = list())
+
+setups[[&#39;base1&#39;]] &lt;- list(classification_technique = &#39;infovar_balance&#39;, 
+                         classification_params = list(threshold = 1,
+                                          start_threshold = 0.02), 
+                         alignment_technique = &#39;muscle&#39;, 
+                         alignment_params = list(), 
+                         consensus_technique = &#39;Biostrings::consensusString&#39;, 
+                         consensus_params = list())
 </code></pre>
 
 <h2>The error profiles</h2>
@@ -318,6 +326,15 @@ cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39
 cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
                       seed = 1,
                       setup = setups[[&#39;base&#39;]])
+cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+                      seed = 1,
+                      setup = setups[[&#39;base1&#39;]])
+cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+                      seed = 1,
+                      setup = setups[[&#39;base1&#39;]])
+cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+                      seed = 1,
+                      setup = setups[[&#39;base1&#39;]])
 </code></pre>
 
 <h2>The test runner</h2>
@@ -376,6 +393,24 @@ kable(results)
 </tr>
 <tr>
 <td align="left">ur3_b_1</td>
+<td align="right">220</td>
+<td align="right">500</td>
+<td align="right">0.440</td>
+</tr>
+<tr>
+<td align="left">ur1_b1_1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">ur2_b1_1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">ur3_b1_1</td>
 <td align="right">220</td>
 <td align="right">500</td>
 <td align="right">0.440</td>
