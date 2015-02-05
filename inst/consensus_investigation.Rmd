@@ -179,6 +179,10 @@ result <- do.call(score_consensus, params)
 result$edit_dist
 
 # Fix it with the starting threshold:
+params[['classification_params']] <- list(threshold = 1,
+                                          start_threshold = 0.02)
+result <- do.call(score_consensus, params)
+result$edit_dist
 ```
 
 ## Utility Functions

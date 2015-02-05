@@ -107,13 +107,13 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
 
 ```r
 cases <- list()
-cases[['t1']] <- list(scenario = scenarios[['unif_read_1']],
+cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
                       seed = 1,
                       setup = setups[['base']])
-cases[['t2']] <- list(scenario = scenarios[['unif_read_2']],
+cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
                       seed = 1,
                       setup = setups[['base']])
-cases[['t3']] <- list(scenario = scenarios[['unif_read_3']],
+cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
                       seed = 1,
                       setup = setups[['base']])
 ```
@@ -132,7 +132,6 @@ run_test <- function(scenario, seed, setup){
   params$test_bin <- test_bin
   result <- do.call(score_consensus, params)
   return(result$edit_dist)
-
 }
 ```
 
@@ -159,8 +158,71 @@ kable(results)
 
 
 
-|case | mismatch| input_len| mismatch_rate|
-|:----|--------:|---------:|-------------:|
-|t1   |        1|       500|         0.002|
-|t2   |        0|       500|         0.000|
-|t3   |      220|       500|         0.440|
+|case    | mismatch| input_len| mismatch_rate|
+|:-------|--------:|---------:|-------------:|
+|ur1_b_1 |        1|       500|         0.002|
+|ur2_b_1 |        0|       500|         0.000|
+|ur3_b_1 |      220|       500|         0.440|
+
+
+## Fixes resulting from benchmarking
+
+### ur1_b_1
+
+A single mismatch was found on this super simple and easy case. The primary
+cause is that the infovar_balance classification technique tries to remove
+contamination from a bin with no contamination. Set a starting criteria for the
+infovar_balance technique so that it will only start if the maximum distance
+in the distance matrix is above some threshold.
+
+
+```r
+# Generate test data
+test_bin <- do.call(gen_and_contaminate_reads, c(scenarios[['unif_read_1']], list(seed=1)))
+
+# See how east the problem is
+consensusString(test_bin$src) == test_bin$true_consensus
+```
+
+```
+## [1] TRUE
+```
+
+```r
+# See how the basic technique failz
+
+params <- setups[['base']]
+params$test_bin <- test_bin
+result <- do.call(score_consensus, params)
+result$edit_dist
+```
+
+```
+## [1] 1
+```
+
+```r
+# Fix it with the starting threshold:
+params[['classification_params']] <- list(threshold = 1,
+                                          start_threshold = 0.02)
+result <- do.call(score_consensus, params)
+result$edit_dist
+```
+
+```
+## [1] 0
+```
+
+## Utility Functions
+
+
+```r
+list_to_env <- function(x){
+  for (i in names(x)){
+    p <- list(x = i, value = x[[i]], envir = .GlobalEnv)
+    do.call(assign, p)
+  }
+}
+```
+
+

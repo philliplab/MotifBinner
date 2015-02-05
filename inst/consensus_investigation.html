@@ -309,13 +309,13 @@ scenarios[[&#39;unif_read_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 5
 <h2>The test cases</h2>
 
 <pre><code class="r">cases &lt;- list()
-cases[[&#39;t1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+cases[[&#39;ur1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
                       seed = 1,
                       setup = setups[[&#39;base&#39;]])
-cases[[&#39;t2&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
                       seed = 1,
                       setup = setups[[&#39;base&#39;]])
-cases[[&#39;t3&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
                       seed = 1,
                       setup = setups[[&#39;base&#39;]])
 </code></pre>
@@ -332,7 +332,6 @@ cases[[&#39;t3&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
   params$test_bin &lt;- test_bin
   result &lt;- do.call(score_consensus, params)
   return(result$edit_dist)
-
 }
 </code></pre>
 
@@ -364,24 +363,75 @@ kable(results)
 </tr>
 </thead><tbody>
 <tr>
-<td align="left">t1</td>
+<td align="left">ur1_b_1</td>
 <td align="right">1</td>
 <td align="right">500</td>
 <td align="right">0.002</td>
 </tr>
 <tr>
-<td align="left">t2</td>
+<td align="left">ur2_b_1</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">t3</td>
+<td align="left">ur3_b_1</td>
 <td align="right">220</td>
 <td align="right">500</td>
 <td align="right">0.440</td>
 </tr>
 </tbody></table>
+
+<h2>Fixes resulting from benchmarking</h2>
+
+<h3>ur1_b_1</h3>
+
+<p>A single mismatch was found on this super simple and easy case. The primary
+cause is that the infovar_balance classification technique tries to remove
+contamination from a bin with no contamination. Set a starting criteria for the
+infovar_balance technique so that it will only start if the maximum distance
+in the distance matrix is above some threshold.</p>
+
+<pre><code class="r"># Generate test data
+test_bin &lt;- do.call(gen_and_contaminate_reads, c(scenarios[[&#39;unif_read_1&#39;]], list(seed=1)))
+
+# See how east the problem is
+consensusString(test_bin$src) == test_bin$true_consensus
+</code></pre>
+
+<pre><code>## [1] TRUE
+</code></pre>
+
+<pre><code class="r"># See how the basic technique failz
+
+params &lt;- setups[[&#39;base&#39;]]
+params$test_bin &lt;- test_bin
+result &lt;- do.call(score_consensus, params)
+result$edit_dist
+</code></pre>
+
+<pre><code>## [1] 1
+</code></pre>
+
+<pre><code class="r"># Fix it with the starting threshold:
+params[[&#39;classification_params&#39;]] &lt;- list(threshold = 1,
+                                          start_threshold = 0.02)
+result &lt;- do.call(score_consensus, params)
+result$edit_dist
+</code></pre>
+
+<pre><code>## [1] 0
+</code></pre>
+
+<h2>Utility Functions</h2>
+
+<pre><code class="r">list_to_env &lt;- function(x){
+  for (i in names(x)){
+    p &lt;- list(x = i, value = x[[i]], envir = .GlobalEnv)
+    do.call(assign, p)
+  }
+}
+</code></pre>
 
 </body>
 
