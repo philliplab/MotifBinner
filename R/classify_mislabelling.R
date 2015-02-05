@@ -86,7 +86,7 @@ classify_bin_random <- function(bin, n){
 #' @export
 
 classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0){
-  seq_length <- min(char(bin))
+  seq_length <- min(nchar(bin))
   dists <- NULL
   bin_dists <- stringDist(bin)
   if (max(bin_dists)/seq_length < start_threshold){

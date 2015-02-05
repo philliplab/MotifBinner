@@ -130,7 +130,6 @@ run_test <- function(scenario, seed, setup){
   params$test_bin <- test_bin
   result <- do.call(score_consensus, params)
   return(result$edit_dist)
-
 }
 ```
 
@@ -164,3 +163,33 @@ cause is that the infovar_balance classification technique tries to remove
 contamination from a bin with no contamination. Set a starting criteria for the
 infovar_balance technique so that it will only start if the maximum distance
 in the distance matrix is above some threshold.
+
+```{r}
+# Generate test data
+test_bin <- do.call(gen_and_contaminate_reads, c(scenarios[['unif_read_1']], list(seed=1)))
+
+# See how east the problem is
+consensusString(test_bin$src) == test_bin$true_consensus
+
+# See how the basic technique failz
+
+params <- setups[['base']]
+params$test_bin <- test_bin
+result <- do.call(score_consensus, params)
+result$edit_dist
+
+# Fix it with the starting threshold:
+```
+
+## Utility Functions
+
+```{r}
+list_to_env <- function(x){
+  for (i in names(x)){
+    p <- list(x = i, value = x[[i]], envir = .GlobalEnv)
+    do.call(assign, p)
+  }
+}
+```
+
+
