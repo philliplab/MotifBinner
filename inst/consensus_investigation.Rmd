@@ -106,13 +106,13 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
 
 ```{r}
 cases <- list()
-cases[['t1']] <- list(scenario = scenarios[['unif_read_1']],
+cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
                       seed = 1,
                       setup = setups[['base']])
-cases[['t2']] <- list(scenario = scenarios[['unif_read_2']],
+cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
                       seed = 1,
                       setup = setups[['base']])
-cases[['t3']] <- list(scenario = scenarios[['unif_read_3']],
+cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
                       seed = 1,
                       setup = setups[['base']])
 ```
@@ -152,5 +152,15 @@ for (tc in names(cases)){
                               mismatch_rate = mismatch / input_len))
 }
 kable(results)
-
 ```
+
+
+## Fixes resulting from benchmarking
+
+### ur1_b_1
+
+A single mismatch was found on this super simple and easy case. The primary
+cause is that the infovar_balance classification technique tries to remove
+contamination from a bin with no contamination. Set a starting criteria for the
+infovar_balance technique so that it will only start if the maximum distance
+in the distance matrix is above some threshold.

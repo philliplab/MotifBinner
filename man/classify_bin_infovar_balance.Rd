@@ -5,13 +5,20 @@
 \title{Finds the outliers in a bin by balancing the amount of information that is
 lost with the variance reduction that is realized.}
 \usage{
-classify_bin_infovar_balance(bin, threshold)
+classify_bin_infovar_balance(bin, threshold, start_threshold = 0)
 }
 \arguments{
 \item{bin}{The input bin as a single DNAStringSet.}
 
 \item{threshold}{Outlier sequences are removed from the bin until the
 distanct / information ratio drops below this threshold.}
+
+\item{start_threshold}{Only start the classification if maximum distance in
+the sample is greater then this number of bases normalized to the length of
+the sequences. A value of 0.01 means that the procedure will only start if
+the maximum distance between two sequences is greater then 1 if the
+sequences is exactly 100 bases long. TODO further normalize for number of
+sequences}
 }
 \description{
 This approach removes outliers from a bin by finding the sequence with the

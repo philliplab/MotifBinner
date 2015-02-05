@@ -77,11 +77,22 @@ classify_bin_random <- function(bin, n){
 #' @param bin The input bin as a single DNAStringSet.
 #' @param threshold Outlier sequences are removed from the bin until the
 #' distanct / information ratio drops below this threshold.
+#' @param  start_threshold Only start the classification if maximum distance in
+#' the sample is greater then this number of bases normalized to the length of
+#' the sequences. A value of 0.01 means that the procedure will only start if
+#' the maximum distance between two sequences is greater then 1 if the
+#' sequences is exactly 100 bases long. TODO further normalize for number of
+#' sequences
 #' @export
 
-classify_bin_infovar_balance <- function(bin, threshold){
+classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0){
+  seq_length <- min(char(bin))
   dists <- NULL
   bin_dists <- stringDist(bin)
+  if (max(bin_dists)/seq_length < start_threshold){
+    return(list(src = bin,
+                out = DNAStringSet(NULL)))
+  }
   dmat <- as.matrix(bin_dists)
   row.names(dmat) <- 1:nrow(dmat)
   removed_sequences <- NULL
