@@ -16,12 +16,22 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
                            max.mismatch = max.mismatch, 
                            with.indels=FALSE, 
                            fixed = fixed)
+
+  last_match <- list()
+  for (i in seq_along(matches)){
+    nr <- length(matches[[i]])
+    last_match[[names(matches)[i]]] <- matches[[i]][nr]
+  }
+
   matching_seq <- sapply(matches, length)
-  stopifnot(all(matching_seq < 2))
+  matches <- IRanges(start=unlist(lapply(last_match, start)),
+                     end=unlist(lapply(last_match, end)),
+                     names=names(last_match))
+
+  #stopifnot(all(matching_seq < 2))
   matching_seq <- matching_seq != 0
   matched_seq <- seq_data[matching_seq]
   unmatched_seq <- seq_data[!matching_seq]
-  matches <- unlist(matches)
   shifted_matches <- matches
   start(shifted_matches) <- start(shifted_matches) + nchar(prefix)
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)

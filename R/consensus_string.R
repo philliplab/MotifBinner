@@ -6,5 +6,9 @@
 #' @export
 
 construct_consensus <- function(seqs, technique = 'Biostrings::consensusString', params = list()){
-  return(DNAString(consensusString(seqs, ambig = 'N')))
+  seq_name <- names(seqs)[1]
+  seq_name <- paste(seq_name, length(seqs), sep = '_')
+  x <- list(seq_name = DNAString(consensusString(seqs, ambig = 'N')))
+  names(x) <- seq_name
+  return(x)
 }

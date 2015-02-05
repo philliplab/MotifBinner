@@ -27,7 +27,7 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
   x <- classify_bin(seqs, technique = classification_technique, 
                     params = classification_params)
   x <- x$src
-  if (length(x) == 0){
+  if (length(x) <= 1){
     return(DNAStringSet(NULL))
   } else {
     x <- align_sequences(x, technique = alignment_technique,

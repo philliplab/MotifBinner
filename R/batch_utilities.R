@@ -40,15 +40,22 @@ bin_file <- function(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merg
                      write_files = FALSE
                      ){
 
-  x <- readFastq(file_name)
-  x <- x@sread
+  if (grepl('fastq', file_name)){
+    x <- readFastq(file_name)
+    x <- x@sread
+  } else {
+    x <- readDNAStringSet(file_name)
+  }
+
   x <- padAndClip(x, IRanges(start = number_of_front_bases_to_discard, 
                              end=width(x)), 
                   Lpadding.letter="+", Rpadding.letter="+")
   seq_data <- x
   y <- extract_motifs(seq_data, prefix, suffix, motif_length, max.mismatch, fixed)
+  y <- y$matched_seq
+  attr(y@ranges@NAMES, "names") <- NULL
 
-  bin_seqs <- bin_by_name(y$matched_seq, add_uniq_id)
+  bin_seqs <- bin_by_name(y, add_uniq_id)
 
   if (write_files != FALSE){
     dir.create(write_files, showWarnings=FALSE)
@@ -62,6 +69,7 @@ bin_file <- function(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merg
   }
   return(bin_seqs)
 }
+
 
 #' Randomizes the order of the items of a list
 #'
@@ -97,13 +105,14 @@ file_to_consensus <- function(file_name = "~/projects/MotifBinner/data/CAP177_20
   sfStop()
   consensuses <- DNAStringSet()
   for (i in seq_along(z)){
-    dss <- DNAStringSet(z[[i]])
-    if (length(dss) > 0){
+    if (length(z[[i]]) > 0){
+      dss <- DNAStringSet(z[[i]][[1]])
+      names(dss) <- names(z[[i]])
       consensuses <- c(consensuses, dss)
     }
   }
   if (is.null(names(consensuses))){
-    names(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
+    qames(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
   }
   return(consensuses)
 }

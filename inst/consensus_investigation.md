@@ -1,7 +1,4 @@
-```{r Setup, include=FALSE}
-library(MotifBinner)
-library(knitr)
-```
+
 
 # Investigation of various approach to constructing a consensus string
 
@@ -32,7 +29,8 @@ simulations:
 
 ## The setups
 
-```{r}
+
+```r
 setups <- list()
 setups[['base']] <- list(classification_technique = 'infovar_balance', 
                          classification_params = list(threshold = 1), 
@@ -46,7 +44,8 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
 
 ### Three very basic error profiles
 
-```{r}
+
+```r
 err_profiles <- list()
 
 x <- list(read_len = 1000,
@@ -83,7 +82,8 @@ err_profiles[['unif_1_10']] <- do.call(gen_error_profile, params)
 
 ## The test scenarios
 
-```{r}
+
+```r
 scenarios <- list()
 scenarios[['unif_read_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
@@ -104,7 +104,8 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
 
 ## The test cases
 
-```{r}
+
+```r
 cases <- list()
 cases[['t1']] <- list(scenario = scenarios[['unif_read_1']],
                       seed = 1,
@@ -119,7 +120,8 @@ cases[['t3']] <- list(scenario = scenarios[['unif_read_3']],
 
 ## The test runner
 
-```{r}
+
+```r
 run_test <- function(scenario, seed, setup){
   params <- scenario
   params[['seed']] <- seed
@@ -136,7 +138,8 @@ run_test <- function(scenario, seed, setup){
 
 ## Results
 
-```{r}
+
+```r
 results <- data.frame(case = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
@@ -152,5 +155,12 @@ for (tc in names(cases)){
                               mismatch_rate = mismatch / input_len))
 }
 kable(results)
-
 ```
+
+
+
+|case | mismatch| input_len| mismatch_rate|
+|:----|--------:|---------:|-------------:|
+|t1   |        1|       500|         0.002|
+|t2   |        0|       500|         0.000|
+|t3   |      220|       500|         0.440|
