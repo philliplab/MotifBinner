@@ -83,9 +83,20 @@ classify_bin_random <- function(bin, n){
 #' the maximum distance between two sequences is greater then 1 if the
 #' sequences is exactly 100 bases long. TODO further normalize for number of
 #' sequences
+#' @param max_sequences The maximum number of sequences to use for the
+#' computation of the distance matrix. If more sequences than this is present,
+#' then randomly select this many sequences and run the classification
+#' algorithm on them.
 #' @export
 
-classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0){
+classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0, 
+                                         max_sequences = 100){
+  discarded <- DNAStringSet(NULL)
+  if (length(bin) > max_sequences){
+    picks <- sample(1:length(bin), max_sequences, replace = FALSE)
+    discarded <- bin[-picks]
+    bin <- bin[picks]
+  }
   seq_length <- min(nchar(bin))
   dists <- NULL
   bin_dists <- stringDist(bin)
@@ -126,7 +137,7 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0){
     }
   }
   src_seq <- bin[as.integer(row.names(dmat))]
-  out_seq <- bin[as.integer(removed_sequences)]
+  out_seq <- c(bin[as.integer(removed_sequences)], discarded)
   return(list(src = src_seq,
               out = out_seq))
 }
