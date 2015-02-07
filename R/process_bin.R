@@ -14,7 +14,7 @@
 #' @export
 
 process_bin <- function(seqs, classification_technique = 'infovar_balance',
-                        classification_params = list(threshold = 1),
+                        classification_params = list(threshold = 1, start_threshold = 0.02),
                         alignment_technique = 'muscle',
                         alignment_params = list(),
                         consensus_technique = 'Biostrings::consensusString',

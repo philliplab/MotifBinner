@@ -6,7 +6,7 @@
 align them and construct a consensus sequence}
 \usage{
 process_bin(seqs, classification_technique = "infovar_balance",
-  classification_params = list(threshold = 1),
+  classification_params = list(threshold = 1, start_threshold = 0.02),
   alignment_technique = "muscle", alignment_params = list(),
   consensus_technique = "Biostrings::consensusString",
   consensus_params = list())
