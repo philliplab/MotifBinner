@@ -46,6 +46,7 @@ bin_file <- function(file_name = "~/projects/MotifBinner/data/CAP177_2040_v1merg
   } else {
     x <- readDNAStringSet(file_name)
   }
+  x <- gsub('+', 'N', x)
 
   x <- padAndClip(x, IRanges(start = number_of_front_bases_to_discard, 
                              end=width(x)), 
@@ -103,6 +104,7 @@ file_to_consensus <- function(file_name = "~/projects/MotifBinner/data/CAP177_20
   sfLibrary(MotifBinner)
   z <- sfLapply(y, process_bin)
   sfStop()
+  # Just process the ouput into a friendlier data structure
   consensuses <- DNAStringSet()
   for (i in seq_along(z)){
     if (length(z[[i]]) > 0){
@@ -112,7 +114,7 @@ file_to_consensus <- function(file_name = "~/projects/MotifBinner/data/CAP177_20
     }
   }
   if (is.null(names(consensuses))){
-    qames(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
+    names(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
   }
   return(consensuses)
 }
