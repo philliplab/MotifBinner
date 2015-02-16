@@ -318,23 +318,23 @@ scenarios[[&#39;unif_read_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 5
 
 <pre><code class="r">cases &lt;- list()
 cases[[&#39;ur1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base&#39;]])
+                           seed = 1,
+                           setup = setups[[&#39;base&#39;]])
 cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base&#39;]])
+                           seed = 1,
+                           setup = setups[[&#39;base&#39;]])
 cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base&#39;]])
+                           seed = 1,
+                           setup = setups[[&#39;base&#39;]])
 cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base1&#39;]])
+                            seed = 1,
+                            setup = setups[[&#39;base1&#39;]])
 cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base1&#39;]])
+                            seed = 1,
+                            setup = setups[[&#39;base1&#39;]])
 cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-                      seed = 1,
-                      setup = setups[[&#39;base1&#39;]])
+                            seed = 1,
+                            setup = setups[[&#39;base1&#39;]])
 </code></pre>
 
 <h2>The test runner</h2>
@@ -352,7 +352,7 @@ cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#3
 }
 </code></pre>
 
-<h2>Results</h2>
+<h2>Running the test cases.</h2>
 
 <pre><code class="r">results &lt;- data.frame(case = character(0),
                       mismatch = numeric(0),
@@ -368,7 +368,11 @@ for (tc in names(cases)){
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
-kable(results)
+</code></pre>
+
+<h2>The results</h2>
+
+<pre><code class="r">kable(results)
 </code></pre>
 
 <table><thead>
@@ -430,14 +434,14 @@ in the distance matrix is above some threshold.</p>
 <pre><code class="r"># Generate test data
 test_bin &lt;- do.call(gen_and_contaminate_reads, c(scenarios[[&#39;unif_read_1&#39;]], list(seed=1)))
 
-# See how east the problem is
+# See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 </code></pre>
 
 <pre><code>## [1] TRUE
 </code></pre>
 
-<pre><code class="r"># See how the basic technique failz
+<pre><code class="r"># See how the basic technique fails
 
 params &lt;- setups[[&#39;base&#39;]]
 params$test_bin &lt;- test_bin

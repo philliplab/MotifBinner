@@ -116,23 +116,23 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
 ```r
 cases <- list()
 cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
-                      seed = 1,
-                      setup = setups[['base']])
+                           seed = 1,
+                           setup = setups[['base']])
 cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
-                      seed = 1,
-                      setup = setups[['base']])
+                           seed = 1,
+                           setup = setups[['base']])
 cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
-                      seed = 1,
-                      setup = setups[['base']])
+                           seed = 1,
+                           setup = setups[['base']])
 cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
-                      seed = 1,
-                      setup = setups[['base1']])
+                            seed = 1,
+                            setup = setups[['base1']])
 cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
-                      seed = 1,
-                      setup = setups[['base1']])
+                            seed = 1,
+                            setup = setups[['base1']])
 cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
-                      seed = 1,
-                      setup = setups[['base1']])
+                            seed = 1,
+                            setup = setups[['base1']])
 ```
 
 ## The test runner
@@ -152,7 +152,7 @@ run_test <- function(scenario, seed, setup){
 }
 ```
 
-## Results
+## Running the test cases.
 
 
 ```r
@@ -170,6 +170,11 @@ for (tc in names(cases)){
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
+```
+
+## The results
+
+```r
 kable(results)
 ```
 
@@ -183,7 +188,6 @@ kable(results)
 |ur1_b1_1 |        0|       500|         0.000|
 |ur2_b1_1 |        0|       500|         0.000|
 |ur3_b1_1 |      220|       500|         0.440|
-
 
 ## Fixes resulting from benchmarking
 
@@ -200,7 +204,7 @@ in the distance matrix is above some threshold.
 # Generate test data
 test_bin <- do.call(gen_and_contaminate_reads, c(scenarios[['unif_read_1']], list(seed=1)))
 
-# See how east the problem is
+# See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 ```
 
@@ -209,7 +213,7 @@ consensusString(test_bin$src) == test_bin$true_consensus
 ```
 
 ```r
-# See how the basic technique failz
+# See how the basic technique fails
 
 params <- setups[['base']]
 params$test_bin <- test_bin
@@ -244,5 +248,3 @@ list_to_env <- function(x){
   }
 }
 ```
-
-
