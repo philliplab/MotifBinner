@@ -8,6 +8,9 @@
 
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
+  if (is.null(names(seq_data))){
+    names(seq_data) <- paste('seq', 1:length(seq_data), sep="_")
+  }
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
   motif_n <- paste(rep("N", motif_length), collapse="")
   padded_motif <- DNAString(paste0(prefix, motif_n, suffix))
