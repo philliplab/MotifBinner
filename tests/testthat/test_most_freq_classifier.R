@@ -12,4 +12,12 @@ test_that('The most frequent classifier works', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$src) == 10, is_true())
   expect_that(length(classified$out) == 8, is_true())
+
+  bin <- DNAStringSet(c(rep('AA', 2), rep('CC', 2), 
+                        rep('GG', 1), rep('TT', 1)))
+  classified <- classify_bin_most_frequent(bin)
+  expect_that(check_classification(bin, classified), is_true())
+  expect_that(length(classified$src) == 4, is_true())
+  expect_that(length(classified$out) == 2, is_true())
+
 })

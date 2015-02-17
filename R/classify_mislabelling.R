@@ -159,8 +159,8 @@ classify_bin_most_frequent <- function(bin){
   tab <- table(bin)
   max_occ <- max(tab)
   src_seq <- names(tab)[which(tab == max_occ)]
-  src <- bin[bin == src_seq]
-  out <- bin[bin != src_seq]
+  src <- bin[bin %in% src_seq]
+  out <- bin[!(bin %in% src_seq)]
   return(list(src = src,
               out = out))
 }
