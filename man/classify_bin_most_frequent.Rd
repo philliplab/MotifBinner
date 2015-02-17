@@ -15,4 +15,8 @@ Given a set of sequences, pick the most frequently occurring sequence as the
 only sequence that belongs to that bin and label all other sequences as
 outliers.
 }
+\details{
+If there is more than one sequence that occurs the maximum number of times,
+it will return all the sequences that occur that number of times.
+}
 

@@ -148,13 +148,17 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0,
 #' Given a set of sequences, pick the most frequently occurring sequence as the
 #' only sequence that belongs to that bin and label all other sequences as
 #' outliers.
+#' 
+#' If there is more than one sequence that occurs the maximum number of times,
+#' it will return all the sequences that occur that number of times.
+#'
 #' @param bin The input bin as a single DNAStringSet
 #' @export
 
 classify_bin_most_frequent <- function(bin){
   tab <- table(bin)
   max_occ <- max(tab)
-  src_seq <- names(tab)[which(tab == max_occ)[1]]
+  src_seq <- names(tab)[which(tab == max_occ)]
   src <- bin[bin == src_seq]
   out <- bin[bin != src_seq]
   return(list(src = src,
