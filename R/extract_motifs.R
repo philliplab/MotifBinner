@@ -27,6 +27,10 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
   }
 
   matching_seq <- sapply(matches, length)
+  if (all(matching_seq == rep(0, length(matching_seq)))){
+    return(list(matched_seq = DNAStringSet(NULL),
+                unmatched_seq = seq_data))
+  }
   matches <- IRanges(start=unlist(lapply(last_match, start)),
                      end=unlist(lapply(last_match, end)),
                      names=names(last_match))
