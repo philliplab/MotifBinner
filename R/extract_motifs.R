@@ -20,25 +20,30 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
                            with.indels=FALSE, 
                            fixed = fixed)
 
-  last_match <- list()
-  for (i in seq_along(matches)){
-    nr <- length(matches[[i]])
-    last_match[[names(matches)[i]]] <- matches[[i]][nr]
-  }
-
   matching_seq <- sapply(matches, length)
+
   if (all(matching_seq == rep(0, length(matching_seq)))){
     return(list(matched_seq = DNAStringSet(NULL),
                 unmatched_seq = seq_data))
   }
-  matches <- IRanges(start=unlist(lapply(last_match, start)),
-                     end=unlist(lapply(last_match, end)),
-                     names=names(last_match))
 
   #stopifnot(all(matching_seq < 2))
   matching_seq <- matching_seq != 0
   matched_seq <- seq_data[matching_seq]
   unmatched_seq <- seq_data[!matching_seq]
+  
+  last_match <- list()
+  for (i in seq_along(matches)){
+    nr <- length(matches[[i]])
+    if (nr > 0){
+      last_match[[names(matches)[i]]] <- matches[[i]][nr]
+    }
+  }
+
+  matches <- IRanges(start=unlist(lapply(last_match, start)),
+                     end=unlist(lapply(last_match, end)),
+                     names=names(last_match))
+
   shifted_matches <- matches
   start(shifted_matches) <- start(shifted_matches) + nchar(prefix)
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)
