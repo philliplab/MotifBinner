@@ -28,6 +28,8 @@ test_that('The motif extractor is working', {
 
   expect_that(length(extracted$matched_seq) == 0, is_true())
   expect_that(length(extracted$unmatched_seq) == 2, is_true())
+  expect_that(names(extracted$unmatched_seq)[1]=='seq_1', is_true())
+  expect_that(names(extracted$unmatched_seq)[2]=='seq_2', is_true())
 
   extracted <- extract_motifs(seq_data, prefix = 'AACGAATTAA', motif_length=8, 
                               suffix = 'CCAACCGCTC', max.mismatch=1)
@@ -42,8 +44,13 @@ test_that('The motif extractor is working', {
           paste(c(paste0(sample(c('A', 'C', 'G', 'T'), 20, replace=T), collapse=""),
                   'CTCGAATTAA', 'ACGTACGT', 'CCAACCGCTC'), collapse = "")
                         ))
+  names(seq_data) <- c('s1', 's2')
   extracted <- extract_motifs(seq_data, prefix = 'AACGAATTAA', motif_length=8, 
                               suffix = 'CCAACCGCTC', max.mismatch=1)
 
+  expect_that(names(extracted$matched_seq)[1]=='ACGTACGT', is_true())
+  expect_that(names(extracted$unmatched_seq)[1]=='s2', is_true())
+  expect_that(length(extracted$unmatched_seq) == 1, is_true())
+  expect_that(width(extracted$matched_seq) < width(extracted$unmatched_seq), is_true())
 })
 
