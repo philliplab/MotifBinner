@@ -16,6 +16,11 @@ construct_consensus(seqs, technique = "Biostrings::consensusString",
 technique}
 }
 \description{
-Constructs a consensus string using the specified technique
+This function is specifically designed to work in the situation of binning
+sequences based on PIDS, so it handles sequence names in a specific way. It
+assumes that the name of the first sequence is the name that needs to be
+given to the consensus sequence. Furthermore, it will append and underscore
+and the number of sequences that were used to construct the consensus to the
+end of this name.
 }
 
