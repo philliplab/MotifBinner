@@ -9,6 +9,9 @@
 #' @export
 
 align_sequences <- function(seqs, technique = 'muscle', params = list()){
+  if (is.null(names(seqs))){
+    names(seqs) <- paste('seq', 1:length(seqs), sep='_')
+  }
   seqs <- as.DNAbin(seqs)
   aligned_seqs <- muscle(seqs)
   seqs <- DNAStringSet(toupper(apply(as.character(aligned_seqs), 1, paste0, collapse="")))
