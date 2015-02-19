@@ -1,19 +1,31 @@
 context('Consensus String Constructor')
 
 test_that('The consensus string constructor works', {
-  bin <- DNAStringSet(c(rep('AA', 5), rep('CC', 10), 
-                        rep('GG', 2), rep('TT', 1)))
-  classified <- classify_bin_random(bin, 0.25)
-  expect_that(check_classification(bin, classified), is_true())
-  expect_that(length(classified$src) > 0, is_true())
-  expect_that(length(classified$out) > 0, is_true())
+  seqs <- DNAStringSet(c('AAAAAAAAAAATGAAACGTTAGCGCGTTTTTTTTTT',
+                         'AAAAAAAAAAATGAAACGTTAGCGCGTTTTTTTTTT'))
+  consen <- construct_consensus(seqs)
+  target <- DNAString('AAAAAAAAAAATGAAACGTTAGCGCGTTTTTTTTTT')
+  expect_that(consen[[1]] == target, is_true())
 
-  classified <- classify_bin(bin, technique='random', params=list(n= 0.25))
-  expect_that(check_classification(bin, classified), is_true())
-  expect_that(length(classified$src) > 0, is_true())
-  expect_that(length(classified$out) > 0, is_true())
+  names(seqs) <- c('s1', 's2')
+  consen <- construct_consensus(seqs)
+  expect_that(names(consen), equals('s1_2'))
 
-  classified <- classify_bin_random(bin, 0)
-  expect_that(check_classification(bin, classified), is_true())
-  expect_that(length(classified$out) == 0, is_true())
+  seqs <- DNAStringSet('AAAAAAAAA')
+  consen <- construct_consensus(seqs)
+  target <- DNAString('AAAAAAAAA')
+  expect_that(consen[[1]] == target, is_true())
+
+  seqs <- DNAStringSet(c('AAAAAAAAAAA',
+                         'AAAAAAAAAAT'))
+  consen <- construct_consensus(seqs)
+  target <- DNAString('AAAAAAAAAAN')
+  expect_that(consen[[1]] == target, is_true())
+
+  seqs <- DNAStringSet(c('AAAAAAAAAAA',
+                         'AAAAAAAAAAA',
+                         'AAAAAAAAAAT'))
+  consen <- construct_consensus(seqs)
+  target <- DNAString('AAAAAAAAAAA')
+  expect_that(consen[[1]] == target, is_true())
 })
