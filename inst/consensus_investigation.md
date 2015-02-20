@@ -248,3 +248,103 @@ list_to_env <- function(x){
   }
 }
 ```
+
+## How does the consensusString Function in Biostrings actually work?
+
+When and how does ambigueity characters get added to the data. Should I write
+my own version of the function to deal with it?
+
+### It behaves as expected for matching sequences
+
+```r
+consensusString(DNAStringSet(c('AAA', 'AAA')))
+```
+
+```
+## [1] "AAA"
+```
+
+```r
+consensusString(DNAStringSet(c('ACGT', 'ACGT')))
+```
+
+```
+## [1] "ACGT"
+```
+
+### For mismatches - a very strict threshold must be met
+
+```r
+consensusString(DNAStringSet(c('AAC', 'AAA')))
+```
+
+```
+## [1] "AAM"
+```
+
+```r
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA')))
+```
+
+```
+## [1] "AAM"
+```
+
+```r
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA', 'AAA')))
+```
+
+```
+## [1] "AAM"
+```
+
+```r
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA', 'AAA', 'AAA')))
+```
+
+```
+## [1] "AAA"
+```
+
+### Can this threshold be lowered?
+
+```r
+consensusString(DNAStringSet(c('AAC', 'AAA')), threshold = 0.5)
+```
+
+```
+## Error in .local(x, ...): 'threshold' must be a numeric in (0, 1/sum(nchar(ambiguityMap) == 1)]
+```
+
+No because they are using some strange restrictions.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

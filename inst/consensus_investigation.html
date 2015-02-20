@@ -472,6 +472,61 @@ result$edit_dist
 }
 </code></pre>
 
+<h2>How does the consensusString Function in Biostrings actually work?</h2>
+
+<p>When and how does ambigueity characters get added to the data. Should I write
+my own version of the function to deal with it?</p>
+
+<h3>It behaves as expected for matching sequences</h3>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAA&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAA&quot;
+</code></pre>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;ACGT&#39;, &#39;ACGT&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;ACGT&quot;
+</code></pre>
+
+<h3>For mismatches - a very strict threshold must be met</h3>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAM&quot;
+</code></pre>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAM&quot;
+</code></pre>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;, &#39;AAA&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAM&quot;
+</code></pre>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;, &#39;AAA&#39;, &#39;AAA&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAA&quot;
+</code></pre>
+
+<h3>Can this threshold be lowered?</h3>
+
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;)), threshold = 0.5)
+</code></pre>
+
+<pre><code>## Error in .local(x, ...): &#39;threshold&#39; must be a numeric in (0, 1/sum(nchar(ambiguityMap) == 1)]
+</code></pre>
+
+<p>No because they are using some strange restrictions.</p>
+
 </body>
 
 </html>

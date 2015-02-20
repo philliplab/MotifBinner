@@ -215,3 +215,72 @@ list_to_env <- function(x){
   }
 }
 ```
+
+## How does the consensusString Function in Biostrings actually work?
+
+When and how does ambigueity characters get added to the data. Should I write
+my own version of the function to deal with it?
+
+### It behaves as expected for matching sequences
+```{r}
+consensusString(DNAStringSet(c('AAA', 'AAA')))
+consensusString(DNAStringSet(c('ACGT', 'ACGT')))
+```
+
+### For mismatches - a very strict threshold must be met
+```{r}
+consensusString(DNAStringSet(c('AAC', 'AAA')))
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA')))
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA', 'AAA')))
+consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA', 'AAA', 'AAA')))
+consensusString(DNAStringSet(c('AAC', 'AAT', 'AAA', 'AAA', 'AAA', 'AAA')))
+```
+
+### Can this threshold be lowered?
+```{r}
+consensusString(DNAStringSet(c('AAC', 'AAA')), threshold = 0.5)
+```
+
+No because they are using some strange restrictions.  Specifically the
+threshold is that no other character may occur more than 25% of the time. This
+is stricter than the current behaviour. Is this a problem or can the stricter
+behaviour be used?
+
+If you want to use the 50% criteria again, then I would have to either write my
+own consensusString generator or modify theirs - it might take a bit of time.
+
+I think it would probably be better to reduce that restriction because what
+this means is that any bin with 2, 3 or 4 sequences that are not identical will
+have degeneracy (unless the sequences with mismatches were removed by the
+outlier detector)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
