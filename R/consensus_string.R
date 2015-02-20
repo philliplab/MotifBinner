@@ -21,21 +21,30 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
   return(x)
 }
 
-#' A custom consensus string constructor that allows the threshold to be
-#' relaxed. It will assign a letter to a position as long as that letter occurs
-#' in enough sequences to meet the threshold.
+#' A custom consensus string constructor that uses a two step threshold method
+#' to construct consensus sequences.
+#'
+#' First, threshold_1 is applied to search for all positions where a letter
+#' occur in that many or more sequences. (threshold_1 must be bigger than 0.5).
+#' The letter that occurs at least that frequently will then get put in the
+#' consensus sequence.
+#'
+#' For those positions where there is not a letter that meets threshold_1,
+#' threshold_2 will then be used to remove all letters that occur in less than
+#' threshold_2 sequences. Using the letters that remain, an ambiguity character
+#' will be constructed.
 #' 
 #' @param seqs The aligned sequences to construct a consensus of
 #' @param threshold The percentage of sequences that must have a letter in a
 #' certain positon for it to be included in the consensus string
 #' @export
 
-easyConsensusString <- function(seqs, threshold = 0.501){
+twoStepConsensusString <- function(seqs, threshold_1 = 0.501, threshold_2 = 0.25){
   conm <- consensusMatrix(seqs)/length(seqs)
   src_mat <- matrix(row.names(conm), ncol = ncol(conm), nrow = nrow(conm))
   not_thres <- which(apply(conm>0.5, 2, max)==0)
   if (length(not_thres) > 0){
-    old_school_cons <- consensusString(seqs)
+    old_school_cons <- consensusString(seqs, threshold = threshold_2)
     for (i in seq_along(not_thres)){
       let <- substr(old_school_cons, not_thres[i], not_thres[i])
       conm[which(row.names(conm) == let), not_thres[i]] <- 1
