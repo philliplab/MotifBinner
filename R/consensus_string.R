@@ -40,6 +40,7 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
 #' @export
 
 twoStepConsensusString <- function(seqs, threshold_1 = 0.501, threshold_2 = 0.25){
+  stopifnot(threshold_1 > 0.5)
   conm <- consensusMatrix(seqs)/length(seqs)
   src_mat <- matrix(row.names(conm), ncol = ncol(conm), nrow = nrow(conm))
   not_thres <- which(apply(conm>0.5, 2, max)==0)
@@ -54,3 +55,24 @@ twoStepConsensusString <- function(seqs, threshold_1 = 0.501, threshold_2 = 0.25
   return(DNAString(cons))
 }
 
+#' A custom consensus string constructor that just uses the letters that occurs
+#' most frequently at each position to construct the consensus sequence
+#'
+#' In the case that two or more letter occurs the same number of times, an
+#' ambiguity character is constructed from them
+#' 
+#' @param seqs The aligned sequences to construct a consensus of
+#' @export
+
+mostConsensusString <- function(seqs){
+  conm <- consensusMatrix(seqs)/length(seqs)
+  row_maxes <- apply(conm, 2, max)
+  new_seq <- rep('+', ncol(conm))
+  for (i in 1:ncol(conm)){
+    lets <- sort(row.names(conm)[conm[,i] == row_maxes[i]])
+    lets <- paste(lets, sep="", collapse="")
+    amb_char <- names(IUPAC_CODE_MAP)[IUPAC_CODE_MAP == lets]
+    new_seq[i] <- amb_char
+  }
+  return(DNAString(paste(new_seq, sep="", collapse="")))
+}
