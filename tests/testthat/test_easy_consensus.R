@@ -15,6 +15,6 @@ test_that('The easy consensus string constructor works', {
   seqs <- DNAStringSet(c('AAAAAAAAAAA',
                          'AAAAAAAAAAT'))
   consen <- easyConsensusString(seqs)
-  target <- DNAString('AAAAAAAAAAN')
+  target <- DNAString('AAAAAAAAAAW')
   expect_that(consen == target, is_true())
 })

@@ -33,6 +33,14 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
 easyConsensusString <- function(seqs, threshold = 0.501){
   conm <- consensusMatrix(seqs)/length(seqs)
   src_mat <- matrix(row.names(conm), ncol = ncol(conm), nrow = nrow(conm))
+  not_thres <- which(apply(conm>0.5, 2, max)==0)
+  if (length(not_thres) > 0){
+    old_school_cons <- consensusString(seqs)
+    for (i in seq_along(not_thres)){
+      let <- substr(old_school_cons, not_thres[i], not_thres[i])
+      conm[which(row.names(conm) == let), not_thres[i]] <- 1
+    }
+  }
   cons <- paste(src_mat[conm>0.5], sep="", collapse="")
   return(DNAString(cons))
 }
