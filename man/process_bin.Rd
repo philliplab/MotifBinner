@@ -30,7 +30,8 @@ consensus sequence}
 \item{consensus_params}{The parameters for the consensus generator}
 }
 \description{
-Given a groups of sequences that were binned together, throw out outliers,
-align them and construct a consensus sequence
+The output will be a list with a DNAString. The name of the DNAString in the
+list will be the bin name and will contain information about how many
+sequences were used to construct the consensus. See construct_consensus.
 }
 
