@@ -20,3 +20,21 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
   names(x) <- seq_name
   return(x)
 }
+
+#' A custom consensus string constructor that allows the threshold to be
+#' relaxed. It will assign a letter to a position as long as that letter occurs
+#' in enough sequences to meet the threshold.
+#' 
+#' @param seqs The aligned sequences to construct a consensus of
+#' @param threshold The percentage of sequences that must have a letter in a
+#' certain positon for it to be included in the consensus string
+#' @export
+
+easyConsensusString <- function(seqs, threshold = 0.501){
+  seqs <- DNAStringSet(c('AAC', 'AAC', 'AAA'))
+  conm <- consensusMatrix(seqs)/length(seqs)
+  src_mat <- matrix(row.names(conm), ncol = ncol(conm), nrow = nrow(conm))
+  cons <- paste(src_mat[conm>0.5], sep="", collapse="")
+  return(DNAString(cons))
+}
+
