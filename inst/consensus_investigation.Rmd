@@ -254,7 +254,7 @@ this means is that any bin with 2, 3 or 4 sequences that are not identical will
 have degeneracy (unless the sequences with mismatches were removed by the
 outlier detector)
 
-
+Added easyConsensusString to handle this.
 
 
 

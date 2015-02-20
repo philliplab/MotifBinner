@@ -31,7 +31,6 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
 #' @export
 
 easyConsensusString <- function(seqs, threshold = 0.501){
-  seqs <- DNAStringSet(c('AAC', 'AAC', 'AAA'))
   conm <- consensusMatrix(seqs)/length(seqs)
   src_mat <- matrix(row.names(conm), ncol = ncol(conm), nrow = nrow(conm))
   cons <- paste(src_mat[conm>0.5], sep="", collapse="")
