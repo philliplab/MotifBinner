@@ -72,7 +72,21 @@ classify_bin_random <- function(bin, n){
 #' sequences and the reduction in the information available (where the number
 #' of DNA sequences in the bin is taken as the measure of the amount of
 #' information) is then computed.  The process will continue until either all
-#' data has been removed or the ratio drops below some threshold
+#' data has been removed or the ratio drops below some threshold. If the ratio
+#' will drop be low the threshold if the next sequence(s) is removed, then the
+#' process stops, so that the process will stop before the ratio goes under the
+#' threshold.
+#'
+#' Both the reduction in the average distance to all other sequences and the
+#' reduction in the amount of information available is computed as a percentage
+#' relative to the original input data. The formula for the average reduction
+#' in distances is (mean(new_dmat) - mean(prev_dmat))/mean(orig_dmat) where
+#' new_dmat is the new distance matrix constructed from removing the next
+#' sequence(s), pre_dmat is the distance matrix constructed in the previous
+#' step and orig_dmat is the distance matrix constructed on the original bin
+#' passed to the function. The percentage reduction in information available is
+#' the number of sequences that will be removed in this step over the number of
+#' sequences in the input data set.
 #'
 #' @param bin The input bin as a single DNAStringSet.
 #' @param threshold Outlier sequences are removed from the bin until the
@@ -98,7 +112,6 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0,
     bin <- bin[picks]
   }
   seq_length <- min(nchar(bin))
-  dists <- NULL
   bin_dists <- stringDist(bin)
   if (max(bin_dists)/seq_length < start_threshold){
     return(list(src = bin,
@@ -108,15 +121,14 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0,
   row.names(dmat) <- 1:nrow(dmat)
   removed_sequences <- NULL
   orig_dmat <- dmat
-  pdr_psr_rat <- 1000
-  pdr <- 1000*1000
+  pdr_psr_rat <- 1000 # percentage distance reduction percentage sequence reduction ratio
+  pdr <- 1000*1000 # percentage distance reduction
   nrow_uniq_dmat_gt_1 <- nrow(unique(dmat)) > 1
   while((nrow_uniq_dmat_gt_1) & (pdr_psr_rat > threshold)){
-    dists <- c(dists, mean(dmat))
     dvec <- apply(dmat, 1, sum)
     max_indx <- which(dvec == max(dvec))
     new_dmat <- dmat[-max_indx, -max_indx]
-    psr <- length(max_indx) / nrow(dmat)
+    psr <- length(max_indx) / nrow(dmat) # percentage sequence reduction
     if (is.null(nrow(new_dmat))){
       pdr <- pdr
       nrow_uniq_dmat_gt_1 <- FALSE

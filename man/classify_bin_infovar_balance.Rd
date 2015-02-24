@@ -33,6 +33,21 @@ removed. The ratio of the reduction in the average distance between the
 sequences and the reduction in the information available (where the number
 of DNA sequences in the bin is taken as the measure of the amount of
 information) is then computed.  The process will continue until either all
-data has been removed or the ratio drops below some threshold
+data has been removed or the ratio drops below some threshold. If the ratio
+will drop be low the threshold if the next sequence(s) is removed, then the
+process stops, so that the process will stop before the ratio goes under the
+threshold.
+}
+\details{
+Both the reduction in the average distance to all other sequences and the
+reduction in the amount of information available is computed as a percentage
+relative to the original input data. The formula for the average reduction
+in distances is (mean(new_dmat) - mean(prev_dmat))/mean(orig_dmat) where
+new_dmat is the new distance matrix constructed from removing the next
+sequence(s), pre_dmat is the distance matrix constructed in the previous
+step and orig_dmat is the distance matrix constructed on the original bin
+passed to the function. The percentage reduction in information available is
+the number of sequences that will be removed in this step over the number of
+sequences in the input data set.
 }
 
