@@ -105,6 +105,7 @@ classify_bin_random <- function(bin, n){
 
 classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0, 
                                          max_sequences = 100){
+  # NOTE: It will be incredably hard to refactor this function
   discarded <- DNAStringSet(NULL)
   if (length(bin) > max_sequences){
     picks <- sample(1:length(bin), max_sequences, replace = FALSE)
