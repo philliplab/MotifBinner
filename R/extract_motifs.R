@@ -9,6 +9,7 @@
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
   seq_data <- clean_seq_data(seq_data)
+
   motif_n <- paste(rep("N", motif_length), collapse="")
   padded_motif <- DNAString(paste0(prefix, motif_n, suffix))
   matches <- vmatchPattern(padded_motif, 
@@ -24,18 +25,11 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
                 unmatched_seq = seq_data))
   }
 
-  #stopifnot(all(matching_seq < 2))
   matching_seq <- matching_seq != 0
   matched_seq <- seq_data[matching_seq]
   unmatched_seq <- seq_data[!matching_seq]
   
-  last_match <- list()
-  for (i in seq_along(matches)){
-    nr <- length(matches[[i]])
-    if (nr > 0){
-      last_match[[names(matches)[i]]] <- matches[[i]][nr]
-    }
-  }
+  last_match <- clean_matches(matches)
 
   matches <- IRanges(start=unlist(lapply(last_match, start)),
                      end=unlist(lapply(last_match, end)),
@@ -77,4 +71,19 @@ clean_seq_data <- function(seq_data){
   }
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
   return(seq_data)
+}
+
+#' Internal Function: Clean matches to the motifs
+#' @param matches The matches to the motifs which potentially contains multiple
+#' matches per sequence
+
+clean_matches <- function(matches){
+  last_match <- list()
+  for (i in seq_along(matches)){
+    nr <- length(matches[[i]])
+    if (nr > 0){
+      last_match[[names(matches)[i]]] <- matches[[i]][nr]
+    }
+  }
+  return(last_match)
 }
