@@ -44,6 +44,20 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
                      end=unlist(lapply(last_match, end)),
                      names=names(last_match))
 
+  motif_free_matched_seq <- remove_motifs(matches, prefix, suffix, matched_seq)
+  
+  return(list(matched_seq = motif_free_matched_seq,
+              unmatched_seq = unmatched_seq))
+}
+
+#' Internal Function: Removes motifs from sequences given match information
+#' 
+#' @param matched A set of IRanges describing the matched motif locations
+#' @param prefix The prefix that is used to identify the motif
+#' @param suffix The suffix that is used to identify the motif
+#' @param matched_seq The sequences in which there were motifs.
+
+remove_motifs <- function(matches, prefix, suffix, matched_seq){
   shifted_matches <- matches
   start(shifted_matches) <- start(shifted_matches) + nchar(prefix)
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)
@@ -54,6 +68,5 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
   motif_free_matched_seq <- padAndClip(matched_seq, matches, Lpadding.letter="+", 
                        Rpadding.letter="+")
   names(motif_free_matched_seq) <- motifs
-  return(list(matched_seq = motif_free_matched_seq,
-              unmatched_seq = unmatched_seq))
+  return(motif_free_matched_seq)
 }
