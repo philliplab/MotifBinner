@@ -106,6 +106,8 @@ classify_bin_random <- function(bin, n){
 classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0, 
                                          max_sequences = 100){
   # NOTE: It will be incredably hard to refactor this function
+  # unless you move to oo so that you can assign multiple variables in one
+  # method call
   discarded <- DNAStringSet(NULL)
   if (length(bin) > max_sequences){
     picks <- sample(1:length(bin), max_sequences, replace = FALSE)
@@ -130,16 +132,11 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0,
     max_indx <- which(dvec == max(dvec))
     new_dmat <- dmat[-max_indx, -max_indx]
     psr <- length(max_indx) / nrow(dmat) # percentage sequence reduction
-    if (is.null(nrow(new_dmat))){
+    if (is.null(nrow(new_dmat)) | (nrow(new_dmat) == 0)){
       pdr <- pdr
       nrow_uniq_dmat_gt_1 <- FALSE
     } else {
-      if (nrow(new_dmat) == 0){
-        pdr <- pdr # Since all data was removed, set this to the amount of data
-                   # that was left in the prev iteration
-      } else {
-        pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
-      }
+      pdr <- (mean(dmat) - mean(new_dmat)) / mean(orig_dmat)
       nrow_uniq_dmat_gt_1 <- nrow(unique(new_dmat)) > 1
     }
     pdr_psr_rat <- pdr / psr

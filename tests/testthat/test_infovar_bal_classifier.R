@@ -66,5 +66,4 @@ test_that('all equally distant sequences are always removed simultaneously', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$src) == 2, is_true())
   expect_that(length(classified$out) == 2, is_true())
-
 })
