@@ -8,10 +8,7 @@
 
 extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE){
-  if (is.null(names(seq_data))){
-    names(seq_data) <- paste('seq', 1:length(seq_data), sep="_")
-  }
-  seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
+  seq_data <- clean_seq_data(seq_data)
   motif_n <- paste(rep("N", motif_length), collapse="")
   padded_motif <- DNAString(paste0(prefix, motif_n, suffix))
   matches <- vmatchPattern(padded_motif, 
@@ -69,4 +66,15 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
                        Rpadding.letter="+")
   names(motif_free_matched_seq) <- motifs
   return(motif_free_matched_seq)
+}
+
+#' Internal Function: Clean sequence data for motif extraction
+#' @param seq_data The sequences whose motifs must be extracted
+
+clean_seq_data <- function(seq_data){
+  if (is.null(names(seq_data))){
+    names(seq_data) <- paste('seq', 1:length(seq_data), sep="_")
+  }
+  seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
+  return(seq_data)
 }
