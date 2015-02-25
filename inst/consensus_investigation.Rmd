@@ -48,6 +48,15 @@ setups[['base1']] <- list(classification_technique = 'infovar_balance',
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
                          consensus_params = list())
+
+
+setups[['most_con']] <- list(classification_technique = 'infovar_balance', 
+                         classification_params = list(threshold = 1,
+                                          start_threshold = 0.02), 
+                         alignment_technique = 'muscle', 
+                         alignment_params = list(), 
+                         consensus_technique = 'mostConsensusString', 
+                         consensus_params = list())
 ```
 
 ## The error profiles
@@ -123,6 +132,7 @@ cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
 cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
                            seed = 1,
                            setup = setups[['base']])
+
 cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
                             seed = 1,
                             setup = setups[['base1']])
@@ -132,6 +142,8 @@ cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
 cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
                             seed = 1,
                             setup = setups[['base1']])
+
+
 ```
 
 ## The test runner
@@ -254,7 +266,8 @@ this means is that any bin with 2, 3 or 4 sequences that are not identical will
 have degeneracy (unless the sequences with mismatches were removed by the
 outlier detector)
 
-Added easyConsensusString to handle this.
+Added easyConsensusString to handle this. Which later morphed into
+mostConsensusString.
 
 
 

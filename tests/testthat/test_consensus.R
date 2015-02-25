@@ -19,13 +19,13 @@ test_that('The consensus string constructor works', {
   seqs <- DNAStringSet(c('AAAAAAAAAAA',
                          'AAAAAAAAAAT'))
   consen <- construct_consensus(seqs)
-  target <- DNAString('AAAAAAAAAAN')
+  target <- DNAString('AAAAAAAAAAW')
   expect_that(consen[[1]] == target, is_true())
 
   seqs <- DNAStringSet(c('AAAAAAAAAAA',
                          'AAAAAAAAAAA',
                          'AAAAAAAAAAT'))
   consen <- construct_consensus(seqs)
-  target <- DNAString('AAAAAAAAAAA')
+  target <- DNAString('AAAAAAAAAAW')
   expect_that(consen[[1]] == target, is_true())
 })

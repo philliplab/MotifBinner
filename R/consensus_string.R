@@ -16,7 +16,15 @@
 construct_consensus <- function(seqs, technique = 'Biostrings::consensusString', params = list()){
   seq_name <- names(seqs)[1]
   seq_name <- paste(seq_name, length(seqs), sep = '_')
-  x <- list(seq_name = DNAString(consensusString(seqs, ambig = 'N')))
+  if (technique == 'Biostrings::consensusString'){
+    params$x <- seqs
+    con_str <- do.call(consensusString, params)
+    x <- list(seq_name = DNAString(con_str))
+  } else if (technique == 'mostConsensusString'){
+    params$seqs <- seqs
+    con_str <- do.call(mostConsensusString, params)
+    x <- list(seq_name = DNAString(con_str))
+  }
   names(x) <- seq_name
   return(x)
 }

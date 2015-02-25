@@ -37,5 +37,14 @@ test_that('The most consensus string constructor works', {
   consen <- mostConsensusString(seqs)
   target <- DNAString('AAAAAAAAAAW')
   expect_that(consen == target, is_true())
+})
 
+test_that('most consensus string can be called via construct_consensus', {
+  seqs <- DNAStringSet(c('AAAAAAAAAAA','AAAAAAAAAAA','AAAAAAAAAAA',
+                         'AAAAAAAAAAT','AAAAAAAAAAT','AAAAAAAAAAT',
+                         'AAAAAAAAAAC'))
+  consen <- construct_consensus(seqs, technique = 'mostConsensusString', params = list())
+  target <- DNAString('AAAAAAAAAAW')
+  expect_that(consen[[1]] == target, is_true())
+  expect_that(names(consen)[1] == '_7', is_true())
 })
