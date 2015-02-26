@@ -31,3 +31,13 @@ test_that('The Two Step consensus string constructor works', {
   target <- DNAString('AAAAAAAAAAA')
   expect_that(consen == target, is_true())
 })
+
+test_that('two step consensus string can be called via construct_consensus', {
+  seqs <- DNAStringSet(c('AAAAAAAAAAA','AAAAAAAAAAA','AAAAAAAAAAA',
+                         'AAAAAAAAAAT','AAAAAAAAAAT','AAAAAAAAAAT',
+                         'AAAAAAAAAAC'))
+  consen <- construct_consensus(seqs, technique = 'twoStepConsensusString', params = list())
+  target <- DNAString('AAAAAAAAAAW')
+  expect_that(consen[[1]] == target, is_true())
+  expect_that(names(consen)[1] == '_7', is_true())
+})
