@@ -245,7 +245,7 @@ setups[[&#39;base&#39;]] &lt;- list(classification_technique = &#39;infovar_bala
                          alignment_technique = &#39;muscle&#39;, 
                          alignment_params = list(), 
                          consensus_technique = &#39;Biostrings::consensusString&#39;, 
-                         consensus_params = list())
+                         consensus_params = list(ambiguityMap = &#39;N&#39;))
 
 setups[[&#39;base1&#39;]] &lt;- list(classification_technique = &#39;infovar_balance&#39;, 
                          classification_params = list(threshold = 1,
@@ -253,6 +253,15 @@ setups[[&#39;base1&#39;]] &lt;- list(classification_technique = &#39;infovar_bal
                          alignment_technique = &#39;muscle&#39;, 
                          alignment_params = list(), 
                          consensus_technique = &#39;Biostrings::consensusString&#39;, 
+                         consensus_params = list(ambiguityMap = &#39;N&#39;))
+
+
+setups[[&#39;most_con&#39;]] &lt;- list(classification_technique = &#39;infovar_balance&#39;, 
+                         classification_params = list(threshold = 1,
+                                          start_threshold = 0.02), 
+                         alignment_technique = &#39;muscle&#39;, 
+                         alignment_params = list(), 
+                         consensus_technique = &#39;mostConsensusString&#39;, 
                          consensus_params = list())
 </code></pre>
 
@@ -326,6 +335,7 @@ cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39
 cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
                            seed = 1,
                            setup = setups[[&#39;base&#39;]])
+
 cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
                             seed = 1,
                             setup = setups[[&#39;base1&#39;]])
@@ -335,6 +345,16 @@ cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#3
 cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
                             seed = 1,
                             setup = setups[[&#39;base1&#39;]])
+
+cases[[&#39;ur1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+                            seed = 1,
+                            setup = setups[[&#39;most_con&#39;]])
+cases[[&#39;ur2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+                            seed = 1,
+                            setup = setups[[&#39;most_con&#39;]])
+cases[[&#39;ur3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+                            seed = 1,
+                            setup = setups[[&#39;most_con&#39;]])
 </code></pre>
 
 <h2>The test runner</h2>
@@ -360,6 +380,7 @@ cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#3
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
+  print(tc)
   mismatch &lt;- do.call(run_test, cases[[tc]])
   input_len &lt;- nchar(cases[[tc]][[&#39;scenario&#39;]][[&#39;ref_seq&#39;]])
   results &lt;- rbind(results,
@@ -368,6 +389,20 @@ for (tc in names(cases)){
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
+</code></pre>
+
+<pre><code>## [1] &quot;ur1_b_1&quot;
+## [1] &quot;ur2_b_1&quot;
+## [1] &quot;ur3_b_1&quot;
+## [1] &quot;ur1_b1_1&quot;
+## [1] &quot;ur2_b1_1&quot;
+## [1] &quot;ur3_b1_1&quot;
+## [1] &quot;ur1_mc1_1&quot;
+## [1] &quot;ur2_mc1_1&quot;
+## [1] &quot;ur3_mc1_1&quot;
+</code></pre>
+
+<pre><code>## Error in new_seq[i] &lt;- amb_char: replacement has length zero
 </code></pre>
 
 <h2>The results</h2>
@@ -418,6 +453,18 @@ for (tc in names(cases)){
 <td align="right">220</td>
 <td align="right">500</td>
 <td align="right">0.440</td>
+</tr>
+<tr>
+<td align="left">ur1_mc1_1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">ur2_mc1_1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
 </tr>
 </tbody></table>
 
@@ -517,6 +564,12 @@ my own version of the function to deal with it?</p>
 <pre><code>## [1] &quot;AAA&quot;
 </code></pre>
 
+<pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAT&#39;, &#39;AAA&#39;, &#39;AAA&#39;, &#39;AAA&#39;, &#39;AAA&#39;)))
+</code></pre>
+
+<pre><code>## [1] &quot;AAA&quot;
+</code></pre>
+
 <h3>Can this threshold be lowered?</h3>
 
 <pre><code class="r">consensusString(DNAStringSet(c(&#39;AAC&#39;, &#39;AAA&#39;)), threshold = 0.5)
@@ -525,7 +578,21 @@ my own version of the function to deal with it?</p>
 <pre><code>## Error in .local(x, ...): &#39;threshold&#39; must be a numeric in (0, 1/sum(nchar(ambiguityMap) == 1)]
 </code></pre>
 
-<p>No because they are using some strange restrictions.</p>
+<p>No because they are using some strange restrictions.  Specifically the
+threshold is that no other character may occur more than 25% of the time. This
+is stricter than the current behaviour. Is this a problem or can the stricter
+behaviour be used?</p>
+
+<p>If you want to use the 50% criteria again, then I would have to either write my
+own consensusString generator or modify theirs - it might take a bit of time.</p>
+
+<p>I think it would probably be better to reduce that restriction because what
+this means is that any bin with 2, 3 or 4 sequences that are not identical will
+have degeneracy (unless the sequences with mismatches were removed by the
+outlier detector)</p>
+
+<p>Added easyConsensusString to handle this. Which later morphed into
+mostConsensusString.</p>
 
 </body>
 

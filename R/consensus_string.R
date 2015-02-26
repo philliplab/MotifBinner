@@ -83,8 +83,14 @@ mostConsensusString <- function(seqs){
   for (i in 1:ncol(conm)){
     lets <- sort(row.names(conm)[conm[,i] == row_maxes[i]])
     lets <- paste(lets, sep="", collapse="")
-    amb_char <- names(IUPAC_CODE_MAP)[IUPAC_CODE_MAP == lets]
+    if (lets == '-'){
+      amb_char <- '-'
+    } else if ('-' %in% lets){
+      lets <- gsub('-','',lets)
+      amb_char <- names(IUPAC_CODE_MAP)[IUPAC_CODE_MAP == lets]
+    }
     new_seq[i] <- amb_char
   }
   return(DNAString(paste(new_seq, sep="", collapse="")))
 }
+

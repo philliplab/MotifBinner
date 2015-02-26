@@ -39,7 +39,7 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
                          alignment_technique = 'muscle', 
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
-                         consensus_params = list())
+                         consensus_params = list(ambiguityMap = 'N'))
 
 setups[['base1']] <- list(classification_technique = 'infovar_balance', 
                          classification_params = list(threshold = 1,
@@ -47,7 +47,7 @@ setups[['base1']] <- list(classification_technique = 'infovar_balance',
                          alignment_technique = 'muscle', 
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
-                         consensus_params = list())
+                         consensus_params = list(ambiguityMap = 'N'))
 
 
 setups[['most_con']] <- list(classification_technique = 'infovar_balance', 
@@ -143,7 +143,15 @@ cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
                             seed = 1,
                             setup = setups[['base1']])
 
-
+cases[['ur1_mc1_1']] <- list(scenario = scenarios[['unif_read_1']],
+                            seed = 1,
+                            setup = setups[['most_con']])
+cases[['ur2_mc1_1']] <- list(scenario = scenarios[['unif_read_2']],
+                            seed = 1,
+                            setup = setups[['most_con']])
+cases[['ur3_mc1_1']] <- list(scenario = scenarios[['unif_read_3']],
+                            seed = 1,
+                            setup = setups[['most_con']])
 ```
 
 ## The test runner
@@ -171,6 +179,7 @@ results <- data.frame(case = character(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
+  print(tc)
   mismatch <- do.call(run_test, cases[[tc]])
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
   results <- rbind(results,

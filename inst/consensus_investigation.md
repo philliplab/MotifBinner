@@ -37,7 +37,7 @@ setups[['base']] <- list(classification_technique = 'infovar_balance',
                          alignment_technique = 'muscle', 
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
-                         consensus_params = list())
+                         consensus_params = list(ambiguityMap = 'N'))
 
 setups[['base1']] <- list(classification_technique = 'infovar_balance', 
                          classification_params = list(threshold = 1,
@@ -45,6 +45,15 @@ setups[['base1']] <- list(classification_technique = 'infovar_balance',
                          alignment_technique = 'muscle', 
                          alignment_params = list(), 
                          consensus_technique = 'Biostrings::consensusString', 
+                         consensus_params = list(ambiguityMap = 'N'))
+
+
+setups[['most_con']] <- list(classification_technique = 'infovar_balance', 
+                         classification_params = list(threshold = 1,
+                                          start_threshold = 0.02), 
+                         alignment_technique = 'muscle', 
+                         alignment_params = list(), 
+                         consensus_technique = 'mostConsensusString', 
                          consensus_params = list())
 ```
 
@@ -124,6 +133,7 @@ cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
 cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
                            seed = 1,
                            setup = setups[['base']])
+
 cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
                             seed = 1,
                             setup = setups[['base1']])
@@ -133,6 +143,16 @@ cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
 cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
                             seed = 1,
                             setup = setups[['base1']])
+
+cases[['ur1_mc1_1']] <- list(scenario = scenarios[['unif_read_1']],
+                            seed = 1,
+                            setup = setups[['most_con']])
+cases[['ur2_mc1_1']] <- list(scenario = scenarios[['unif_read_2']],
+                            seed = 1,
+                            setup = setups[['most_con']])
+cases[['ur3_mc1_1']] <- list(scenario = scenarios[['unif_read_3']],
+                            seed = 1,
+                            setup = setups[['most_con']])
 ```
 
 ## The test runner
@@ -162,6 +182,7 @@ results <- data.frame(case = character(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
+  print(tc)
   mismatch <- do.call(run_test, cases[[tc]])
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
   results <- rbind(results,
@@ -172,6 +193,22 @@ for (tc in names(cases)){
 }
 ```
 
+```
+## [1] "ur1_b_1"
+## [1] "ur2_b_1"
+## [1] "ur3_b_1"
+## [1] "ur1_b1_1"
+## [1] "ur2_b1_1"
+## [1] "ur3_b1_1"
+## [1] "ur1_mc1_1"
+## [1] "ur2_mc1_1"
+## [1] "ur3_mc1_1"
+```
+
+```
+## Error in new_seq[i] <- amb_char: replacement has length zero
+```
+
 ## The results
 
 ```r
@@ -180,14 +217,16 @@ kable(results)
 
 
 
-|case     | mismatch| input_len| mismatch_rate|
-|:--------|--------:|---------:|-------------:|
-|ur1_b_1  |        1|       500|         0.002|
-|ur2_b_1  |        0|       500|         0.000|
-|ur3_b_1  |      220|       500|         0.440|
-|ur1_b1_1 |        0|       500|         0.000|
-|ur2_b1_1 |        0|       500|         0.000|
-|ur3_b1_1 |      220|       500|         0.440|
+|case      | mismatch| input_len| mismatch_rate|
+|:---------|--------:|---------:|-------------:|
+|ur1_b_1   |        1|       500|         0.002|
+|ur2_b_1   |        0|       500|         0.000|
+|ur3_b_1   |      220|       500|         0.440|
+|ur1_b1_1  |        0|       500|         0.000|
+|ur2_b1_1  |        0|       500|         0.000|
+|ur3_b1_1  |      220|       500|         0.440|
+|ur1_mc1_1 |        0|       500|         0.000|
+|ur2_mc1_1 |        0|       500|         0.000|
 
 ## Fixes resulting from benchmarking
 
@@ -306,6 +345,14 @@ consensusString(DNAStringSet(c('AAC', 'AAA', 'AAA', 'AAA', 'AAA')))
 ## [1] "AAA"
 ```
 
+```r
+consensusString(DNAStringSet(c('AAC', 'AAT', 'AAA', 'AAA', 'AAA', 'AAA')))
+```
+
+```
+## [1] "AAA"
+```
+
 ### Can this threshold be lowered?
 
 ```r
@@ -316,10 +363,21 @@ consensusString(DNAStringSet(c('AAC', 'AAA')), threshold = 0.5)
 ## Error in .local(x, ...): 'threshold' must be a numeric in (0, 1/sum(nchar(ambiguityMap) == 1)]
 ```
 
-No because they are using some strange restrictions.
+No because they are using some strange restrictions.  Specifically the
+threshold is that no other character may occur more than 25% of the time. This
+is stricter than the current behaviour. Is this a problem or can the stricter
+behaviour be used?
 
+If you want to use the 50% criteria again, then I would have to either write my
+own consensusString generator or modify theirs - it might take a bit of time.
 
+I think it would probably be better to reduce that restriction because what
+this means is that any bin with 2, 3 or 4 sequences that are not identical will
+have degeneracy (unless the sequences with mismatches were removed by the
+outlier detector)
 
+Added easyConsensusString to handle this. Which later morphed into
+mostConsensusString.
 
 
 
