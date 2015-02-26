@@ -24,6 +24,10 @@ construct_consensus <- function(seqs, technique = 'Biostrings::consensusString',
     params$seqs <- seqs
     con_str <- do.call(mostConsensusString, params)
     x <- list(seq_name = DNAString(con_str))
+  } else if (technique == 'twoStepConsensusString'){
+    params$seqs <- seqs
+    con_str <- do.call(twoStepConsensusString, params)
+    x <- list(seq_name = DNAString(con_str))
   }
   names(x) <- seq_name
   return(x)
