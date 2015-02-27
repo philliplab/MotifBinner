@@ -66,4 +66,11 @@ test_that('most consensus string plays nice with gaps',{
   expect_that(consen[[1]] == target, is_true())
   expect_that(names(consen)[1] == '_7', is_true())
 
+  seqs <- DNAStringSet(c('AAAAAAAAAAA','AAAAAAAAAAA','AAAAAAAAAAA',
+                         '-AAAAAAAAAT','-AAAAAAAAAT','-AAAAAAAAAT'))
+  consen <- construct_consensus(seqs, technique = 'mostConsensusString', params = list())
+  target <- DNAString('AAAAAAAAAAW')
+  expect_that(consen[[1]] == target, is_true())
+  expect_that(names(consen)[1] == '_7', is_true())
+
 })
