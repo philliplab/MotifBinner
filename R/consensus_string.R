@@ -85,8 +85,9 @@ mostConsensusString <- function(seqs){
     lets <- paste(lets, sep="", collapse="")
     if (lets == '-'){
       amb_char <- '-'
-    } else if ('-' %in% lets){
-      lets <- gsub('-','',lets)
+    } else if ('-' %in% strsplit(lets, split='')[[1]]){
+      amb_char <- '+'
+    } else {
       amb_char <- names(IUPAC_CODE_MAP)[IUPAC_CODE_MAP == lets]
     }
     new_seq[i] <- amb_char
