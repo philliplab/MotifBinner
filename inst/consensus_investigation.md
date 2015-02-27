@@ -205,10 +205,6 @@ for (tc in names(cases)){
 ## [1] "ur3_mc1_1"
 ```
 
-```
-## Error in new_seq[i] <- amb_char: replacement has length zero
-```
-
 ## The results
 
 ```r
@@ -227,6 +223,7 @@ kable(results)
 |ur3_b1_1  |      220|       500|         0.440|
 |ur1_mc1_1 |        0|       500|         0.000|
 |ur2_mc1_1 |        0|       500|         0.000|
+|ur3_mc1_1 |      138|       500|         0.276|
 
 ## Fixes resulting from benchmarking
 
