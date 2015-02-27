@@ -152,65 +152,6 @@ for (setup in names(setups)){
     }
   }
 }
-#cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#
-#cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#
-#cases[['ur1_mc1_1']] <- list(scenario = scenarios[['unif_read_1']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
-#cases[['ur2_mc1_1']] <- list(scenario = scenarios[['unif_read_2']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
-#cases[['ur3_mc1_1']] <- list(scenario = scenarios[['unif_read_3']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
-#
-#cases[['uc1_b_1']] <- list(scenario = scenarios[['unif_contam_1']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#cases[['uc2_b_1']] <- list(scenario = scenarios[['unif_contam_2']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#cases[['uc3_b_1']] <- list(scenario = scenarios[['unif_contam_3']],
-#                           seed = 1,
-#                           setup = setups[['base']])
-#
-#cases[['uc1_b1_1']] <- list(scenario = scenarios[['unif_contam_1']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#cases[['uc2_b1_1']] <- list(scenario = scenarios[['unif_contam_2']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#cases[['uc3_b1_1']] <- list(scenario = scenarios[['unif_contam_3']],
-#                            seed = 1,
-#                            setup = setups[['base1']])
-#
-#cases[['uc1_mc1_1']] <- list(scenario = scenarios[['unif_contam_1']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
-#cases[['uc2_mc1_1']] <- list(scenario = scenarios[['unif_contam_2']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
-#cases[['uc3_mc1_1']] <- list(scenario = scenarios[['unif_contam_3']],
-#                            seed = 1,
-#                            setup = setups[['most_con']])
 ```
 
 ## The test runner
@@ -259,63 +200,6 @@ for (tc in names(cases)){
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
-```
-
-```
-## [1] "base-unif_read_1-1"
-## [1] "base-unif_read_1-2"
-## [1] "base-unif_read_1-3"
-## [1] "base-unif_read_2-1"
-## [1] "base-unif_read_2-2"
-## [1] "base-unif_read_2-3"
-## [1] "base-unif_read_3-1"
-## [1] "base-unif_read_3-2"
-## [1] "base-unif_read_3-3"
-## [1] "base-unif_contam_1-1"
-## [1] "base-unif_contam_1-2"
-## [1] "base-unif_contam_1-3"
-## [1] "base-unif_contam_2-1"
-## [1] "base-unif_contam_2-2"
-## [1] "base-unif_contam_2-3"
-## [1] "base-unif_contam_3-1"
-## [1] "base-unif_contam_3-2"
-## [1] "base-unif_contam_3-3"
-## [1] "base1-unif_read_1-1"
-## [1] "base1-unif_read_1-2"
-## [1] "base1-unif_read_1-3"
-## [1] "base1-unif_read_2-1"
-## [1] "base1-unif_read_2-2"
-## [1] "base1-unif_read_2-3"
-## [1] "base1-unif_read_3-1"
-## [1] "base1-unif_read_3-2"
-## [1] "base1-unif_read_3-3"
-## [1] "base1-unif_contam_1-1"
-## [1] "base1-unif_contam_1-2"
-## [1] "base1-unif_contam_1-3"
-## [1] "base1-unif_contam_2-1"
-## [1] "base1-unif_contam_2-2"
-## [1] "base1-unif_contam_2-3"
-## [1] "base1-unif_contam_3-1"
-## [1] "base1-unif_contam_3-2"
-## [1] "base1-unif_contam_3-3"
-## [1] "most_con-unif_read_1-1"
-## [1] "most_con-unif_read_1-2"
-## [1] "most_con-unif_read_1-3"
-## [1] "most_con-unif_read_2-1"
-## [1] "most_con-unif_read_2-2"
-## [1] "most_con-unif_read_2-3"
-## [1] "most_con-unif_read_3-1"
-## [1] "most_con-unif_read_3-2"
-## [1] "most_con-unif_read_3-3"
-## [1] "most_con-unif_contam_1-1"
-## [1] "most_con-unif_contam_1-2"
-## [1] "most_con-unif_contam_1-3"
-## [1] "most_con-unif_contam_2-1"
-## [1] "most_con-unif_contam_2-2"
-## [1] "most_con-unif_contam_2-3"
-## [1] "most_con-unif_contam_3-1"
-## [1] "most_con-unif_contam_3-2"
-## [1] "most_con-unif_contam_3-3"
 ```
 
 ## The results

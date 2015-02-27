@@ -354,65 +354,6 @@ for (setup in names(setups)){
     }
   }
 }
-#cases[[&#39;ur1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#
-#cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#
-#cases[[&#39;ur1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
-#cases[[&#39;ur2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
-#cases[[&#39;ur3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
-#
-#cases[[&#39;uc1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#cases[[&#39;uc2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#cases[[&#39;uc3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
-#                           seed = 1,
-#                           setup = setups[[&#39;base&#39;]])
-#
-#cases[[&#39;uc1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#cases[[&#39;uc2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#cases[[&#39;uc3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;base1&#39;]])
-#
-#cases[[&#39;uc1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
-#cases[[&#39;uc2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
-#cases[[&#39;uc3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
-#                            seed = 1,
-#                            setup = setups[[&#39;most_con&#39;]])
 </code></pre>
 
 <h2>The test runner</h2>
@@ -457,62 +398,6 @@ for (tc in names(cases)){
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
-</code></pre>
-
-<pre><code>## [1] &quot;base-unif_read_1-1&quot;
-## [1] &quot;base-unif_read_1-2&quot;
-## [1] &quot;base-unif_read_1-3&quot;
-## [1] &quot;base-unif_read_2-1&quot;
-## [1] &quot;base-unif_read_2-2&quot;
-## [1] &quot;base-unif_read_2-3&quot;
-## [1] &quot;base-unif_read_3-1&quot;
-## [1] &quot;base-unif_read_3-2&quot;
-## [1] &quot;base-unif_read_3-3&quot;
-## [1] &quot;base-unif_contam_1-1&quot;
-## [1] &quot;base-unif_contam_1-2&quot;
-## [1] &quot;base-unif_contam_1-3&quot;
-## [1] &quot;base-unif_contam_2-1&quot;
-## [1] &quot;base-unif_contam_2-2&quot;
-## [1] &quot;base-unif_contam_2-3&quot;
-## [1] &quot;base-unif_contam_3-1&quot;
-## [1] &quot;base-unif_contam_3-2&quot;
-## [1] &quot;base-unif_contam_3-3&quot;
-## [1] &quot;base1-unif_read_1-1&quot;
-## [1] &quot;base1-unif_read_1-2&quot;
-## [1] &quot;base1-unif_read_1-3&quot;
-## [1] &quot;base1-unif_read_2-1&quot;
-## [1] &quot;base1-unif_read_2-2&quot;
-## [1] &quot;base1-unif_read_2-3&quot;
-## [1] &quot;base1-unif_read_3-1&quot;
-## [1] &quot;base1-unif_read_3-2&quot;
-## [1] &quot;base1-unif_read_3-3&quot;
-## [1] &quot;base1-unif_contam_1-1&quot;
-## [1] &quot;base1-unif_contam_1-2&quot;
-## [1] &quot;base1-unif_contam_1-3&quot;
-## [1] &quot;base1-unif_contam_2-1&quot;
-## [1] &quot;base1-unif_contam_2-2&quot;
-## [1] &quot;base1-unif_contam_2-3&quot;
-## [1] &quot;base1-unif_contam_3-1&quot;
-## [1] &quot;base1-unif_contam_3-2&quot;
-## [1] &quot;base1-unif_contam_3-3&quot;
-## [1] &quot;most_con-unif_read_1-1&quot;
-## [1] &quot;most_con-unif_read_1-2&quot;
-## [1] &quot;most_con-unif_read_1-3&quot;
-## [1] &quot;most_con-unif_read_2-1&quot;
-## [1] &quot;most_con-unif_read_2-2&quot;
-## [1] &quot;most_con-unif_read_2-3&quot;
-## [1] &quot;most_con-unif_read_3-1&quot;
-## [1] &quot;most_con-unif_read_3-2&quot;
-## [1] &quot;most_con-unif_read_3-3&quot;
-## [1] &quot;most_con-unif_contam_1-1&quot;
-## [1] &quot;most_con-unif_contam_1-2&quot;
-## [1] &quot;most_con-unif_contam_1-3&quot;
-## [1] &quot;most_con-unif_contam_2-1&quot;
-## [1] &quot;most_con-unif_contam_2-2&quot;
-## [1] &quot;most_con-unif_contam_2-3&quot;
-## [1] &quot;most_con-unif_contam_3-1&quot;
-## [1] &quot;most_con-unif_contam_3-2&quot;
-## [1] &quot;most_con-unif_contam_3-3&quot;
 </code></pre>
 
 <h2>The results</h2>
