@@ -321,49 +321,109 @@ scenarios[[&#39;unif_read_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 5
                                    error_rates = err_profiles[[&#39;unif_1_10&#39;]], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
+
+scenarios[[&#39;unif_contam_1&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
+                                   n_contam = 1)
+scenarios[[&#39;unif_contam_2&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
+                                   n_contam = 5)
+scenarios[[&#39;unif_contam_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
+                                   n_contam = 9)
 </code></pre>
 
 <h2>The test cases</h2>
 
 <pre><code class="r">cases &lt;- list()
-cases[[&#39;ur1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-                           seed = 1,
-                           setup = setups[[&#39;base&#39;]])
-cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-                           seed = 1,
-                           setup = setups[[&#39;base&#39;]])
-cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-                           seed = 1,
-                           setup = setups[[&#39;base&#39;]])
+seeds &lt;- 1:3
 
-cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;base1&#39;]])
-cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;base1&#39;]])
-cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;base1&#39;]])
-
-cases[[&#39;ur1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;most_con&#39;]])
-cases[[&#39;ur2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;most_con&#39;]])
-cases[[&#39;ur3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
-                            seed = 1,
-                            setup = setups[[&#39;most_con&#39;]])
+for (setup in names(setups)){
+  for (scenario in names(scenarios)){
+    for (seed in seeds){
+      case_name &lt;- paste(setup, scenario, seed, sep = &#39;-&#39;)
+      cases[[case_name]] &lt;- list(scenario = scenarios[[scenario]],
+                                 seed = seed,
+                                 setup = setups[[setup]])
+    }
+  }
+}
+#cases[[&#39;ur1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#cases[[&#39;ur2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#cases[[&#39;ur3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#
+#cases[[&#39;ur1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#cases[[&#39;ur2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#cases[[&#39;ur3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#
+#cases[[&#39;ur1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_1&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
+#cases[[&#39;ur2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_2&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
+#cases[[&#39;ur3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
+#
+#cases[[&#39;uc1_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#cases[[&#39;uc2_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#cases[[&#39;uc3_b_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
+#                           seed = 1,
+#                           setup = setups[[&#39;base&#39;]])
+#
+#cases[[&#39;uc1_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#cases[[&#39;uc2_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#cases[[&#39;uc3_b1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;base1&#39;]])
+#
+#cases[[&#39;uc1_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_1&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
+#cases[[&#39;uc2_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_2&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
+#cases[[&#39;uc3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_contam_3&#39;]],
+#                            seed = 1,
+#                            setup = setups[[&#39;most_con&#39;]])
 </code></pre>
 
 <h2>The test runner</h2>
 
-<pre><code class="r">run_test &lt;- function(scenario, seed, setup){
+<pre><code class="r">gacr_m &lt;- memoise(gen_and_contaminate_reads)
+
+run_test &lt;- function(scenario, seed, setup){
   params &lt;- scenario
   params[[&#39;seed&#39;]] &lt;- seed
 
-  test_bin &lt;- do.call( gen_and_contaminate_reads, params)
+  test_bin &lt;- do.call( gacr_m, params)
 
   params &lt;- setup
   params$test_bin &lt;- test_bin
@@ -374,32 +434,85 @@ cases[[&#39;ur3_mc1_1&#39;]] &lt;- list(scenario = scenarios[[&#39;unif_read_3&#
 
 <h2>Running the test cases.</h2>
 
-<pre><code class="r">results &lt;- data.frame(case = character(0),
+<pre><code class="r">results &lt;- data.frame(setup = character(0),
+                      scenario = character(0),
+                      seed = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
   print(tc)
+  split_names &lt;- strsplit(tc, split=&#39;-&#39;)[[1]]
+  setup &lt;- split_names[1]
+  scenario &lt;- split_names[2]
+  seed &lt;- split_names[3]
   mismatch &lt;- do.call(run_test, cases[[tc]])
   input_len &lt;- nchar(cases[[tc]][[&#39;scenario&#39;]][[&#39;ref_seq&#39;]])
   results &lt;- rbind(results,
-                   data.frame(case = tc,
+                   data.frame(setup = setup,
+                              scenario = scenario,
+                              seed = seed,
                               mismatch = mismatch,
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
 }
 </code></pre>
 
-<pre><code>## [1] &quot;ur1_b_1&quot;
-## [1] &quot;ur2_b_1&quot;
-## [1] &quot;ur3_b_1&quot;
-## [1] &quot;ur1_b1_1&quot;
-## [1] &quot;ur2_b1_1&quot;
-## [1] &quot;ur3_b1_1&quot;
-## [1] &quot;ur1_mc1_1&quot;
-## [1] &quot;ur2_mc1_1&quot;
-## [1] &quot;ur3_mc1_1&quot;
+<pre><code>## [1] &quot;base-unif_read_1-1&quot;
+## [1] &quot;base-unif_read_1-2&quot;
+## [1] &quot;base-unif_read_1-3&quot;
+## [1] &quot;base-unif_read_2-1&quot;
+## [1] &quot;base-unif_read_2-2&quot;
+## [1] &quot;base-unif_read_2-3&quot;
+## [1] &quot;base-unif_read_3-1&quot;
+## [1] &quot;base-unif_read_3-2&quot;
+## [1] &quot;base-unif_read_3-3&quot;
+## [1] &quot;base-unif_contam_1-1&quot;
+## [1] &quot;base-unif_contam_1-2&quot;
+## [1] &quot;base-unif_contam_1-3&quot;
+## [1] &quot;base-unif_contam_2-1&quot;
+## [1] &quot;base-unif_contam_2-2&quot;
+## [1] &quot;base-unif_contam_2-3&quot;
+## [1] &quot;base-unif_contam_3-1&quot;
+## [1] &quot;base-unif_contam_3-2&quot;
+## [1] &quot;base-unif_contam_3-3&quot;
+## [1] &quot;base1-unif_read_1-1&quot;
+## [1] &quot;base1-unif_read_1-2&quot;
+## [1] &quot;base1-unif_read_1-3&quot;
+## [1] &quot;base1-unif_read_2-1&quot;
+## [1] &quot;base1-unif_read_2-2&quot;
+## [1] &quot;base1-unif_read_2-3&quot;
+## [1] &quot;base1-unif_read_3-1&quot;
+## [1] &quot;base1-unif_read_3-2&quot;
+## [1] &quot;base1-unif_read_3-3&quot;
+## [1] &quot;base1-unif_contam_1-1&quot;
+## [1] &quot;base1-unif_contam_1-2&quot;
+## [1] &quot;base1-unif_contam_1-3&quot;
+## [1] &quot;base1-unif_contam_2-1&quot;
+## [1] &quot;base1-unif_contam_2-2&quot;
+## [1] &quot;base1-unif_contam_2-3&quot;
+## [1] &quot;base1-unif_contam_3-1&quot;
+## [1] &quot;base1-unif_contam_3-2&quot;
+## [1] &quot;base1-unif_contam_3-3&quot;
+## [1] &quot;most_con-unif_read_1-1&quot;
+## [1] &quot;most_con-unif_read_1-2&quot;
+## [1] &quot;most_con-unif_read_1-3&quot;
+## [1] &quot;most_con-unif_read_2-1&quot;
+## [1] &quot;most_con-unif_read_2-2&quot;
+## [1] &quot;most_con-unif_read_2-3&quot;
+## [1] &quot;most_con-unif_read_3-1&quot;
+## [1] &quot;most_con-unif_read_3-2&quot;
+## [1] &quot;most_con-unif_read_3-3&quot;
+## [1] &quot;most_con-unif_contam_1-1&quot;
+## [1] &quot;most_con-unif_contam_1-2&quot;
+## [1] &quot;most_con-unif_contam_1-3&quot;
+## [1] &quot;most_con-unif_contam_2-1&quot;
+## [1] &quot;most_con-unif_contam_2-2&quot;
+## [1] &quot;most_con-unif_contam_2-3&quot;
+## [1] &quot;most_con-unif_contam_3-1&quot;
+## [1] &quot;most_con-unif_contam_3-2&quot;
+## [1] &quot;most_con-unif_contam_3-3&quot;
 </code></pre>
 
 <h2>The results</h2>
@@ -409,65 +522,445 @@ for (tc in names(cases)){
 
 <table><thead>
 <tr>
-<th align="left">case</th>
+<th align="left">setup</th>
+<th align="left">scenario</th>
+<th align="left">seed</th>
 <th align="right">mismatch</th>
 <th align="right">input_len</th>
 <th align="right">mismatch_rate</th>
 </tr>
 </thead><tbody>
 <tr>
-<td align="left">ur1_b_1</td>
+<td align="left">base</td>
+<td align="left">unif_read_1</td>
+<td align="left">1</td>
 <td align="right">1</td>
 <td align="right">500</td>
 <td align="right">0.002</td>
 </tr>
 <tr>
-<td align="left">ur2_b_1</td>
+<td align="left">base</td>
+<td align="left">unif_read_1</td>
+<td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">ur3_b_1</td>
+<td align="left">base</td>
+<td align="left">unif_read_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_read_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_read_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_read_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_read_3</td>
+<td align="left">1</td>
 <td align="right">220</td>
 <td align="right">500</td>
 <td align="right">0.440</td>
 </tr>
 <tr>
-<td align="left">ur1_b1_1</td>
+<td align="left">base</td>
+<td align="left">unif_read_3</td>
+<td align="left">2</td>
+<td align="right">225</td>
+<td align="right">500</td>
+<td align="right">0.450</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_read_3</td>
+<td align="left">3</td>
+<td align="right">209</td>
+<td align="right">500</td>
+<td align="right">0.418</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_1</td>
+<td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">ur2_b1_1</td>
+<td align="left">base</td>
+<td align="left">unif_contam_1</td>
+<td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">ur3_b1_1</td>
+<td align="left">base</td>
+<td align="left">unif_contam_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_3</td>
+<td align="left">1</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_3</td>
+<td align="left">2</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_3</td>
+<td align="left">3</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_1</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_3</td>
+<td align="left">1</td>
 <td align="right">220</td>
 <td align="right">500</td>
 <td align="right">0.440</td>
 </tr>
 <tr>
-<td align="left">ur1_mc1_1</td>
+<td align="left">base1</td>
+<td align="left">unif_read_3</td>
+<td align="left">2</td>
+<td align="right">225</td>
+<td align="right">500</td>
+<td align="right">0.450</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_read_3</td>
+<td align="left">3</td>
+<td align="right">209</td>
+<td align="right">500</td>
+<td align="right">0.418</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_1</td>
+<td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">ur2_mc1_1</td>
+<td align="left">base1</td>
+<td align="left">unif_contam_1</td>
+<td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
-<td align="left">ur3_mc1_1</td>
+<td align="left">base1</td>
+<td align="left">unif_contam_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_3</td>
+<td align="left">1</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_3</td>
+<td align="left">2</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_3</td>
+<td align="left">3</td>
+<td align="right">999</td>
+<td align="right">500</td>
+<td align="right">1.998</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_1</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_3</td>
+<td align="left">1</td>
 <td align="right">138</td>
 <td align="right">500</td>
 <td align="right">0.276</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_3</td>
+<td align="left">2</td>
+<td align="right">168</td>
+<td align="right">500</td>
+<td align="right">0.336</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_read_3</td>
+<td align="left">3</td>
+<td align="right">147</td>
+<td align="right">500</td>
+<td align="right">0.294</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_1</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_3</td>
+<td align="left">1</td>
+<td align="right">138</td>
+<td align="right">500</td>
+<td align="right">0.276</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_3</td>
+<td align="left">2</td>
+<td align="right">149</td>
+<td align="right">500</td>
+<td align="right">0.298</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_3</td>
+<td align="left">3</td>
+<td align="right">141</td>
+<td align="right">500</td>
+<td align="right">0.282</td>
 </tr>
 </tbody></table>
 

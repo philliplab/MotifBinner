@@ -117,6 +117,22 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
                                    error_rates = err_profiles[['unif_1_10']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
+
+scenarios[['unif_contam_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[['unif_1_100']], 
+                                   contam_seq = paste(rep('C', 500), collapse = ""), 
+                                   n_contam = 1)
+scenarios[['unif_contam_2']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[['unif_1_100']], 
+                                   contam_seq = paste(rep('C', 500), collapse = ""), 
+                                   n_contam = 5)
+scenarios[['unif_contam_3']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+                                   n_reads = 10, 
+                                   error_rates = err_profiles[['unif_1_100']], 
+                                   contam_seq = paste(rep('C', 500), collapse = ""), 
+                                   n_contam = 9)
 ```
 
 ## The test cases
@@ -124,46 +140,90 @@ scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = "")
 
 ```r
 cases <- list()
-cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
-                           seed = 1,
-                           setup = setups[['base']])
-cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
-                           seed = 1,
-                           setup = setups[['base']])
-cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
-                           seed = 1,
-                           setup = setups[['base']])
+seeds <- 1:3
 
-cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
-                            seed = 1,
-                            setup = setups[['base1']])
-cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
-                            seed = 1,
-                            setup = setups[['base1']])
-cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
-                            seed = 1,
-                            setup = setups[['base1']])
-
-cases[['ur1_mc1_1']] <- list(scenario = scenarios[['unif_read_1']],
-                            seed = 1,
-                            setup = setups[['most_con']])
-cases[['ur2_mc1_1']] <- list(scenario = scenarios[['unif_read_2']],
-                            seed = 1,
-                            setup = setups[['most_con']])
-cases[['ur3_mc1_1']] <- list(scenario = scenarios[['unif_read_3']],
-                            seed = 1,
-                            setup = setups[['most_con']])
+for (setup in names(setups)){
+  for (scenario in names(scenarios)){
+    for (seed in seeds){
+      case_name <- paste(setup, scenario, seed, sep = '-')
+      cases[[case_name]] <- list(scenario = scenarios[[scenario]],
+                                 seed = seed,
+                                 setup = setups[[setup]])
+    }
+  }
+}
+#cases[['ur1_b_1']] <- list(scenario = scenarios[['unif_read_1']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#cases[['ur2_b_1']] <- list(scenario = scenarios[['unif_read_2']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#cases[['ur3_b_1']] <- list(scenario = scenarios[['unif_read_3']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#
+#cases[['ur1_b1_1']] <- list(scenario = scenarios[['unif_read_1']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#cases[['ur2_b1_1']] <- list(scenario = scenarios[['unif_read_2']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#cases[['ur3_b1_1']] <- list(scenario = scenarios[['unif_read_3']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#
+#cases[['ur1_mc1_1']] <- list(scenario = scenarios[['unif_read_1']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
+#cases[['ur2_mc1_1']] <- list(scenario = scenarios[['unif_read_2']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
+#cases[['ur3_mc1_1']] <- list(scenario = scenarios[['unif_read_3']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
+#
+#cases[['uc1_b_1']] <- list(scenario = scenarios[['unif_contam_1']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#cases[['uc2_b_1']] <- list(scenario = scenarios[['unif_contam_2']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#cases[['uc3_b_1']] <- list(scenario = scenarios[['unif_contam_3']],
+#                           seed = 1,
+#                           setup = setups[['base']])
+#
+#cases[['uc1_b1_1']] <- list(scenario = scenarios[['unif_contam_1']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#cases[['uc2_b1_1']] <- list(scenario = scenarios[['unif_contam_2']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#cases[['uc3_b1_1']] <- list(scenario = scenarios[['unif_contam_3']],
+#                            seed = 1,
+#                            setup = setups[['base1']])
+#
+#cases[['uc1_mc1_1']] <- list(scenario = scenarios[['unif_contam_1']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
+#cases[['uc2_mc1_1']] <- list(scenario = scenarios[['unif_contam_2']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
+#cases[['uc3_mc1_1']] <- list(scenario = scenarios[['unif_contam_3']],
+#                            seed = 1,
+#                            setup = setups[['most_con']])
 ```
 
 ## The test runner
 
 
 ```r
+gacr_m <- memoise(gen_and_contaminate_reads)
+
 run_test <- function(scenario, seed, setup){
   params <- scenario
   params[['seed']] <- seed
 
-  test_bin <- do.call( gen_and_contaminate_reads, params)
+  test_bin <- do.call( gacr_m, params)
 
   params <- setup
   params$test_bin <- test_bin
@@ -176,17 +236,25 @@ run_test <- function(scenario, seed, setup){
 
 
 ```r
-results <- data.frame(case = character(0),
+results <- data.frame(setup = character(0),
+                      scenario = character(0),
+                      seed = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
   print(tc)
+  split_names <- strsplit(tc, split='-')[[1]]
+  setup <- split_names[1]
+  scenario <- split_names[2]
+  seed <- split_names[3]
   mismatch <- do.call(run_test, cases[[tc]])
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
   results <- rbind(results,
-                   data.frame(case = tc,
+                   data.frame(setup = setup,
+                              scenario = scenario,
+                              seed = seed,
                               mismatch = mismatch,
                               input_len = input_len,
                               mismatch_rate = mismatch / input_len))
@@ -194,15 +262,60 @@ for (tc in names(cases)){
 ```
 
 ```
-## [1] "ur1_b_1"
-## [1] "ur2_b_1"
-## [1] "ur3_b_1"
-## [1] "ur1_b1_1"
-## [1] "ur2_b1_1"
-## [1] "ur3_b1_1"
-## [1] "ur1_mc1_1"
-## [1] "ur2_mc1_1"
-## [1] "ur3_mc1_1"
+## [1] "base-unif_read_1-1"
+## [1] "base-unif_read_1-2"
+## [1] "base-unif_read_1-3"
+## [1] "base-unif_read_2-1"
+## [1] "base-unif_read_2-2"
+## [1] "base-unif_read_2-3"
+## [1] "base-unif_read_3-1"
+## [1] "base-unif_read_3-2"
+## [1] "base-unif_read_3-3"
+## [1] "base-unif_contam_1-1"
+## [1] "base-unif_contam_1-2"
+## [1] "base-unif_contam_1-3"
+## [1] "base-unif_contam_2-1"
+## [1] "base-unif_contam_2-2"
+## [1] "base-unif_contam_2-3"
+## [1] "base-unif_contam_3-1"
+## [1] "base-unif_contam_3-2"
+## [1] "base-unif_contam_3-3"
+## [1] "base1-unif_read_1-1"
+## [1] "base1-unif_read_1-2"
+## [1] "base1-unif_read_1-3"
+## [1] "base1-unif_read_2-1"
+## [1] "base1-unif_read_2-2"
+## [1] "base1-unif_read_2-3"
+## [1] "base1-unif_read_3-1"
+## [1] "base1-unif_read_3-2"
+## [1] "base1-unif_read_3-3"
+## [1] "base1-unif_contam_1-1"
+## [1] "base1-unif_contam_1-2"
+## [1] "base1-unif_contam_1-3"
+## [1] "base1-unif_contam_2-1"
+## [1] "base1-unif_contam_2-2"
+## [1] "base1-unif_contam_2-3"
+## [1] "base1-unif_contam_3-1"
+## [1] "base1-unif_contam_3-2"
+## [1] "base1-unif_contam_3-3"
+## [1] "most_con-unif_read_1-1"
+## [1] "most_con-unif_read_1-2"
+## [1] "most_con-unif_read_1-3"
+## [1] "most_con-unif_read_2-1"
+## [1] "most_con-unif_read_2-2"
+## [1] "most_con-unif_read_2-3"
+## [1] "most_con-unif_read_3-1"
+## [1] "most_con-unif_read_3-2"
+## [1] "most_con-unif_read_3-3"
+## [1] "most_con-unif_contam_1-1"
+## [1] "most_con-unif_contam_1-2"
+## [1] "most_con-unif_contam_1-3"
+## [1] "most_con-unif_contam_2-1"
+## [1] "most_con-unif_contam_2-2"
+## [1] "most_con-unif_contam_2-3"
+## [1] "most_con-unif_contam_3-1"
+## [1] "most_con-unif_contam_3-2"
+## [1] "most_con-unif_contam_3-3"
 ```
 
 ## The results
@@ -213,17 +326,62 @@ kable(results)
 
 
 
-|case      | mismatch| input_len| mismatch_rate|
-|:---------|--------:|---------:|-------------:|
-|ur1_b_1   |        1|       500|         0.002|
-|ur2_b_1   |        0|       500|         0.000|
-|ur3_b_1   |      220|       500|         0.440|
-|ur1_b1_1  |        0|       500|         0.000|
-|ur2_b1_1  |        0|       500|         0.000|
-|ur3_b1_1  |      220|       500|         0.440|
-|ur1_mc1_1 |        0|       500|         0.000|
-|ur2_mc1_1 |        0|       500|         0.000|
-|ur3_mc1_1 |      138|       500|         0.276|
+|setup    |scenario      |seed | mismatch| input_len| mismatch_rate|
+|:--------|:-------------|:----|--------:|---------:|-------------:|
+|base     |unif_read_1   |1    |        1|       500|         0.002|
+|base     |unif_read_1   |2    |        0|       500|         0.000|
+|base     |unif_read_1   |3    |        0|       500|         0.000|
+|base     |unif_read_2   |1    |        0|       500|         0.000|
+|base     |unif_read_2   |2    |        0|       500|         0.000|
+|base     |unif_read_2   |3    |        0|       500|         0.000|
+|base     |unif_read_3   |1    |      220|       500|         0.440|
+|base     |unif_read_3   |2    |      225|       500|         0.450|
+|base     |unif_read_3   |3    |      209|       500|         0.418|
+|base     |unif_contam_1 |1    |        0|       500|         0.000|
+|base     |unif_contam_1 |2    |        0|       500|         0.000|
+|base     |unif_contam_1 |3    |        0|       500|         0.000|
+|base     |unif_contam_2 |1    |        0|       500|         0.000|
+|base     |unif_contam_2 |2    |        0|       500|         0.000|
+|base     |unif_contam_2 |3    |        0|       500|         0.000|
+|base     |unif_contam_3 |1    |      999|       500|         1.998|
+|base     |unif_contam_3 |2    |      999|       500|         1.998|
+|base     |unif_contam_3 |3    |      999|       500|         1.998|
+|base1    |unif_read_1   |1    |        0|       500|         0.000|
+|base1    |unif_read_1   |2    |        0|       500|         0.000|
+|base1    |unif_read_1   |3    |        0|       500|         0.000|
+|base1    |unif_read_2   |1    |        0|       500|         0.000|
+|base1    |unif_read_2   |2    |        0|       500|         0.000|
+|base1    |unif_read_2   |3    |        0|       500|         0.000|
+|base1    |unif_read_3   |1    |      220|       500|         0.440|
+|base1    |unif_read_3   |2    |      225|       500|         0.450|
+|base1    |unif_read_3   |3    |      209|       500|         0.418|
+|base1    |unif_contam_1 |1    |        0|       500|         0.000|
+|base1    |unif_contam_1 |2    |        0|       500|         0.000|
+|base1    |unif_contam_1 |3    |        0|       500|         0.000|
+|base1    |unif_contam_2 |1    |        0|       500|         0.000|
+|base1    |unif_contam_2 |2    |        0|       500|         0.000|
+|base1    |unif_contam_2 |3    |        0|       500|         0.000|
+|base1    |unif_contam_3 |1    |      999|       500|         1.998|
+|base1    |unif_contam_3 |2    |      999|       500|         1.998|
+|base1    |unif_contam_3 |3    |      999|       500|         1.998|
+|most_con |unif_read_1   |1    |        0|       500|         0.000|
+|most_con |unif_read_1   |2    |        0|       500|         0.000|
+|most_con |unif_read_1   |3    |        0|       500|         0.000|
+|most_con |unif_read_2   |1    |        0|       500|         0.000|
+|most_con |unif_read_2   |2    |        0|       500|         0.000|
+|most_con |unif_read_2   |3    |        0|       500|         0.000|
+|most_con |unif_read_3   |1    |      138|       500|         0.276|
+|most_con |unif_read_3   |2    |      168|       500|         0.336|
+|most_con |unif_read_3   |3    |      147|       500|         0.294|
+|most_con |unif_contam_1 |1    |        0|       500|         0.000|
+|most_con |unif_contam_1 |2    |        0|       500|         0.000|
+|most_con |unif_contam_1 |3    |        0|       500|         0.000|
+|most_con |unif_contam_2 |1    |        0|       500|         0.000|
+|most_con |unif_contam_2 |2    |        0|       500|         0.000|
+|most_con |unif_contam_2 |3    |        0|       500|         0.000|
+|most_con |unif_contam_3 |1    |      138|       500|         0.276|
+|most_con |unif_contam_3 |2    |      149|       500|         0.298|
+|most_con |unif_contam_3 |3    |      141|       500|         0.282|
 
 ## Fixes resulting from benchmarking
 
