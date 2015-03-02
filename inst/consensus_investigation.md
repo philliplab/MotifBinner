@@ -418,6 +418,20 @@ outlier detector)
 Added easyConsensusString to handle this. Which later morphed into
 mostConsensusString.
 
+## Benchmarks for contamination
+
+The purpose here is to create a benchmark that will test the effectiveness of
+outlier removal and explore what happens in some edge cases. Some of these
+benchmarks should make it into the unit tests eventually.
+
+Testing the interaction between contamination and read errors is not so
+important, so only use 1 in 100 read error rate.
+
+What is important to explore is what happens when the level of contamination
+changes. so try with 10%, 25% and 45% and 50% contamination and check what
+happens. Note that the mislabel detector will really struggle on 45% and 50% in
+its current form so this is probably where I will hit the crossroads and have
+to implement the mislabel detector that is based on absolute thresholds.
 
 
 
