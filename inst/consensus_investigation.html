@@ -306,37 +306,43 @@ err_profiles[[&#39;unif_1_10&#39;]] &lt;- do.call(gen_error_profile, params)
 <h2>The test scenarios</h2>
 
 <pre><code class="r">scenarios &lt;- list()
-scenarios[[&#39;unif_read_1&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+scenarios[[&#39;unif_read_1&#39;]] &lt;- list(name = &#39;unif_read_1&#39;,
+                                   ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[[&#39;unif_1_1000&#39;]], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[[&#39;unif_read_2&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+scenarios[[&#39;unif_read_2&#39;]] &lt;- list(name = &#39;unif_read_2&#39;,
+                                   ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[[&#39;unif_read_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+scenarios[[&#39;unif_read_3&#39;]] &lt;- list(name = &#39;unif_read_3&#39;,
+                                   ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[[&#39;unif_1_10&#39;]], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
 
-scenarios[[&#39;unif_contam_1&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
-                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
-                                   n_contam = 1)
-scenarios[[&#39;unif_contam_2&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
-                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
-                                   n_contam = 5)
-scenarios[[&#39;unif_contam_3&#39;]] &lt;- list(ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
-                                   contam_seq = paste(rep(&#39;C&#39;, 500), collapse = &quot;&quot;), 
-                                   n_contam = 9)
+scenarios[[&#39;unif_contam_1&#39;]] &lt;- list(name = &#39;unif_contam_1&#39;,
+                                     ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                     contam_seq = paste(c(rep(&#39;A&#39;, 200), rep(&#39;C&#39;, 100), rep(&#39;A&#39;, 200)), collapse = &quot;&quot;), 
+                                     n_contam = 1)
+scenarios[[&#39;unif_contam_2&#39;]] &lt;- list(name = &#39;unif_contam_2&#39;,
+                                     ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                     contam_seq = paste(c(rep(&#39;A&#39;, 200), rep(&#39;C&#39;, 100), rep(&#39;A&#39;, 200)), collapse = &quot;&quot;), 
+                                     n_contam = 5)
+scenarios[[&#39;unif_contam_3&#39;]] &lt;- list(name = &#39;unif_contam_3&#39;,
+                                     ref_seq = paste(rep(&#39;A&#39;, 500), collapse = &quot;&quot;), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[[&#39;unif_1_100&#39;]], 
+                                     contam_seq = paste(c(rep(&#39;A&#39;, 200), rep(&#39;C&#39;, 100), rep(&#39;A&#39;, 200)), collapse = &quot;&quot;), 
+                                     n_contam = 9)
 </code></pre>
 
 <h2>The test cases</h2>
@@ -358,13 +364,29 @@ for (setup in names(setups)){
 
 <h2>The test runner</h2>
 
-<pre><code class="r">gacr_m &lt;- memoise(gen_and_contaminate_reads)
+<pre><code class="r">unique_scenarios &lt;- list()
+
+for (tc in names(cases)){
+  params &lt;- cases[[tc]]$scenario
+  params[[&#39;seed&#39;]] &lt;- cases[[tc]]$seed
+  hash &lt;- digest(params)
+  unique_scenarios[[hash]] &lt;- params
+}
+
+scenario_cache &lt;- memoise:::new_cache()
+
+for (hash in names(unique_scenarios)){
+  params &lt;- unique_scenarios[[hash]]
+  params$name &lt;- NULL
+  res &lt;- do.call( gen_and_contaminate_reads, params)
+  scenario_cache$set(hash, res)
+}
 
 run_test &lt;- function(scenario, seed, setup){
   params &lt;- scenario
   params[[&#39;seed&#39;]] &lt;- seed
 
-  test_bin &lt;- do.call( gacr_m, params)
+  test_bin &lt;- scenario_cache$get(digest(params))
 
   params &lt;- setup
   params$test_bin &lt;- test_bin
@@ -515,49 +537,49 @@ for (tc in names(cases)){
 <td align="left">base</td>
 <td align="left">unif_contam_2</td>
 <td align="left">1</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_2</td>
 <td align="left">2</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_2</td>
 <td align="left">3</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_3</td>
 <td align="left">1</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_3</td>
 <td align="left">2</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_3</td>
 <td align="left">3</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
@@ -659,49 +681,49 @@ for (tc in names(cases)){
 <td align="left">base1</td>
 <td align="left">unif_contam_2</td>
 <td align="left">1</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_2</td>
 <td align="left">2</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_2</td>
 <td align="left">3</td>
-<td align="right">0</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_3</td>
 <td align="left">1</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_3</td>
 <td align="left">2</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_3</td>
 <td align="left">3</td>
-<td align="right">999</td>
+<td align="right">200</td>
 <td align="right">500</td>
-<td align="right">1.998</td>
+<td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
@@ -803,30 +825,38 @@ for (tc in names(cases)){
 <td align="left">most_con</td>
 <td align="left">unif_contam_2</td>
 <td align="left">1</td>
-<td align="right">0</td>
+<td align="right">100</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.200</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_contam_2</td>
 <td align="left">2</td>
-<td align="right">0</td>
+<td align="right">100</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.200</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_contam_2</td>
 <td align="left">3</td>
-<td align="right">0</td>
+<td align="right">100</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
+<td align="right">0.200</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_contam_3</td>
 <td align="left">1</td>
+<td align="right">127</td>
+<td align="right">500</td>
+<td align="right">0.254</td>
+</tr>
+<tr>
+<td align="left">most_con</td>
+<td align="left">unif_contam_3</td>
+<td align="left">2</td>
 <td align="right">138</td>
 <td align="right">500</td>
 <td align="right">0.276</td>
@@ -834,18 +864,10 @@ for (tc in names(cases)){
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_contam_3</td>
-<td align="left">2</td>
-<td align="right">149</td>
-<td align="right">500</td>
-<td align="right">0.298</td>
-</tr>
-<tr>
-<td align="left">most_con</td>
-<td align="left">unif_contam_3</td>
 <td align="left">3</td>
-<td align="right">141</td>
+<td align="right">136</td>
 <td align="right">500</td>
-<td align="right">0.282</td>
+<td align="right">0.272</td>
 </tr>
 </tbody></table>
 
@@ -861,33 +883,52 @@ in the distance matrix is above some threshold.</p>
 
 <pre><code class="r"># Generate test data
 test_bin &lt;- do.call(gen_and_contaminate_reads, c(scenarios[[&#39;unif_read_1&#39;]], list(seed=1)))
+</code></pre>
 
-# See how easy the problem is
+<pre><code>## Error in (function (ref_seq, n_reads, error_rates, contam_seq, n_contam, : unused argument (name = &quot;unif_read_1&quot;)
+</code></pre>
+
+<pre><code class="r"># See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 </code></pre>
 
-<pre><code>## [1] TRUE
+<pre><code>## Error in consensusString(test_bin$src): error in evaluating the argument &#39;x&#39; in selecting a method for function &#39;consensusString&#39;: Error: object &#39;test_bin&#39; not found
 </code></pre>
 
 <pre><code class="r"># See how the basic technique fails
 
 params &lt;- setups[[&#39;base&#39;]]
 params$test_bin &lt;- test_bin
-result &lt;- do.call(score_consensus, params)
-result$edit_dist
 </code></pre>
 
-<pre><code>## [1] 1
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;test_bin&#39; not found
+</code></pre>
+
+<pre><code class="r">result &lt;- do.call(score_consensus, params)
+</code></pre>
+
+<pre><code>## Error in (function (test_bin, classification_technique = &quot;infovar_balance&quot;, : argument &quot;test_bin&quot; is missing, with no default
+</code></pre>
+
+<pre><code class="r">result$edit_dist
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
 </code></pre>
 
 <pre><code class="r"># Fix it with the starting threshold:
 params[[&#39;classification_params&#39;]] &lt;- list(threshold = 1,
                                           start_threshold = 0.02)
 result &lt;- do.call(score_consensus, params)
-result$edit_dist
 </code></pre>
 
-<pre><code>## [1] 0
+<pre><code>## Error in (function (test_bin, classification_technique = &quot;infovar_balance&quot;, : argument &quot;test_bin&quot; is missing, with no default
+</code></pre>
+
+<pre><code class="r">result$edit_dist
+</code></pre>
+
+<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
 </code></pre>
 
 <h2>Utility Functions</h2>
@@ -989,6 +1030,20 @@ changes. so try with 10%, 25% and 45% and 50% contamination and check what
 happens. Note that the mislabel detector will really struggle on 45% and 50% in
 its current form so this is probably where I will hit the crossroads and have
 to implement the mislabel detector that is based on absolute thresholds.</p>
+
+<p>The sequence to use for the contamination should not be too rediculous
+otherwise it will make the aligner go nuts if the mislabel detector fails to
+remove it. The current test string is 500 A&#39;s So for contamination try using
+200 As followed by 100 Cs then another 200 As. This is 1 mutation / read error
+for every 5 bases which is very obviously a contaminant. Also try a lower level
+of errors. Try 245 As, 10 Cs, 245 As. This is still a read error / mutation
+rate of 1 in 50 which is higher than the simulated read error rate, so it
+should be detectable.</p>
+
+<p>The problem is still that the aligner chooses to insert gaps with these thus
+greatly inflating the mismatch scores. Well, maybe this is not that bad since
+the benchmark shows that the mislabel detector failed and that is kind the only
+thing that matters.</p>
 
 </body>
 

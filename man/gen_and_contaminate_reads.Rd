@@ -17,6 +17,8 @@ gen_and_contaminate_reads(ref_seq, n_reads, error_rates, contam_seq, n_contam,
 \item{contam_seq}{The sequence to generate the contaminated reads from}
 
 \item{n_contam}{The number of contamination reads to include}
+
+\item{seed}{The seed for the randomizer}
 }
 \description{
 Basically calls gen_reads twice and mixes the results together

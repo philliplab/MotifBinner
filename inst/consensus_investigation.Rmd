@@ -1,6 +1,7 @@
 ```{r Setup, include=FALSE}
 library(MotifBinner)
 library(knitr)
+library(digest)
 library(memoise)
 ```
 
@@ -103,39 +104,43 @@ err_profiles[['unif_1_10']] <- do.call(gen_error_profile, params)
 
 ```{r}
 scenarios <- list()
-scenarios[['unif_read_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_1']] <- list(name = 'unif_read_1',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_1000']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[['unif_read_2']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_2']] <- list(name = 'unif_read_2',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_100']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_3']] <- list(name = 'unif_read_3',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_10']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
 
-scenarios[['unif_contam_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 1)
-scenarios[['unif_contam_2']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 5)
-scenarios[['unif_contam_3']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 9)
-
-
+scenarios[['unif_contam_1']] <- list(name = 'unif_contam_1',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 1)
+scenarios[['unif_contam_2']] <- list(name = 'unif_contam_2',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 5)
+scenarios[['unif_contam_3']] <- list(name = 'unif_contam_3',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 9)
 ```
 
 ## The test cases
@@ -159,13 +164,29 @@ for (setup in names(setups)){
 ## The test runner
 
 ```{r}
-gacr_m <- memoise(gen_and_contaminate_reads)
+unique_scenarios <- list()
+
+for (tc in names(cases)){
+  params <- cases[[tc]]$scenario
+  params[['seed']] <- cases[[tc]]$seed
+  hash <- digest(params)
+  unique_scenarios[[hash]] <- params
+}
+
+scenario_cache <- memoise:::new_cache()
+
+for (hash in names(unique_scenarios)){
+  params <- unique_scenarios[[hash]]
+  params$name <- NULL
+  res <- do.call( gen_and_contaminate_reads, params)
+  scenario_cache$set(hash, res)
+}
 
 run_test <- function(scenario, seed, setup){
   params <- scenario
   params[['seed']] <- seed
 
-  test_bin <- do.call( gacr_m, params)
+  test_bin <- scenario_cache$get(digest(params))
 
   params <- setup
   params$test_bin <- test_bin
@@ -305,7 +326,19 @@ happens. Note that the mislabel detector will really struggle on 45% and 50% in
 its current form so this is probably where I will hit the crossroads and have
 to implement the mislabel detector that is based on absolute thresholds.
 
+The sequence to use for the contamination should not be too rediculous
+otherwise it will make the aligner go nuts if the mislabel detector fails to
+remove it. The current test string is 500 A's So for contamination try using
+200 As followed by 100 Cs then another 200 As. This is 1 mutation / read error
+for every 5 bases which is very obviously a contaminant. Also try a lower level
+of errors. Try 245 As, 10 Cs, 245 As. This is still a read error / mutation
+rate of 1 in 50 which is higher than the simulated read error rate, so it
+should be detectable.
 
+The problem is still that the aligner chooses to insert gaps with these thus
+greatly inflating the mismatch scores. Well, maybe this is not that bad since
+the benchmark shows that the mislabel detector failed and that is kind the only
+thing that matters.
 
 
 

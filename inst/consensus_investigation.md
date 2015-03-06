@@ -102,37 +102,43 @@ err_profiles[['unif_1_10']] <- do.call(gen_error_profile, params)
 
 ```r
 scenarios <- list()
-scenarios[['unif_read_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_1']] <- list(name = 'unif_read_1',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_1000']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[['unif_read_2']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_2']] <- list(name = 'unif_read_2',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_100']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
-scenarios[['unif_read_3']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
+scenarios[['unif_read_3']] <- list(name = 'unif_read_3',
+                                   ref_seq = paste(rep('A', 500), collapse = ""), 
                                    n_reads = 10, 
                                    error_rates = err_profiles[['unif_1_10']], 
                                    contam_seq = NULL, 
                                    n_contam = 0)
 
-scenarios[['unif_contam_1']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 1)
-scenarios[['unif_contam_2']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 5)
-scenarios[['unif_contam_3']] <- list(ref_seq = paste(rep('A', 500), collapse = ""), 
-                                   n_reads = 10, 
-                                   error_rates = err_profiles[['unif_1_100']], 
-                                   contam_seq = paste(rep('C', 500), collapse = ""), 
-                                   n_contam = 9)
+scenarios[['unif_contam_1']] <- list(name = 'unif_contam_1',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 1)
+scenarios[['unif_contam_2']] <- list(name = 'unif_contam_2',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 5)
+scenarios[['unif_contam_3']] <- list(name = 'unif_contam_3',
+                                     ref_seq = paste(rep('A', 500), collapse = ""), 
+                                     n_reads = 10, 
+                                     error_rates = err_profiles[['unif_1_100']], 
+                                     contam_seq = paste(c(rep('A', 200), rep('C', 100), rep('A', 200)), collapse = ""), 
+                                     n_contam = 9)
 ```
 
 ## The test cases
@@ -158,13 +164,29 @@ for (setup in names(setups)){
 
 
 ```r
-gacr_m <- memoise(gen_and_contaminate_reads)
+unique_scenarios <- list()
+
+for (tc in names(cases)){
+  params <- cases[[tc]]$scenario
+  params[['seed']] <- cases[[tc]]$seed
+  hash <- digest(params)
+  unique_scenarios[[hash]] <- params
+}
+
+scenario_cache <- memoise:::new_cache()
+
+for (hash in names(unique_scenarios)){
+  params <- unique_scenarios[[hash]]
+  params$name <- NULL
+  res <- do.call( gen_and_contaminate_reads, params)
+  scenario_cache$set(hash, res)
+}
 
 run_test <- function(scenario, seed, setup){
   params <- scenario
   params[['seed']] <- seed
 
-  test_bin <- do.call( gacr_m, params)
+  test_bin <- scenario_cache$get(digest(params))
 
   params <- setup
   params$test_bin <- test_bin
@@ -224,12 +246,12 @@ kable(results)
 |base     |unif_contam_1 |1    |        0|       500|         0.000|
 |base     |unif_contam_1 |2    |        0|       500|         0.000|
 |base     |unif_contam_1 |3    |        0|       500|         0.000|
-|base     |unif_contam_2 |1    |        0|       500|         0.000|
-|base     |unif_contam_2 |2    |        0|       500|         0.000|
-|base     |unif_contam_2 |3    |        0|       500|         0.000|
-|base     |unif_contam_3 |1    |      999|       500|         1.998|
-|base     |unif_contam_3 |2    |      999|       500|         1.998|
-|base     |unif_contam_3 |3    |      999|       500|         1.998|
+|base     |unif_contam_2 |1    |      200|       500|         0.400|
+|base     |unif_contam_2 |2    |      200|       500|         0.400|
+|base     |unif_contam_2 |3    |      200|       500|         0.400|
+|base     |unif_contam_3 |1    |      200|       500|         0.400|
+|base     |unif_contam_3 |2    |      200|       500|         0.400|
+|base     |unif_contam_3 |3    |      200|       500|         0.400|
 |base1    |unif_read_1   |1    |        0|       500|         0.000|
 |base1    |unif_read_1   |2    |        0|       500|         0.000|
 |base1    |unif_read_1   |3    |        0|       500|         0.000|
@@ -242,12 +264,12 @@ kable(results)
 |base1    |unif_contam_1 |1    |        0|       500|         0.000|
 |base1    |unif_contam_1 |2    |        0|       500|         0.000|
 |base1    |unif_contam_1 |3    |        0|       500|         0.000|
-|base1    |unif_contam_2 |1    |        0|       500|         0.000|
-|base1    |unif_contam_2 |2    |        0|       500|         0.000|
-|base1    |unif_contam_2 |3    |        0|       500|         0.000|
-|base1    |unif_contam_3 |1    |      999|       500|         1.998|
-|base1    |unif_contam_3 |2    |      999|       500|         1.998|
-|base1    |unif_contam_3 |3    |      999|       500|         1.998|
+|base1    |unif_contam_2 |1    |      200|       500|         0.400|
+|base1    |unif_contam_2 |2    |      200|       500|         0.400|
+|base1    |unif_contam_2 |3    |      200|       500|         0.400|
+|base1    |unif_contam_3 |1    |      200|       500|         0.400|
+|base1    |unif_contam_3 |2    |      200|       500|         0.400|
+|base1    |unif_contam_3 |3    |      200|       500|         0.400|
 |most_con |unif_read_1   |1    |        0|       500|         0.000|
 |most_con |unif_read_1   |2    |        0|       500|         0.000|
 |most_con |unif_read_1   |3    |        0|       500|         0.000|
@@ -260,12 +282,12 @@ kable(results)
 |most_con |unif_contam_1 |1    |        0|       500|         0.000|
 |most_con |unif_contam_1 |2    |        0|       500|         0.000|
 |most_con |unif_contam_1 |3    |        0|       500|         0.000|
-|most_con |unif_contam_2 |1    |        0|       500|         0.000|
-|most_con |unif_contam_2 |2    |        0|       500|         0.000|
-|most_con |unif_contam_2 |3    |        0|       500|         0.000|
-|most_con |unif_contam_3 |1    |      138|       500|         0.276|
-|most_con |unif_contam_3 |2    |      149|       500|         0.298|
-|most_con |unif_contam_3 |3    |      141|       500|         0.282|
+|most_con |unif_contam_2 |1    |      100|       500|         0.200|
+|most_con |unif_contam_2 |2    |      100|       500|         0.200|
+|most_con |unif_contam_2 |3    |      100|       500|         0.200|
+|most_con |unif_contam_3 |1    |      127|       500|         0.254|
+|most_con |unif_contam_3 |2    |      138|       500|         0.276|
+|most_con |unif_contam_3 |3    |      136|       500|         0.272|
 
 ## Fixes resulting from benchmarking
 
@@ -281,13 +303,19 @@ in the distance matrix is above some threshold.
 ```r
 # Generate test data
 test_bin <- do.call(gen_and_contaminate_reads, c(scenarios[['unif_read_1']], list(seed=1)))
+```
 
+```
+## Error in (function (ref_seq, n_reads, error_rates, contam_seq, n_contam, : unused argument (name = "unif_read_1")
+```
+
+```r
 # See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 ```
 
 ```
-## [1] TRUE
+## Error in consensusString(test_bin$src): error in evaluating the argument 'x' in selecting a method for function 'consensusString': Error: object 'test_bin' not found
 ```
 
 ```r
@@ -295,12 +323,26 @@ consensusString(test_bin$src) == test_bin$true_consensus
 
 params <- setups[['base']]
 params$test_bin <- test_bin
+```
+
+```
+## Error in eval(expr, envir, enclos): object 'test_bin' not found
+```
+
+```r
 result <- do.call(score_consensus, params)
+```
+
+```
+## Error in (function (test_bin, classification_technique = "infovar_balance", : argument "test_bin" is missing, with no default
+```
+
+```r
 result$edit_dist
 ```
 
 ```
-## [1] 1
+## Error in eval(expr, envir, enclos): object 'result' not found
 ```
 
 ```r
@@ -308,11 +350,18 @@ result$edit_dist
 params[['classification_params']] <- list(threshold = 1,
                                           start_threshold = 0.02)
 result <- do.call(score_consensus, params)
+```
+
+```
+## Error in (function (test_bin, classification_technique = "infovar_balance", : argument "test_bin" is missing, with no default
+```
+
+```r
 result$edit_dist
 ```
 
 ```
-## [1] 0
+## Error in eval(expr, envir, enclos): object 'result' not found
 ```
 
 ## Utility Functions
@@ -433,7 +482,19 @@ happens. Note that the mislabel detector will really struggle on 45% and 50% in
 its current form so this is probably where I will hit the crossroads and have
 to implement the mislabel detector that is based on absolute thresholds.
 
+The sequence to use for the contamination should not be too rediculous
+otherwise it will make the aligner go nuts if the mislabel detector fails to
+remove it. The current test string is 500 A's So for contamination try using
+200 As followed by 100 Cs then another 200 As. This is 1 mutation / read error
+for every 5 bases which is very obviously a contaminant. Also try a lower level
+of errors. Try 245 As, 10 Cs, 245 As. This is still a read error / mutation
+rate of 1 in 50 which is higher than the simulated read error rate, so it
+should be detectable.
 
+The problem is still that the aligner chooses to insert gaps with these thus
+greatly inflating the mismatch scores. Well, maybe this is not that bad since
+the benchmark shows that the mislabel detector failed and that is kind the only
+thing that matters.
 
 
 
