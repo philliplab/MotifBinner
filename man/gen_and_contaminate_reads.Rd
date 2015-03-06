@@ -5,7 +5,7 @@
 \title{Generate contaminated reads}
 \usage{
 gen_and_contaminate_reads(ref_seq, n_reads, error_rates, contam_seq, n_contam,
-  seed = NULL)
+  seed = NULL, ...)
 }
 \arguments{
 \item{ref_seq}{The true sequence from which to generate the 'src' reads}

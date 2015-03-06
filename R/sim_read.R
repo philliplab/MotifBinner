@@ -120,7 +120,8 @@ gen_and_contaminate_reads <- function(ref_seq,
                                       error_rates,
                                       contam_seq,
                                       n_contam,
-                                      seed = NULL){
+                                      seed = NULL,
+                                      ...){
   if (!is.null(seed)){
     set.seed(seed)
   }

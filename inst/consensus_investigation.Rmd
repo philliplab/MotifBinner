@@ -3,6 +3,9 @@ library(MotifBinner)
 library(knitr)
 library(digest)
 library(memoise)
+library(doParallel)
+registerDoParallel(cores=6)
+
 ```
 
 # Investigation of various approach to constructing a consensus string
@@ -175,10 +178,17 @@ for (tc in names(cases)){
 
 scenario_cache <- memoise:::new_cache()
 
-for (hash in names(unique_scenarios)){
+x <- foreach (hash = names(unique_scenarios)) %dopar% {
   params <- unique_scenarios[[hash]]
   params$name <- NULL
   res <- do.call( gen_and_contaminate_reads, params)
+  result <- list(res = res, hash = hash)
+  result
+}
+
+for (i in seq_along(x)){
+  hash <- x[[i]]$hash
+  res <- x[[i]]$res
   scenario_cache$set(hash, res)
 }
 

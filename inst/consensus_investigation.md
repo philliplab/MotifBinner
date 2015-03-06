@@ -175,10 +175,17 @@ for (tc in names(cases)){
 
 scenario_cache <- memoise:::new_cache()
 
-for (hash in names(unique_scenarios)){
+x <- foreach (hash = names(unique_scenarios)) %dopar% {
   params <- unique_scenarios[[hash]]
   params$name <- NULL
   res <- do.call( gen_and_contaminate_reads, params)
+  result <- list(res = res, hash = hash)
+  result
+}
+
+for (i in seq_along(x)){
+  hash <- x[[i]]$hash
+  res <- x[[i]]$res
   scenario_cache$set(hash, res)
 }
 
@@ -303,19 +310,13 @@ in the distance matrix is above some threshold.
 ```r
 # Generate test data
 test_bin <- do.call(gen_and_contaminate_reads, c(scenarios[['unif_read_1']], list(seed=1)))
-```
 
-```
-## Error in (function (ref_seq, n_reads, error_rates, contam_seq, n_contam, : unused argument (name = "unif_read_1")
-```
-
-```r
 # See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 ```
 
 ```
-## Error in consensusString(test_bin$src): error in evaluating the argument 'x' in selecting a method for function 'consensusString': Error: object 'test_bin' not found
+## [1] TRUE
 ```
 
 ```r
@@ -323,26 +324,12 @@ consensusString(test_bin$src) == test_bin$true_consensus
 
 params <- setups[['base']]
 params$test_bin <- test_bin
-```
-
-```
-## Error in eval(expr, envir, enclos): object 'test_bin' not found
-```
-
-```r
 result <- do.call(score_consensus, params)
-```
-
-```
-## Error in (function (test_bin, classification_technique = "infovar_balance", : argument "test_bin" is missing, with no default
-```
-
-```r
 result$edit_dist
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'result' not found
+## [1] 1
 ```
 
 ```r
@@ -350,18 +337,11 @@ result$edit_dist
 params[['classification_params']] <- list(threshold = 1,
                                           start_threshold = 0.02)
 result <- do.call(score_consensus, params)
-```
-
-```
-## Error in (function (test_bin, classification_technique = "infovar_balance", : argument "test_bin" is missing, with no default
-```
-
-```r
 result$edit_dist
 ```
 
 ```
-## Error in eval(expr, envir, enclos): object 'result' not found
+## [1] 0
 ```
 
 ## Utility Functions

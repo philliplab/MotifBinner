@@ -375,10 +375,17 @@ for (tc in names(cases)){
 
 scenario_cache &lt;- memoise:::new_cache()
 
-for (hash in names(unique_scenarios)){
+x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
   params &lt;- unique_scenarios[[hash]]
   params$name &lt;- NULL
   res &lt;- do.call( gen_and_contaminate_reads, params)
+  result &lt;- list(res = res, hash = hash)
+  result
+}
+
+for (i in seq_along(x)){
+  hash &lt;- x[[i]]$hash
+  res &lt;- x[[i]]$res
   scenario_cache$set(hash, res)
 }
 
@@ -883,52 +890,33 @@ in the distance matrix is above some threshold.</p>
 
 <pre><code class="r"># Generate test data
 test_bin &lt;- do.call(gen_and_contaminate_reads, c(scenarios[[&#39;unif_read_1&#39;]], list(seed=1)))
-</code></pre>
 
-<pre><code>## Error in (function (ref_seq, n_reads, error_rates, contam_seq, n_contam, : unused argument (name = &quot;unif_read_1&quot;)
-</code></pre>
-
-<pre><code class="r"># See how easy the problem is
+# See how easy the problem is
 consensusString(test_bin$src) == test_bin$true_consensus
 </code></pre>
 
-<pre><code>## Error in consensusString(test_bin$src): error in evaluating the argument &#39;x&#39; in selecting a method for function &#39;consensusString&#39;: Error: object &#39;test_bin&#39; not found
+<pre><code>## [1] TRUE
 </code></pre>
 
 <pre><code class="r"># See how the basic technique fails
 
 params &lt;- setups[[&#39;base&#39;]]
 params$test_bin &lt;- test_bin
+result &lt;- do.call(score_consensus, params)
+result$edit_dist
 </code></pre>
 
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;test_bin&#39; not found
-</code></pre>
-
-<pre><code class="r">result &lt;- do.call(score_consensus, params)
-</code></pre>
-
-<pre><code>## Error in (function (test_bin, classification_technique = &quot;infovar_balance&quot;, : argument &quot;test_bin&quot; is missing, with no default
-</code></pre>
-
-<pre><code class="r">result$edit_dist
-</code></pre>
-
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
+<pre><code>## [1] 1
 </code></pre>
 
 <pre><code class="r"># Fix it with the starting threshold:
 params[[&#39;classification_params&#39;]] &lt;- list(threshold = 1,
                                           start_threshold = 0.02)
 result &lt;- do.call(score_consensus, params)
+result$edit_dist
 </code></pre>
 
-<pre><code>## Error in (function (test_bin, classification_technique = &quot;infovar_balance&quot;, : argument &quot;test_bin&quot; is missing, with no default
-</code></pre>
-
-<pre><code class="r">result$edit_dist
-</code></pre>
-
-<pre><code>## Error in eval(expr, envir, enclos): object &#39;result&#39; not found
+<pre><code>## [1] 0
 </code></pre>
 
 <h2>Utility Functions</h2>
