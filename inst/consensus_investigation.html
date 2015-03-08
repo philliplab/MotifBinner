@@ -373,14 +373,23 @@ for (tc in names(cases)){
   unique_scenarios[[hash]] &lt;- params
 }
 
-#scenario_cache &lt;- memoise:::new_cache()
-scenario_cache &lt;- list()
+cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
+
+if (file.exists(cache_file)){
+  load(cache_file)
+} else {
+  scenario_cache &lt;- list()
+}
 
 x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
-  params &lt;- unique_scenarios[[hash]]
-  params$name &lt;- NULL
-  res &lt;- do.call( gen_and_contaminate_reads, params)
-  result &lt;- list(res = res, hash = hash)
+  if (hash %in% names(scenario_cache)){
+    result &lt;- list(res = scenario_cache[[hash]], hash = hash)
+  } else {
+    params &lt;- unique_scenarios[[hash]]
+    params$name &lt;- NULL
+    res &lt;- do.call( gen_and_contaminate_reads, params)
+    result &lt;- list(res = res, hash = hash)
+  }
   result
 }
 
@@ -389,6 +398,8 @@ for (i in seq_along(x)){
   res &lt;- x[[i]]$res
   scenario_cache[[hash]] &lt;- res
 }
+
+save(scenario_cache, file = cache_file)
 
 run_test &lt;- function(scenario, seed, setup){
   params &lt;- scenario
