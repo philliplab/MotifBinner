@@ -173,7 +173,8 @@ for (tc in names(cases)){
   unique_scenarios[[hash]] <- params
 }
 
-scenario_cache <- memoise:::new_cache()
+#scenario_cache <- memoise:::new_cache()
+scenario_cache <- list()
 
 x <- foreach (hash = names(unique_scenarios)) %dopar% {
   params <- unique_scenarios[[hash]]
@@ -186,14 +187,14 @@ x <- foreach (hash = names(unique_scenarios)) %dopar% {
 for (i in seq_along(x)){
   hash <- x[[i]]$hash
   res <- x[[i]]$res
-  scenario_cache$set(hash, res)
+  scenario_cache[[hash]] <- res
 }
 
 run_test <- function(scenario, seed, setup){
   params <- scenario
   params[['seed']] <- seed
 
-  test_bin <- scenario_cache$get(digest(params))
+  test_bin <- scenario_cache[[digest(params)]]
 
   params <- setup
   params$test_bin <- test_bin
