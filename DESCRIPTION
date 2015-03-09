@@ -32,5 +32,6 @@ Collate:
     'classification_checker.R'
     'bin_by_name.R'
     'batch_utilities.R'
+    'benchmarking.R'
     'consensus_checker.R'
     'sim_read.R'

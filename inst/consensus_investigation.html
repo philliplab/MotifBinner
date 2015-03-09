@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 13:22:38 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 13:30:25 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -370,63 +370,7 @@ for (setup in names(setups)){
 
 <h2>The test runner</h2>
 
-<pre><code class="r">list_unique_scenarios &lt;- function(cases){
-
-  unique_scenarios &lt;- list()
-
-  for (tc in names(cases)){
-    params &lt;- cases[[tc]]$scenario
-    params[[&#39;seed&#39;]] &lt;- cases[[tc]]$seed
-    hash &lt;- digest(params)
-    unique_scenarios[[hash]] &lt;- params
-  }
-  return(unique_scenarios)
-}
-
-load_or_initialize_cache &lt;- function(cache_file){
-  if (file.exists(cache_file)){
-    load(cache_file)
-  } else {
-    scenario_cache &lt;- list()
-  }
-  return(scenario_cache)
-}
-
-create_scenario_data &lt;- function(unique_scenarios, scenario_cache){
-  x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
-    if (hash %in% names(scenario_cache)){
-      result &lt;- list(res = scenario_cache[[hash]], hash = hash)
-    } else {
-      params &lt;- unique_scenarios[[hash]]
-      params$name &lt;- NULL
-      res &lt;- do.call( gen_and_contaminate_reads, params)
-      result &lt;- list(res = res, hash = hash)
-    }
-    result
-  }
-
-  for (i in seq_along(x)){
-    hash &lt;- x[[i]]$hash
-    res &lt;- x[[i]]$res
-    scenario_cache[[hash]] &lt;- res
-  }
-  return(scenario_cache)
-}
-
-run_test &lt;- function(scenario, seed, setup){
-  params &lt;- scenario
-  params[[&#39;seed&#39;]] &lt;- seed
-
-  test_bin &lt;- scenario_cache[[digest(params)]]
-
-  params &lt;- setup
-  params$test_bin &lt;- test_bin
-  result &lt;- do.call(score_consensus, params)
-  return(list(mismatch = result$edit_dist,
-              output_len = nchar(result$alignment)))
-}
-
-unique_scenarios &lt;- list_unique_scenarios(cases)
+<pre><code class="r">unique_scenarios &lt;- list_unique_scenarios(cases)
 
 cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
 

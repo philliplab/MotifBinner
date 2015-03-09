@@ -170,62 +170,6 @@ for (setup in names(setups)){
 ## The test runner
 
 ```{r}
-list_unique_scenarios <- function(cases){
-
-  unique_scenarios <- list()
-  
-  for (tc in names(cases)){
-    params <- cases[[tc]]$scenario
-    params[['seed']] <- cases[[tc]]$seed
-    hash <- digest(params)
-    unique_scenarios[[hash]] <- params
-  }
-  return(unique_scenarios)
-}
-
-load_or_initialize_cache <- function(cache_file){
-  if (file.exists(cache_file)){
-    load(cache_file)
-  } else {
-    scenario_cache <- list()
-  }
-  return(scenario_cache)
-}
-
-create_scenario_data <- function(unique_scenarios, scenario_cache){
-  x <- foreach (hash = names(unique_scenarios)) %dopar% {
-    if (hash %in% names(scenario_cache)){
-      result <- list(res = scenario_cache[[hash]], hash = hash)
-    } else {
-      params <- unique_scenarios[[hash]]
-      params$name <- NULL
-      res <- do.call( gen_and_contaminate_reads, params)
-      result <- list(res = res, hash = hash)
-    }
-    result
-  }
-
-  for (i in seq_along(x)){
-    hash <- x[[i]]$hash
-    res <- x[[i]]$res
-    scenario_cache[[hash]] <- res
-  }
-  return(scenario_cache)
-}
-
-run_test <- function(scenario, seed, setup){
-  params <- scenario
-  params[['seed']] <- seed
-
-  test_bin <- scenario_cache[[digest(params)]]
-
-  params <- setup
-  params$test_bin <- test_bin
-  result <- do.call(score_consensus, params)
-  return(list(mismatch = result$edit_dist,
-              output_len = nchar(result$alignment)))
-}
-
 unique_scenarios <- list_unique_scenarios(cases)
 
 cache_file <- '~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata'
