@@ -2,6 +2,15 @@
 
 # Investigation of various approach to constructing a consensus string
 
+
+```r
+Sys.time()
+```
+
+```
+## [1] "2015-03-09 11:08:56 SAST"
+```
+
 ## Overview
 
 Three important steps needs to be optimized:
@@ -210,7 +219,8 @@ run_test <- function(scenario, seed, setup){
   params <- setup
   params$test_bin <- test_bin
   result <- do.call(score_consensus, params)
-  return(result$edit_dist)
+  return(list(mismatch = result$edit_dist,
+              output_len = nchar(result$alignment)))
 }
 ```
 
@@ -223,6 +233,7 @@ results <- data.frame(setup = character(0),
                       seed = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
+                      output_len = numeric(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
@@ -231,7 +242,9 @@ for (tc in names(cases)){
   setup <- split_names[1]
   scenario <- split_names[2]
   seed <- split_names[3]
-  mismatch <- do.call(run_test, cases[[tc]])
+  test_result <- do.call(run_test, cases[[tc]])
+  output_len <- test_result$output_len
+  mismatch <- test_result$mismatch
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
   results <- rbind(results,
                    data.frame(setup = setup,
@@ -239,6 +252,7 @@ for (tc in names(cases)){
                               seed = seed,
                               mismatch = mismatch,
                               input_len = input_len,
+                              output_len = output_len,
                               mismatch_rate = mismatch / input_len))
 }
 ```
@@ -251,62 +265,62 @@ kable(results)
 
 
 
-|setup    |scenario      |seed | mismatch| input_len| mismatch_rate|
-|:--------|:-------------|:----|--------:|---------:|-------------:|
-|base     |unif_read_1   |1    |        1|       500|         0.002|
-|base     |unif_read_1   |2    |        0|       500|         0.000|
-|base     |unif_read_1   |3    |        0|       500|         0.000|
-|base     |unif_read_2   |1    |        0|       500|         0.000|
-|base     |unif_read_2   |2    |        0|       500|         0.000|
-|base     |unif_read_2   |3    |        0|       500|         0.000|
-|base     |unif_read_3   |1    |      220|       500|         0.440|
-|base     |unif_read_3   |2    |      225|       500|         0.450|
-|base     |unif_read_3   |3    |      209|       500|         0.418|
-|base     |unif_contam_1 |1    |        0|       500|         0.000|
-|base     |unif_contam_1 |2    |        0|       500|         0.000|
-|base     |unif_contam_1 |3    |        0|       500|         0.000|
-|base     |unif_contam_2 |1    |      200|       500|         0.400|
-|base     |unif_contam_2 |2    |      200|       500|         0.400|
-|base     |unif_contam_2 |3    |      200|       500|         0.400|
-|base     |unif_contam_3 |1    |      200|       500|         0.400|
-|base     |unif_contam_3 |2    |      200|       500|         0.400|
-|base     |unif_contam_3 |3    |      200|       500|         0.400|
-|base1    |unif_read_1   |1    |        0|       500|         0.000|
-|base1    |unif_read_1   |2    |        0|       500|         0.000|
-|base1    |unif_read_1   |3    |        0|       500|         0.000|
-|base1    |unif_read_2   |1    |        0|       500|         0.000|
-|base1    |unif_read_2   |2    |        0|       500|         0.000|
-|base1    |unif_read_2   |3    |        0|       500|         0.000|
-|base1    |unif_read_3   |1    |      220|       500|         0.440|
-|base1    |unif_read_3   |2    |      225|       500|         0.450|
-|base1    |unif_read_3   |3    |      209|       500|         0.418|
-|base1    |unif_contam_1 |1    |        0|       500|         0.000|
-|base1    |unif_contam_1 |2    |        0|       500|         0.000|
-|base1    |unif_contam_1 |3    |        0|       500|         0.000|
-|base1    |unif_contam_2 |1    |      200|       500|         0.400|
-|base1    |unif_contam_2 |2    |      200|       500|         0.400|
-|base1    |unif_contam_2 |3    |      200|       500|         0.400|
-|base1    |unif_contam_3 |1    |      200|       500|         0.400|
-|base1    |unif_contam_3 |2    |      200|       500|         0.400|
-|base1    |unif_contam_3 |3    |      200|       500|         0.400|
-|most_con |unif_read_1   |1    |        0|       500|         0.000|
-|most_con |unif_read_1   |2    |        0|       500|         0.000|
-|most_con |unif_read_1   |3    |        0|       500|         0.000|
-|most_con |unif_read_2   |1    |        0|       500|         0.000|
-|most_con |unif_read_2   |2    |        0|       500|         0.000|
-|most_con |unif_read_2   |3    |        0|       500|         0.000|
-|most_con |unif_read_3   |1    |      138|       500|         0.276|
-|most_con |unif_read_3   |2    |      168|       500|         0.336|
-|most_con |unif_read_3   |3    |      147|       500|         0.294|
-|most_con |unif_contam_1 |1    |        0|       500|         0.000|
-|most_con |unif_contam_1 |2    |        0|       500|         0.000|
-|most_con |unif_contam_1 |3    |        0|       500|         0.000|
-|most_con |unif_contam_2 |1    |      100|       500|         0.200|
-|most_con |unif_contam_2 |2    |      100|       500|         0.200|
-|most_con |unif_contam_2 |3    |      100|       500|         0.200|
-|most_con |unif_contam_3 |1    |      127|       500|         0.254|
-|most_con |unif_contam_3 |2    |      138|       500|         0.276|
-|most_con |unif_contam_3 |3    |      136|       500|         0.272|
+|setup    |scenario      |seed | mismatch| input_len| output_len| mismatch_rate|
+|:--------|:-------------|:----|--------:|---------:|----------:|-------------:|
+|base     |unif_read_1   |1    |        1|       500|        500|         0.002|
+|base     |unif_read_1   |2    |        0|       500|        500|         0.000|
+|base     |unif_read_1   |3    |        0|       500|        500|         0.000|
+|base     |unif_read_2   |1    |        0|       500|        500|         0.000|
+|base     |unif_read_2   |2    |        0|       500|        500|         0.000|
+|base     |unif_read_2   |3    |        0|       500|        500|         0.000|
+|base     |unif_read_3   |1    |      220|       500|        556|         0.440|
+|base     |unif_read_3   |2    |      225|       500|        552|         0.450|
+|base     |unif_read_3   |3    |      209|       500|        568|         0.418|
+|base     |unif_contam_1 |1    |        0|       500|        500|         0.000|
+|base     |unif_contam_1 |2    |        0|       500|        500|         0.000|
+|base     |unif_contam_1 |3    |        0|       500|        500|         0.000|
+|base     |unif_contam_2 |1    |      200|       500|        600|         0.400|
+|base     |unif_contam_2 |2    |      200|       500|        600|         0.400|
+|base     |unif_contam_2 |3    |      200|       500|        600|         0.400|
+|base     |unif_contam_3 |1    |      200|       500|        600|         0.400|
+|base     |unif_contam_3 |2    |      200|       500|        600|         0.400|
+|base     |unif_contam_3 |3    |      100|       500|        500|         0.200|
+|base1    |unif_read_1   |1    |        0|       500|        500|         0.000|
+|base1    |unif_read_1   |2    |        0|       500|        500|         0.000|
+|base1    |unif_read_1   |3    |        0|       500|        500|         0.000|
+|base1    |unif_read_2   |1    |        0|       500|        500|         0.000|
+|base1    |unif_read_2   |2    |        0|       500|        500|         0.000|
+|base1    |unif_read_2   |3    |        0|       500|        500|         0.000|
+|base1    |unif_read_3   |1    |      220|       500|        556|         0.440|
+|base1    |unif_read_3   |2    |      225|       500|        552|         0.450|
+|base1    |unif_read_3   |3    |      209|       500|        568|         0.418|
+|base1    |unif_contam_1 |1    |        0|       500|        500|         0.000|
+|base1    |unif_contam_1 |2    |        0|       500|        500|         0.000|
+|base1    |unif_contam_1 |3    |        0|       500|        500|         0.000|
+|base1    |unif_contam_2 |1    |      200|       500|        600|         0.400|
+|base1    |unif_contam_2 |2    |      200|       500|        600|         0.400|
+|base1    |unif_contam_2 |3    |      200|       500|        600|         0.400|
+|base1    |unif_contam_3 |1    |      200|       500|        600|         0.400|
+|base1    |unif_contam_3 |2    |      200|       500|        600|         0.400|
+|base1    |unif_contam_3 |3    |      100|       500|        500|         0.200|
+|most_con |unif_read_1   |1    |        0|       500|        500|         0.000|
+|most_con |unif_read_1   |2    |        0|       500|        500|         0.000|
+|most_con |unif_read_1   |3    |        0|       500|        500|         0.000|
+|most_con |unif_read_2   |1    |        0|       500|        500|         0.000|
+|most_con |unif_read_2   |2    |        0|       500|        500|         0.000|
+|most_con |unif_read_2   |3    |        0|       500|        500|         0.000|
+|most_con |unif_read_3   |1    |      138|       500|        559|         0.276|
+|most_con |unif_read_3   |2    |      149|       500|        561|         0.298|
+|most_con |unif_read_3   |3    |      147|       500|        571|         0.294|
+|most_con |unif_contam_1 |1    |        0|       500|        500|         0.000|
+|most_con |unif_contam_1 |2    |        0|       500|        500|         0.000|
+|most_con |unif_contam_1 |3    |        0|       500|        500|         0.000|
+|most_con |unif_contam_2 |1    |      100|       500|        600|         0.200|
+|most_con |unif_contam_2 |2    |      100|       500|        600|         0.200|
+|most_con |unif_contam_2 |3    |      100|       500|        600|         0.200|
+|most_con |unif_contam_3 |1    |      127|       500|        600|         0.254|
+|most_con |unif_contam_3 |2    |      138|       500|        600|         0.276|
+|most_con |unif_contam_3 |3    |      136|       500|        600|         0.272|
 
 ## Fixes resulting from benchmarking
 

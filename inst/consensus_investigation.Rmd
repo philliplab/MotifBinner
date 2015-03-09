@@ -5,10 +5,13 @@ library(digest)
 library(memoise)
 library(doParallel)
 registerDoParallel(cores=6)
-
 ```
 
 # Investigation of various approach to constructing a consensus string
+
+```{r}
+Sys.time()
+```
 
 ## Overview
 
@@ -213,7 +216,8 @@ run_test <- function(scenario, seed, setup){
   params <- setup
   params$test_bin <- test_bin
   result <- do.call(score_consensus, params)
-  return(result$edit_dist)
+  return(list(mismatch = result$edit_dist,
+              output_len = nchar(result$alignment)))
 }
 ```
 
@@ -225,6 +229,7 @@ results <- data.frame(setup = character(0),
                       seed = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
+                      output_len = numeric(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
@@ -233,7 +238,9 @@ for (tc in names(cases)){
   setup <- split_names[1]
   scenario <- split_names[2]
   seed <- split_names[3]
-  mismatch <- do.call(run_test, cases[[tc]])
+  test_result <- do.call(run_test, cases[[tc]])
+  output_len <- test_result$output_len
+  mismatch <- test_result$mismatch
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
   results <- rbind(results,
                    data.frame(setup = setup,
@@ -241,6 +248,7 @@ for (tc in names(cases)){
                               seed = seed,
                               mismatch = mismatch,
                               input_len = input_len,
+                              output_len = output_len,
                               mismatch_rate = mismatch / input_len))
 }
 ```

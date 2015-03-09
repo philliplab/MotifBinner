@@ -2,4 +2,4 @@
 
 R -e "library(knitr); knit2html('consensus_investigation.Rmd')"
 
-firefox consensus_investigation.html
+#firefox consensus_investigation.html

@@ -203,6 +203,12 @@ hr {
 <body>
 <h1>Investigation of various approach to constructing a consensus string</h1>
 
+<pre><code class="r">Sys.time()
+</code></pre>
+
+<pre><code>## [1] &quot;2015-03-09 11:08:56 SAST&quot;
+</code></pre>
+
 <h2>Overview</h2>
 
 <p>Three important steps needs to be optimized:</p>
@@ -410,7 +416,8 @@ run_test &lt;- function(scenario, seed, setup){
   params &lt;- setup
   params$test_bin &lt;- test_bin
   result &lt;- do.call(score_consensus, params)
-  return(result$edit_dist)
+  return(list(mismatch = result$edit_dist,
+              output_len = nchar(result$alignment)))
 }
 </code></pre>
 
@@ -421,6 +428,7 @@ run_test &lt;- function(scenario, seed, setup){
                       seed = character(0),
                       mismatch = numeric(0),
                       input_len = numeric(0),
+                      output_len = numeric(0),
                       mismatch_rate = numeric(0))
 
 for (tc in names(cases)){
@@ -429,7 +437,9 @@ for (tc in names(cases)){
   setup &lt;- split_names[1]
   scenario &lt;- split_names[2]
   seed &lt;- split_names[3]
-  mismatch &lt;- do.call(run_test, cases[[tc]])
+  test_result &lt;- do.call(run_test, cases[[tc]])
+  output_len &lt;- test_result$output_len
+  mismatch &lt;- test_result$mismatch
   input_len &lt;- nchar(cases[[tc]][[&#39;scenario&#39;]][[&#39;ref_seq&#39;]])
   results &lt;- rbind(results,
                    data.frame(setup = setup,
@@ -437,6 +447,7 @@ for (tc in names(cases)){
                               seed = seed,
                               mismatch = mismatch,
                               input_len = input_len,
+                              output_len = output_len,
                               mismatch_rate = mismatch / input_len))
 }
 </code></pre>
@@ -453,6 +464,7 @@ for (tc in names(cases)){
 <th align="left">seed</th>
 <th align="right">mismatch</th>
 <th align="right">input_len</th>
+<th align="right">output_len</th>
 <th align="right">mismatch_rate</th>
 </tr>
 </thead><tbody>
@@ -462,6 +474,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">1</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.002</td>
 </tr>
 <tr>
@@ -470,6 +483,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -477,6 +491,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -486,6 +501,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -494,6 +510,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -501,6 +518,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_2</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -510,6 +528,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">220</td>
 <td align="right">500</td>
+<td align="right">556</td>
 <td align="right">0.440</td>
 </tr>
 <tr>
@@ -518,6 +537,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">225</td>
 <td align="right">500</td>
+<td align="right">552</td>
 <td align="right">0.450</td>
 </tr>
 <tr>
@@ -526,6 +546,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">209</td>
 <td align="right">500</td>
+<td align="right">568</td>
 <td align="right">0.418</td>
 </tr>
 <tr>
@@ -534,21 +555,24 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
-</tr>
-<tr>
-<td align="left">base</td>
-<td align="left">unif_contam_1</td>
-<td align="left">2</td>
-<td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base</td>
+<td align="left">unif_contam_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -558,6 +582,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -566,6 +591,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -574,6 +600,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -582,6 +609,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -590,21 +618,24 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base</td>
 <td align="left">unif_contam_3</td>
 <td align="left">3</td>
-<td align="right">200</td>
+<td align="right">100</td>
 <td align="right">500</td>
-<td align="right">0.400</td>
+<td align="right">500</td>
+<td align="right">0.200</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_read_1</td>
 <td align="left">1</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -614,6 +645,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -621,6 +653,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -630,6 +663,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -638,6 +672,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -645,6 +680,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_2</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -654,6 +690,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">220</td>
 <td align="right">500</td>
+<td align="right">556</td>
 <td align="right">0.440</td>
 </tr>
 <tr>
@@ -662,6 +699,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">225</td>
 <td align="right">500</td>
+<td align="right">552</td>
 <td align="right">0.450</td>
 </tr>
 <tr>
@@ -670,6 +708,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">209</td>
 <td align="right">500</td>
+<td align="right">568</td>
 <td align="right">0.418</td>
 </tr>
 <tr>
@@ -678,21 +717,24 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
-<td align="right">0.000</td>
-</tr>
-<tr>
-<td align="left">base1</td>
-<td align="left">unif_contam_1</td>
-<td align="left">2</td>
-<td align="right">0</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">base1</td>
+<td align="left">unif_contam_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -702,6 +744,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -710,6 +753,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -718,6 +762,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -726,6 +771,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
@@ -734,21 +780,24 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">200</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.400</td>
 </tr>
 <tr>
 <td align="left">base1</td>
 <td align="left">unif_contam_3</td>
 <td align="left">3</td>
-<td align="right">200</td>
+<td align="right">100</td>
 <td align="right">500</td>
-<td align="right">0.400</td>
+<td align="right">500</td>
+<td align="right">0.200</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_read_1</td>
 <td align="left">1</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -758,6 +807,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -765,6 +815,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -774,6 +825,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -782,6 +834,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -789,6 +842,7 @@ for (tc in names(cases)){
 <td align="left">unif_read_2</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -798,15 +852,17 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">138</td>
 <td align="right">500</td>
+<td align="right">559</td>
 <td align="right">0.276</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
 <td align="left">unif_read_3</td>
 <td align="left">2</td>
-<td align="right">168</td>
+<td align="right">149</td>
 <td align="right">500</td>
-<td align="right">0.336</td>
+<td align="right">561</td>
+<td align="right">0.298</td>
 </tr>
 <tr>
 <td align="left">most_con</td>
@@ -814,6 +870,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">147</td>
 <td align="right">500</td>
+<td align="right">571</td>
 <td align="right">0.294</td>
 </tr>
 <tr>
@@ -822,6 +879,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -830,6 +888,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">0</td>
 <td align="right">500</td>
+<td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
 <tr>
@@ -837,6 +896,7 @@ for (tc in names(cases)){
 <td align="left">unif_contam_1</td>
 <td align="left">3</td>
 <td align="right">0</td>
+<td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.000</td>
 </tr>
@@ -846,6 +906,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">100</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.200</td>
 </tr>
 <tr>
@@ -854,6 +915,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">100</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.200</td>
 </tr>
 <tr>
@@ -862,6 +924,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">100</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.200</td>
 </tr>
 <tr>
@@ -870,6 +933,7 @@ for (tc in names(cases)){
 <td align="left">1</td>
 <td align="right">127</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.254</td>
 </tr>
 <tr>
@@ -878,6 +942,7 @@ for (tc in names(cases)){
 <td align="left">2</td>
 <td align="right">138</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.276</td>
 </tr>
 <tr>
@@ -886,6 +951,7 @@ for (tc in names(cases)){
 <td align="left">3</td>
 <td align="right">136</td>
 <td align="right">500</td>
+<td align="right">600</td>
 <td align="right">0.272</td>
 </tr>
 </tbody></table>
