@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 13:12:40 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 13:19:07 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -383,15 +383,20 @@ for (setup in names(setups)){
   return(unique_scenarios)
 }
 
+load_or_initialize_cache &lt;- function(cache_file){
+  if (file.exists(cache_file)){
+    load(cache_file)
+  } else {
+    scenario_cache &lt;- list()
+  }
+  return(scenario_cache)
+}
+
 unique_scenarios &lt;- list_unique_scenarios(cases)
 
 cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
 
-if (file.exists(cache_file)){
-  load(cache_file)
-} else {
-  scenario_cache &lt;- list()
-}
+scenario_cache &lt;- load_or_initialize_cache(cache_file)
 
 x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
   if (hash %in% names(scenario_cache)){

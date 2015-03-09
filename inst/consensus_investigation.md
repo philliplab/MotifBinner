@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-09 13:12:40 SAST"
+## [1] "2015-03-09 13:19:07 SAST"
 ```
 
 ## Overview
@@ -186,15 +186,20 @@ list_unique_scenarios <- function(cases){
   return(unique_scenarios)
 }
 
+load_or_initialize_cache <- function(cache_file){
+  if (file.exists(cache_file)){
+    load(cache_file)
+  } else {
+    scenario_cache <- list()
+  }
+  return(scenario_cache)
+}
+
 unique_scenarios <- list_unique_scenarios(cases)
 
 cache_file <- '~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata'
 
-if (file.exists(cache_file)){
-  load(cache_file)
-} else {
-  scenario_cache <- list()
-}
+scenario_cache <- load_or_initialize_cache(cache_file)
 
 x <- foreach (hash = names(unique_scenarios)) %dopar% {
   if (hash %in% names(scenario_cache)){
