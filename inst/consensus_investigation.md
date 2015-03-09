@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-09 14:01:23 SAST"
+## [1] "2015-03-09 14:23:28 SAST"
 ```
 
 ## Overview
@@ -190,35 +190,7 @@ save(scenario_cache, file = cache_file)
 
 
 ```r
-results <- data.frame(setup = character(0),
-                      scenario = character(0),
-                      seed = character(0),
-                      mismatch = numeric(0),
-                      input_len = numeric(0),
-                      output_len = numeric(0),
-                      mismatch_rate = numeric(0))
-
-for (tc in names(cases)){
-  print(tc)
-  split_names <- strsplit(tc, split='-')[[1]]
-  setup <- split_names[1]
-  scenario <- split_names[2]
-  seed <- split_names[3]
-  params <- cases[[tc]]
-  params[['scenario_cache']] <- scenario_cache
-  test_result <- do.call(run_test, params)
-  output_len <- test_result$output_len
-  mismatch <- test_result$mismatch
-  input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
-  results <- rbind(results,
-                   data.frame(setup = setup,
-                              scenario = scenario,
-                              seed = seed,
-                              mismatch = mismatch,
-                              input_len = input_len,
-                              output_len = output_len,
-                              mismatch_rate = mismatch / input_len))
-}
+results <- run_all_tests(cases, scenario_cache)
 ```
 
 ## The results

@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 14:01:23 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 14:23:28 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -385,35 +385,7 @@ save(scenario_cache, file = cache_file)
 
 <h2>Running the test cases.</h2>
 
-<pre><code class="r">results &lt;- data.frame(setup = character(0),
-                      scenario = character(0),
-                      seed = character(0),
-                      mismatch = numeric(0),
-                      input_len = numeric(0),
-                      output_len = numeric(0),
-                      mismatch_rate = numeric(0))
-
-for (tc in names(cases)){
-  print(tc)
-  split_names &lt;- strsplit(tc, split=&#39;-&#39;)[[1]]
-  setup &lt;- split_names[1]
-  scenario &lt;- split_names[2]
-  seed &lt;- split_names[3]
-  params &lt;- cases[[tc]]
-  params[[&#39;scenario_cache&#39;]] &lt;- scenario_cache
-  test_result &lt;- do.call(run_test, params)
-  output_len &lt;- test_result$output_len
-  mismatch &lt;- test_result$mismatch
-  input_len &lt;- nchar(cases[[tc]][[&#39;scenario&#39;]][[&#39;ref_seq&#39;]])
-  results &lt;- rbind(results,
-                   data.frame(setup = setup,
-                              scenario = scenario,
-                              seed = seed,
-                              mismatch = mismatch,
-                              input_len = input_len,
-                              output_len = output_len,
-                              mismatch_rate = mismatch / input_len))
-}
+<pre><code class="r">results &lt;- run_all_tests(cases, scenario_cache)
 </code></pre>
 
 <h2>The results</h2>
