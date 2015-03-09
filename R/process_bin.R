@@ -13,6 +13,8 @@
 #' @param consensus_technique The technique to use when generating the
 #' consensus sequence
 #' @param consensus_params The parameters for the consensus generator
+#' @param remove_gaps If set to TRUE (the default, then gaps will be removed
+#' from the consensus sequences)
 #' @export
 
 process_bin <- function(seqs, classification_technique = 'infovar_balance',
@@ -22,7 +24,8 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
                         alignment_technique = 'muscle',
                         alignment_params = list(),
                         consensus_technique = 'Biostrings::consensusString',
-                        consensus_params = list()){
+                        consensus_params = list(),
+                        remove_gaps = TRUE){
   if (is.list(seqs)){
     if (all(sort(c('src', 'out')) == sort(names(seqs)))){
       seqs <- c(seqs$src, seqs$out)
@@ -38,6 +41,9 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
                          params = alignment_params)
     x <- construct_consensus(x, technique = consensus_technique,
                              params = consensus_params)
+    if (remove_gaps){
+      x[[1]] <- gsub('-', '', x[[1]])
+    }
     return(x)
   }
 }

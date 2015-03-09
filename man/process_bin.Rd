@@ -10,7 +10,7 @@ process_bin(seqs, classification_technique = "infovar_balance",
   max_sequences = 100), alignment_technique = "muscle",
   alignment_params = list(),
   consensus_technique = "Biostrings::consensusString",
-  consensus_params = list())
+  consensus_params = list(), remove_gaps = TRUE)
 }
 \arguments{
 \item{seqs}{The sequences that were binned together}
@@ -28,6 +28,9 @@ mislabelled sequences}
 consensus sequence}
 
 \item{consensus_params}{The parameters for the consensus generator}
+
+\item{remove_gaps}{If set to TRUE (the default, then gaps will be removed
+from the consensus sequences)}
 }
 \description{
 The output will be a list with a DNAString. The name of the DNAString in the
