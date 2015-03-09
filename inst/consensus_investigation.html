@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 12:33:08 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 13:12:40 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -370,14 +370,20 @@ for (setup in names(setups)){
 
 <h2>The test runner</h2>
 
-<pre><code class="r">unique_scenarios &lt;- list()
+<pre><code class="r">list_unique_scenarios &lt;- function(cases){
 
-for (tc in names(cases)){
-  params &lt;- cases[[tc]]$scenario
-  params[[&#39;seed&#39;]] &lt;- cases[[tc]]$seed
-  hash &lt;- digest(params)
-  unique_scenarios[[hash]] &lt;- params
+  unique_scenarios &lt;- list()
+
+  for (tc in names(cases)){
+    params &lt;- cases[[tc]]$scenario
+    params[[&#39;seed&#39;]] &lt;- cases[[tc]]$seed
+    hash &lt;- digest(params)
+    unique_scenarios[[hash]] &lt;- params
+  }
+  return(unique_scenarios)
 }
+
+unique_scenarios &lt;- list_unique_scenarios(cases)
 
 cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
 

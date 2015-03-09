@@ -170,14 +170,20 @@ for (setup in names(setups)){
 ## The test runner
 
 ```{r}
-unique_scenarios <- list()
+list_unique_scenarios <- function(cases){
 
-for (tc in names(cases)){
-  params <- cases[[tc]]$scenario
-  params[['seed']] <- cases[[tc]]$seed
-  hash <- digest(params)
-  unique_scenarios[[hash]] <- params
+  unique_scenarios <- list()
+  
+  for (tc in names(cases)){
+    params <- cases[[tc]]$scenario
+    params[['seed']] <- cases[[tc]]$seed
+    hash <- digest(params)
+    unique_scenarios[[hash]] <- params
+  }
+  return(unique_scenarios)
 }
+
+unique_scenarios <- list_unique_scenarios(cases)
 
 cache_file <- '~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata'
 
