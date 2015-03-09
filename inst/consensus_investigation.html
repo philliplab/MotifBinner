@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 13:30:25 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 14:01:23 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -356,6 +356,8 @@ scenarios[[&#39;unif_contam_3&#39;]] &lt;- list(name = &#39;unif_contam_3&#39;,
 <pre><code class="r">cases &lt;- list()
 seeds &lt;- 1:3
 
+# Note this code is gonna become complex and is going to interact with the case
+# specification is weird ways - so leave it here
 for (setup in names(setups)){
   for (scenario in names(scenarios)){
     for (seed in seeds){
@@ -397,7 +399,9 @@ for (tc in names(cases)){
   setup &lt;- split_names[1]
   scenario &lt;- split_names[2]
   seed &lt;- split_names[3]
-  test_result &lt;- do.call(run_test, cases[[tc]])
+  params &lt;- cases[[tc]]
+  params[[&#39;scenario_cache&#39;]] &lt;- scenario_cache
+  test_result &lt;- do.call(run_test, params)
   output_len &lt;- test_result$output_len
   mismatch &lt;- test_result$mismatch
   input_len &lt;- nchar(cases[[tc]][[&#39;scenario&#39;]][[&#39;ref_seq&#39;]])

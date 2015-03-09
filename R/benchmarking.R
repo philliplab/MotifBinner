@@ -60,9 +60,10 @@ create_scenario_data <- function(unique_scenarios, scenario_cache){
 #' @param seed The seed that was used to generate the scenario
 #' @param setup A list containing parameters that will control how the bin is
 #' processed
+#' @param scenario_cache The cache with the pre computed scenarios
 #' @export
 
-run_test <- function(scenario, seed, setup){
+run_test <- function(scenario, seed, setup, scenario_cache){
   params <- scenario
   params[['seed']] <- seed
 

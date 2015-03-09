@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-09 13:30:25 SAST"
+## [1] "2015-03-09 14:01:23 SAST"
 ```
 
 ## Overview
@@ -157,6 +157,8 @@ scenarios[['unif_contam_3']] <- list(name = 'unif_contam_3',
 cases <- list()
 seeds <- 1:3
 
+# Note this code is gonna become complex and is going to interact with the case
+# specification is weird ways - so leave it here
 for (setup in names(setups)){
   for (scenario in names(scenarios)){
     for (seed in seeds){
@@ -202,7 +204,9 @@ for (tc in names(cases)){
   setup <- split_names[1]
   scenario <- split_names[2]
   seed <- split_names[3]
-  test_result <- do.call(run_test, cases[[tc]])
+  params <- cases[[tc]]
+  params[['scenario_cache']] <- scenario_cache
+  test_result <- do.call(run_test, params)
   output_len <- test_result$output_len
   mismatch <- test_result$mismatch
   input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])

@@ -4,7 +4,7 @@
 \alias{run_test}
 \title{Run a test case}
 \usage{
-run_test(scenario, seed, setup)
+run_test(scenario, seed, setup, scenario_cache)
 }
 \arguments{
 \item{scenario}{The computed scenario to run the test on}
@@ -13,6 +13,8 @@ run_test(scenario, seed, setup)
 
 \item{setup}{A list containing parameters that will control how the bin is
 processed}
+
+\item{scenario_cache}{The cache with the pre computed scenarios}
 }
 \description{
 Run a test case
