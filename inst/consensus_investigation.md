@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-09 13:19:07 SAST"
+## [1] "2015-03-09 13:22:38 SAST"
 ```
 
 ## Overview
@@ -195,31 +195,26 @@ load_or_initialize_cache <- function(cache_file){
   return(scenario_cache)
 }
 
-unique_scenarios <- list_unique_scenarios(cases)
-
-cache_file <- '~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata'
-
-scenario_cache <- load_or_initialize_cache(cache_file)
-
-x <- foreach (hash = names(unique_scenarios)) %dopar% {
-  if (hash %in% names(scenario_cache)){
-    result <- list(res = scenario_cache[[hash]], hash = hash)
-  } else {
-    params <- unique_scenarios[[hash]]
-    params$name <- NULL
-    res <- do.call( gen_and_contaminate_reads, params)
-    result <- list(res = res, hash = hash)
+create_scenario_data <- function(unique_scenarios, scenario_cache){
+  x <- foreach (hash = names(unique_scenarios)) %dopar% {
+    if (hash %in% names(scenario_cache)){
+      result <- list(res = scenario_cache[[hash]], hash = hash)
+    } else {
+      params <- unique_scenarios[[hash]]
+      params$name <- NULL
+      res <- do.call( gen_and_contaminate_reads, params)
+      result <- list(res = res, hash = hash)
+    }
+    result
   }
-  result
-}
 
-for (i in seq_along(x)){
-  hash <- x[[i]]$hash
-  res <- x[[i]]$res
-  scenario_cache[[hash]] <- res
+  for (i in seq_along(x)){
+    hash <- x[[i]]$hash
+    res <- x[[i]]$res
+    scenario_cache[[hash]] <- res
+  }
+  return(scenario_cache)
 }
-
-save(scenario_cache, file = cache_file)
 
 run_test <- function(scenario, seed, setup){
   params <- scenario
@@ -233,6 +228,16 @@ run_test <- function(scenario, seed, setup){
   return(list(mismatch = result$edit_dist,
               output_len = nchar(result$alignment)))
 }
+
+unique_scenarios <- list_unique_scenarios(cases)
+
+cache_file <- '~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata'
+
+scenario_cache <- load_or_initialize_cache(cache_file)
+
+scenario_cache <- create_scenario_data(unique_scenarios, scenario_cache)
+
+save(scenario_cache, file = cache_file)
 ```
 
 ## Running the test cases.

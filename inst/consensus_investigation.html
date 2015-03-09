@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-09 13:19:07 SAST&quot;
+<pre><code>## [1] &quot;2015-03-09 13:22:38 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -392,31 +392,26 @@ load_or_initialize_cache &lt;- function(cache_file){
   return(scenario_cache)
 }
 
-unique_scenarios &lt;- list_unique_scenarios(cases)
-
-cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
-
-scenario_cache &lt;- load_or_initialize_cache(cache_file)
-
-x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
-  if (hash %in% names(scenario_cache)){
-    result &lt;- list(res = scenario_cache[[hash]], hash = hash)
-  } else {
-    params &lt;- unique_scenarios[[hash]]
-    params$name &lt;- NULL
-    res &lt;- do.call( gen_and_contaminate_reads, params)
-    result &lt;- list(res = res, hash = hash)
+create_scenario_data &lt;- function(unique_scenarios, scenario_cache){
+  x &lt;- foreach (hash = names(unique_scenarios)) %dopar% {
+    if (hash %in% names(scenario_cache)){
+      result &lt;- list(res = scenario_cache[[hash]], hash = hash)
+    } else {
+      params &lt;- unique_scenarios[[hash]]
+      params$name &lt;- NULL
+      res &lt;- do.call( gen_and_contaminate_reads, params)
+      result &lt;- list(res = res, hash = hash)
+    }
+    result
   }
-  result
-}
 
-for (i in seq_along(x)){
-  hash &lt;- x[[i]]$hash
-  res &lt;- x[[i]]$res
-  scenario_cache[[hash]] &lt;- res
+  for (i in seq_along(x)){
+    hash &lt;- x[[i]]$hash
+    res &lt;- x[[i]]$res
+    scenario_cache[[hash]] &lt;- res
+  }
+  return(scenario_cache)
 }
-
-save(scenario_cache, file = cache_file)
 
 run_test &lt;- function(scenario, seed, setup){
   params &lt;- scenario
@@ -430,6 +425,16 @@ run_test &lt;- function(scenario, seed, setup){
   return(list(mismatch = result$edit_dist,
               output_len = nchar(result$alignment)))
 }
+
+unique_scenarios &lt;- list_unique_scenarios(cases)
+
+cache_file &lt;- &#39;~/projects/MotifBinner/code/MotifBinner/inst/scenario_cache.rdata&#39;
+
+scenario_cache &lt;- load_or_initialize_cache(cache_file)
+
+scenario_cache &lt;- create_scenario_data(unique_scenarios, scenario_cache)
+
+save(scenario_cache, file = cache_file)
 </code></pre>
 
 <h2>Running the test cases.</h2>
