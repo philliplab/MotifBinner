@@ -103,7 +103,7 @@ run_all_tests <- function(cases, scenario_cache){
     mismatch <- test_result$mismatch
     input_len <- nchar(cases[[tc]][['scenario']][['ref_seq']])
     results <- rbind(results,
-                     data.frame(setup = setup,
+                      data.frame(setup = setup,
                                 scenario = scenario,
                                 seed = seed,
                                 mismatch = mismatch,

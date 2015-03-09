@@ -17,3 +17,20 @@ test_that('The bin processor works', {
   expect_that(as.character(pbin[[1]]) == 'AAAAAAAAAAAAAAAAAAA', is_true())
 })
 
+test_that('gaps are inserted and removed appropriately by process_bin', {
+  bin <- DNAStringSet(c(rep('AAAAAAAAAAAACCCCCCAAAAAAAAAAAAA', 8),
+                        rep('AAAAAAAAAAAAAACCCCCCAAAAAAAAAAAAA', 4)))
+  classification_params <- list(threshold = 1, 
+                                start_threshold = 1, 
+                                max_sequences = 100)
+  consensus_technique = 'mostConsensusString'
+  pbin <- process_bin(bin, classification_params = classification_params,
+                      consensus_technique = consensus_technique)
+  expect_that(nchar(pbin[[1]]), equals(31))
+  pbin <- process_bin(bin, classification_params = classification_params,
+                      consensus_technique = consensus_technique,
+                      remove_gaps = FALSE)
+  expect_that(nchar(pbin[[1]]), equals(33))
+  gaps_inserted <- sum(strsplit(as.character(pbin[[1]]), split='')[[1]] == '-')
+  expect_that(gaps_inserted, equals(2))
+})
