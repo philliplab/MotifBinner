@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-11 13:27:40 SAST"
+## [1] "2015-03-11 14:24:57 SAST"
 ```
 
 ## Overview
@@ -543,7 +543,7 @@ contains 5 or more read errors given that the sequence is of length 500 and the
 read error rate is 1 in 100?
 
 So lets just look at the maximum order statistic and systematically increase
-the number of reads in the bin
+the number of reads in the bin:
 
 ```r
 probs <- rep(0, 50)
@@ -554,6 +554,41 @@ plot(probs)
 ```
 
 ![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
+
+What does this mean? This means that the probability of the sequence with the
+most read errors in it having 10 or less read errors? If your bin is of size 1,
+then it is extremely likely that the read of the most read errors will have
+less then 10 read errors. However, if your bin is of size 50, then there is
+about a 1 in 2 chance of it having less than 10 read errors.
+
+Lets draw the distribution function of a few of the order statistics:
+
+```r
+probs <- data.frame(bin_size = numeric(0),
+                    x = numeric(0),
+                    f = numeric(0))
+
+for (j in c(1, 10, 20, 30, 40, 50)){
+  for (i in 0:20){
+    probs <- rbind(probs,
+                   data.frame(bin_size = j,
+                              x = i,
+                              f = ord_F(i, j, j, 500, 1/100)))
+  }
+}
+probs$bin_size <- as.factor(probs$bin_size)
+ggplot(data = probs, aes(x = x, y = f, col = bin_size)) + geom_line()
+```
+
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png) 
+
+Now, we need to ask the question: "Are we concerned that we might be chucking
+out properly labelled reads with lots of read errors, or do we just want to
+make the job of the aligner as easy as possible?"
+
+Until I can get some input from Colin/Simon I will just implement a very simple
+absolute threshold based approach and use that as a comparator to my current
+techniques.
 
 
 
