@@ -174,3 +174,66 @@ classify_bin_most_frequent <- function(bin){
   return(list(src = src,
               out = out))
 }
+
+#' Removes the most outlying sequences in a bin until the maximum distance
+#' between any two sequences reaches a threshold
+#'
+#' Thresholds are expressed as the probability that any given letter is an
+#' error.
+#'
+#' @param bin The input bin as a single DNAStringSet.
+#' @param threshold Outlier sequences are removed from the bin until the
+#' maximum distance between any two sequences drops below this threshold.
+#' @param  start_threshold Only start the classification if the maximum
+#' distance between and two sequences in the bin is greater than this.
+#' @param max_sequences The maximum number of sequences to use for the
+#' computation of the distance matrix. If more sequences than this is present,
+#' then randomly select this many sequences and run the classification
+#' algorithm on them.
+#' @export
+
+classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02, 
+                              max_sequences = 100){
+  discarded <- DNAStringSet(NULL)
+  if (length(bin) > max_sequences){
+    picks <- sample(1:length(bin), max_sequences, replace = FALSE)
+    discarded <- bin[-picks]
+    bin <- bin[picks]
+  }
+  seq_length <- min(nchar(bin))
+  bin_dists <- stringDist(bin)
+  if (max(bin_dists)/seq_length < start_threshold){
+    return(list(src = bin,
+                out = DNAStringSet(NULL)))
+  }
+  dmat <- as.matrix(bin_dists)
+  row.names(dmat) <- 1:nrow(dmat)
+  removed_sequences <- NULL
+  orig_dmat <- dmat
+  max_dist_below_threshold <- max(dmat)/seq_length < threshold
+  counter <- 0
+  while(!max_dist_below_threshold){
+    counter <- counter + 1
+    if (counter > 8){
+      stop()
+    }
+    dvec <- apply(dmat, 1, sum)
+    max_indx <- which(dvec == max(dvec))
+    new_dmat <- dmat[-max_indx, -max_indx]
+    if (is.null(nrow(new_dmat)) | (nrow(new_dmat) == 0)){
+      max_dist_below_threshold <- TRUE
+    } else {
+      max_dist_below_threshold <- max(new_dmat)/seq_length < threshold
+    }
+
+    removed_sequences <- c(removed_sequences, row.names(dmat)[max_indx])
+    dmat <- new_dmat
+  }
+  src_seq <- bin[as.integer(row.names(dmat))]
+  out_seq <- c(bin[as.integer(removed_sequences)], discarded)
+  return(list(src = src_seq,
+              out = out_seq))
+}
+
+
+
