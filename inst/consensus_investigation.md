@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-09 14:23:28 SAST"
+## [1] "2015-03-11 13:27:40 SAST"
 ```
 
 ## Overview
@@ -438,10 +438,122 @@ greatly inflating the mismatch scores. Well, maybe this is not that bad since
 the benchmark shows that the mislabel detector failed and that is kind the only
 thing that matters.
 
+## Read Error Rate Computations
+
+Assuming that the read error rate is described as 1 errorneous base for each
+100 bases sequenced, how many mismatches can you expect between two reads in a
+bin? What kind of a distribution is this? This is a binomial distribution.
+
+So, what is the probability that there will be 0, 1, 2, 3, ... read errors in a
+read of length 500 if the read error rate is 1 in 100?
 
 
+```r
+plot(dbinom(0:20, 500, 1/100))
+```
+
+![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
+
+How do we use this to decide when a bin contains outliers? If the distance
+between reads are such that it is unlikely that the only source of errors is
+the read errors. So the question now becomes:
+
+What is the probability that the distance between two reads is 0 given the only
+source of discrepancies is the read errors. This is the probability that
+neither read contains any errors plus the chance that the two reads has exactly
+the same read errors. The chance of exactly the same read errors occurring are
+complicating the matter and the chance of that happening is small, so lets
+ignore that for now. 
+
+Hence the question becomes: "What is the chance of there being 0 read errors in
+a read of length 1000 when the chance of a read error is 1/100.
 
 
+```r
+plot(dbinom(0:20, 1000, 1/100))
+```
+
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+
+Now, how many read errors can be allowed in a bin before we consider it to be
+suspicious? If the chance is less than 5% of there being that many read errors,
+then we should suspect alternative error sources. So lets assume a bin of size
+two. We just have to find the 95th percentile of the distribution and we are
+done.
+
+
+```r
+sample_20 <- pbinom(0:20, 1000, 1/100)
+plot(x = 0:20, y=sample_20)
+abline(h=0.95)
+dist_95 <- abs(sample_20-0.95)
+closest_95 <- (0:20)[which(dist_95 == min(dist_95))]
+abline(v=closest_95)
+```
+
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
+
+Now, consider the problematic case where there are more than two sequences in
+the bins. Now the question becomes, What is the probability that the largest
+and second largest order statistic of a random sample from a binomial
+distribution is distance x from each other. The distributions of the order
+statistics are significantly more complex than the binomial distribution.
+
+How can you prove this point? Consider the cases where the only source of
+distance between sequences are the read errors. Now think what will happen as
+the bin size approaches infinity? For any given number x, there will exist a
+number y so that if the bin size exceeds y, the probability of there being a
+read with more than x errors will exceed say 50%. So this demonstrates that
+even if the only source of distance between sequences is read errors, there
+will be a big bin size at which any absolute threshold is exceeded.
+
+Now the question is how significant is this effect?
+
+First we need to compute some order statistics. See
+http://en.wikipedia.org/wiki/Order_statistic
+
+
+```r
+p1f <- function(x, n, p){
+  pbinom(x, n, p) - dbinom(x, n, p)
+}
+
+p2f <- function(x, n, p){
+  dbinom(x, n, p)
+}
+
+p3f <- function(x, n, p){
+  1 - pbinom(x, n, p)
+}
+
+ord_F <- function(x, k, o_n, n, p){
+  p1 <- p1f(x, n, p)
+  p2 <- p2f(x, n, p)
+  p3 <- p3f(x, n, p)
+  summ <- 0
+  for (j in 0:(o_n-k)){
+    summ <- summ + choose(o_n, j) * p3^j * (p1+p2)^(o_n-j)
+  }
+  summ
+}
+```
+
+Lets just start of simple. What happens to the probability that a single read
+contains 5 or more read errors given that the sequence is of length 500 and the
+read error rate is 1 in 100?
+
+So lets just look at the maximum order statistic and systematically increase
+the number of reads in the bin
+
+```r
+probs <- rep(0, 50)
+for (i in 1:50){
+  probs[i] <- ord_F(10, i, i, 500, 1/100)
+}
+plot(probs)
+```
+
+![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
 
 
 
