@@ -24,6 +24,14 @@ algorithm on them.}
 }
 \description{
 Thresholds are expressed as the probability that any given letter is an
-error.
+error. Thus, before applying the thresholds to the distances between the
+sequences, they are doubled.
+}
+\details{
+The rationale for doubling the threshold is that a sequences has a read
+error if there is an error in 1 of the bases the sequence sequence while the
+distance between 2 sequences is 1 if there is a read error in any of the
+bases of the two sequences under consideration. Obviously its more subtle
+than this, see the bnechmarking document for more details.
 }
 

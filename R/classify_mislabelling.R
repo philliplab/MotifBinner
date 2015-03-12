@@ -179,7 +179,14 @@ classify_bin_most_frequent <- function(bin){
 #' between any two sequences reaches a threshold
 #'
 #' Thresholds are expressed as the probability that any given letter is an
-#' error.
+#' error. Thus, before applying the thresholds to the distances between the
+#' sequences, they are doubled.
+#'
+#' The rationale for doubling the threshold is that a sequences has a read
+#' error if there is an error in 1 of the bases the sequence sequence while the
+#' distance between 2 sequences is 1 if there is a read error in any of the
+#' bases of the two sequences under consideration. Obviously its more subtle
+#' than this, see the bnechmarking document for more details.
 #'
 #' @param bin The input bin as a single DNAStringSet.
 #' @param threshold Outlier sequences are removed from the bin until the
@@ -194,6 +201,8 @@ classify_bin_most_frequent <- function(bin){
 
 classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02, 
                               max_sequences = 100){
+  threshold <- threshold*2
+  start_threshold <- start_threshold*2
   discarded <- DNAStringSet(NULL)
   if (length(bin) > max_sequences){
     picks <- sample(1:length(bin), max_sequences, replace = FALSE)

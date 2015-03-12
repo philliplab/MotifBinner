@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-12 11:25:07 SAST"
+## [1] "2015-03-12 12:28:11 SAST"
 ```
 
 ## Overview
@@ -652,6 +652,8 @@ plot(pbinom(0:10, 500, p_single_pos_amb))
 After removing outliers, run clustering on the distance matrices. Use NBClust
 to detect number of clusters and then pick the largest cluster(s). If more than
 one cluster, pick the tightest cluster. http://www.jstatsoft.org/v61/i06/paper
+
+Always pick at least 2 clusters.
 
 
 
