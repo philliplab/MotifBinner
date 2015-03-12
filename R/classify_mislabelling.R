@@ -31,6 +31,9 @@ classify_bin <- function(bin, technique = 'random', params = list()){
   if (technique == 'most_frequent'){
     classified <- do.call(classify_bin_most_frequent, params)
   }
+  if (technique == 'absolute'){
+    classified <- do.call(classify_absolute, params)
+  }
   return(classified)
 }
 

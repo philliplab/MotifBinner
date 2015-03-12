@@ -36,6 +36,13 @@ test_that('The abs thres based classifier works', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$src) == 5, is_true())
   expect_that(length(classified$out) == 6, is_true())
+
+  classified <- classify_bin(bin, technique='absolute', 
+                             params = list(threshold=0.499/50, 
+                                           start_threshold = 0.499/50))
+  expect_that(check_classification(bin, classified), is_true())
+  expect_that(length(classified$src) == 5, is_true())
+  expect_that(length(classified$out) == 6, is_true())
 })
 
 test_that('all equally distant sequences are always removed simultaneously', {
