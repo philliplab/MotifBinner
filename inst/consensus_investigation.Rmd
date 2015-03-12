@@ -502,6 +502,8 @@ After removing outliers, run clustering on the distance matrices. Use NBClust
 to detect number of clusters and then pick the largest cluster(s). If more than
 one cluster, pick the tightest cluster. http://www.jstatsoft.org/v61/i06/paper
 
+Always pick at least 2 clusters.
+
 
 
 
