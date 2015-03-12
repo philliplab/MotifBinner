@@ -1,0 +1,32 @@
+You should be able to point the program at a file and the defaults should allow
+you to produce a single output file with the consensus reads for each pid that
+was detected.
+
+Optionally you should be able to access:
+1) A FASTA file with all the sequences with no PID
+2) A FASTA file of all sequences with PIDs with the names reporting the PIDs
+3) A FASTA file with all the discarded outlier sequences where the sequence is
+named according to its PID
+4) A FASTA file with the aligned bins - just a single file
+5) Primary result: Consensus sequences
+
+x) A html/pdf report on
+-- The number of input sequence
+-- The number of sequence with PIDs
+-- The lengths of the sequence with PIDs
+-- The number of sequences with no PIDs
+-- The lengths of the sequences with no PIDs
+-- The bin sizes before outlier removal took place
+-- Stats about the number of sequences that were removed as outliers and the
+effects of this on the intra-bin distances
+-- Specifically how many bins went from size x to size y for all x and y
+-- Stats on the number of gaps introduced in the alignment steps
+-- Stats on the number of ambiguity characters in the sequences. Potentially
+add in the probabilities of this arising given the read error rate observed in
+the bin.
+
+All possible parameters and arguments should be available via these batch
+functions.
+
+The html/pdf report should have switches allowing one to turn on or off certain
+portions of the report.
