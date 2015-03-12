@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-12 14:10:36 SAST&quot;
+<pre><code>## [1] &quot;2015-03-12 14:56:59 SAST&quot;
 </code></pre>
 
 <h2>Overview</h2>
@@ -269,14 +269,14 @@ setups[[&#39;most_con&#39;]] &lt;- list(classification_technique = &#39;infovar_
                          consensus_technique = &#39;mostConsensusString&#39;, 
                          consensus_params = list())
 
-#setups[[&#39;most_abs&#39;]] &lt;- list(classification_technique = &#39;absolute&#39;, 
-#                         classification_params = list(threshold = 0.01,
-#                                          start_threshold = 0.01), 
-#                         alignment_technique = &#39;muscle&#39;, 
-#                         alignment_params = list(), 
-#                         consensus_technique = &#39;mostConsensusString&#39;, 
-#                         consensus_params = list())
-#
+setups[[&#39;most_abs&#39;]] &lt;- list(classification_technique = &#39;absolute&#39;, 
+                         classification_params = list(threshold = 0.045,
+                                          start_threshold = 0.045), 
+                         alignment_technique = &#39;muscle&#39;, 
+                         alignment_params = list(), 
+                         consensus_technique = &#39;mostConsensusString&#39;, 
+                         consensus_params = list())
+
 setups_abs &lt;- list()
 setups_abs[[&#39;abs_01&#39;]] &lt;- list(classification_technique = &#39;absolute&#39;, 
                                classification_params = list(threshold = 0.01,
@@ -1282,6 +1282,18 @@ adapted to the input data otherwise it bombs out. Is this reasonable? How
 should this be computed? Should we set a minimum size of the bin? Should we
 just carefully choose a cutoff?</p>
 
+<p>Note that the data used for the benchmarking are not working on 1/(10<sup>x)</sup> for
+x=1,2,3. If is based on 3/(10<sup>x)</sup> for x = 1,2,3. Interpret the above result
+table in this light and it makes more sense.</p>
+
+<p>Now the real question is - how to interpret this table and what conclusions to
+draw? In the cases where the thresholds are intellegently chosen, the results
+seem very good.</p>
+
+<p>Now instead of trying to pick parameter values that make the benchmarking look
+nice, we need to pick numbers that will work in the real world, so it is time
+to start creating some realistic benchmarks.</p>
+
 <h2>The results</h2>
 
 <pre><code class="r">kable(results)
@@ -1783,6 +1795,168 @@ just carefully choose a cutoff?</p>
 <td align="right">500</td>
 <td align="right">500</td>
 <td align="right">0.072</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_1</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_3</td>
+<td align="left">1</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_3</td>
+<td align="left">2</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_read_3</td>
+<td align="left">3</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">500</td>
+<td align="right">1.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_1</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_1</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_1</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_2</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_2</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_2</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_3</td>
+<td align="left">1</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_3</td>
+<td align="left">2</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
+</tr>
+<tr>
+<td align="left">most_abs</td>
+<td align="left">unif_contam_3</td>
+<td align="left">3</td>
+<td align="right">0</td>
+<td align="right">500</td>
+<td align="right">0</td>
+<td align="right">0.000</td>
 </tr>
 </tbody></table>
 

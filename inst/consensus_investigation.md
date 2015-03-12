@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-12 14:10:36 SAST"
+## [1] "2015-03-12 14:56:59 SAST"
 ```
 
 ## Overview
@@ -64,14 +64,14 @@ setups[['most_con']] <- list(classification_technique = 'infovar_balance',
                          consensus_technique = 'mostConsensusString', 
                          consensus_params = list())
 
-#setups[['most_abs']] <- list(classification_technique = 'absolute', 
-#                         classification_params = list(threshold = 0.01,
-#                                          start_threshold = 0.01), 
-#                         alignment_technique = 'muscle', 
-#                         alignment_params = list(), 
-#                         consensus_technique = 'mostConsensusString', 
-#                         consensus_params = list())
-#
+setups[['most_abs']] <- list(classification_technique = 'absolute', 
+                         classification_params = list(threshold = 0.045,
+                                          start_threshold = 0.045), 
+                         alignment_technique = 'muscle', 
+                         alignment_params = list(), 
+                         consensus_technique = 'mostConsensusString', 
+                         consensus_params = list())
+
 setups_abs <- list()
 setups_abs[['abs_01']] <- list(classification_technique = 'absolute', 
                                classification_params = list(threshold = 0.01,
@@ -360,6 +360,18 @@ adapted to the input data otherwise it bombs out. Is this reasonable? How
 should this be computed? Should we set a minimum size of the bin? Should we
 just carefully choose a cutoff?
 
+Note that the data used for the benchmarking are not working on 1/(10^x) for
+x=1,2,3. If is based on 3/(10^x) for x = 1,2,3. Interpret the above result
+table in this light and it makes more sense.
+
+Now the real question is - how to interpret this table and what conclusions to
+draw? In the cases where the thresholds are intellegently chosen, the results
+seem very good.
+
+Now instead of trying to pick parameter values that make the benchmarking look
+nice, we need to pick numbers that will work in the real world, so it is time
+to start creating some realistic benchmarks.
+
 ## The results
 
 ```r
@@ -424,6 +436,24 @@ kable(results)
 |most_con |unif_contam_3 |1    |       27|       500|        500|         0.054|
 |most_con |unif_contam_3 |2    |       38|       500|        500|         0.076|
 |most_con |unif_contam_3 |3    |       36|       500|        500|         0.072|
+|most_abs |unif_read_1   |1    |        0|       500|          0|         0.000|
+|most_abs |unif_read_1   |2    |        0|       500|          0|         0.000|
+|most_abs |unif_read_1   |3    |        0|       500|          0|         0.000|
+|most_abs |unif_read_2   |1    |        0|       500|          0|         0.000|
+|most_abs |unif_read_2   |2    |        0|       500|          0|         0.000|
+|most_abs |unif_read_2   |3    |        0|       500|          0|         0.000|
+|most_abs |unif_read_3   |1    |      500|       500|        500|         1.000|
+|most_abs |unif_read_3   |2    |      500|       500|        500|         1.000|
+|most_abs |unif_read_3   |3    |      500|       500|        500|         1.000|
+|most_abs |unif_contam_1 |1    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_1 |2    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_1 |3    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_2 |1    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_2 |2    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_2 |3    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_3 |1    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_3 |2    |        0|       500|          0|         0.000|
+|most_abs |unif_contam_3 |3    |        0|       500|          0|         0.000|
 
 ## Fixes resulting from benchmarking
 
