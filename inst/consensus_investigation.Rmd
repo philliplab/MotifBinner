@@ -58,7 +58,6 @@ setups[['base1']] <- list(classification_technique = 'infovar_balance',
                          consensus_technique = 'Biostrings::consensusString', 
                          consensus_params = list(ambiguityMap = 'N'))
 
-
 setups[['most_con']] <- list(classification_technique = 'infovar_balance', 
                          classification_params = list(threshold = 1,
                                           start_threshold = 0.02), 
@@ -66,6 +65,48 @@ setups[['most_con']] <- list(classification_technique = 'infovar_balance',
                          alignment_params = list(), 
                          consensus_technique = 'mostConsensusString', 
                          consensus_params = list())
+
+#setups[['most_abs']] <- list(classification_technique = 'absolute', 
+#                         classification_params = list(threshold = 0.01,
+#                                          start_threshold = 0.01), 
+#                         alignment_technique = 'muscle', 
+#                         alignment_params = list(), 
+#                         consensus_technique = 'mostConsensusString', 
+#                         consensus_params = list())
+#
+setups_abs <- list()
+setups_abs[['abs_01']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.01,
+                                                start_threshold = 0.01), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_02']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.02,
+                                                start_threshold = 0.02), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_05']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.05,
+                                                start_threshold = 0.05), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_10']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.10,
+                                                start_threshold = 0.10), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
 ```
 
 ## The error profiles
@@ -168,6 +209,19 @@ for (setup in names(setups)){
     }
   }
 }
+
+cases_abs <- list()
+for (setup in names(setups_abs)){
+  for (scenario in names(scenarios)){
+    for (seed in seeds){
+      case_name <- paste(setup, scenario, seed, sep = '-')
+      cases_abs[[case_name]] <- list(scenario = scenarios[[scenario]],
+                                 seed = seed,
+                                 setup = setups_abs[[setup]])
+    }
+  }
+}
+
 ```
 
 ## The test runner
@@ -188,6 +242,12 @@ save(scenario_cache, file = cache_file)
 
 ```{r results='hide'}
 results <- run_all_tests(cases, scenario_cache)
+results_abs <- run_all_tests(cases_abs, scenario_cache)
+```
+
+## Results: Absolute Classifier
+```{r}
+kable(results_abs)
 ```
 
 ## The results

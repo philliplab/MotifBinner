@@ -6,7 +6,7 @@
 between any two sequences reaches a threshold}
 \usage{
 classify_absolute(bin, threshold = 0.01, start_threshold = 0.02,
-  max_sequences = 100)
+  max_sequences = 100, max_iterations = 1000)
 }
 \arguments{
 \item{bin}{The input bin as a single DNAStringSet.}

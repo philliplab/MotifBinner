@@ -203,7 +203,7 @@ classify_bin_most_frequent <- function(bin){
 #' @export
 
 classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02, 
-                              max_sequences = 100){
+                              max_sequences = 100, max_iterations = 1000){
   threshold <- threshold*2
   start_threshold <- start_threshold*2
   discarded <- DNAStringSet(NULL)
@@ -226,13 +226,15 @@ classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02,
   counter <- 0
   while(!max_dist_below_threshold){
     counter <- counter + 1
-    if (counter > 8){
-      stop()
+    if (counter > max_iterations){
+      stop('Max iterations reached')
     }
     dvec <- apply(dmat, 1, sum)
     max_indx <- which(dvec == max(dvec))
     new_dmat <- dmat[-max_indx, -max_indx]
-    if (is.null(nrow(new_dmat)) | (nrow(new_dmat) == 0)){
+    if (is.null(nrow(new_dmat)) ){
+      max_dist_below_threshold <- TRUE
+    } else if (nrow(new_dmat) == 0){
       max_dist_below_threshold <- TRUE
     } else {
       max_dist_below_threshold <- max(new_dmat)/seq_length < threshold
