@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-12 12:45:17 SAST"
+## [1] "2015-03-12 14:10:36 SAST"
 ```
 
 ## Overview
@@ -56,7 +56,6 @@ setups[['base1']] <- list(classification_technique = 'infovar_balance',
                          consensus_technique = 'Biostrings::consensusString', 
                          consensus_params = list(ambiguityMap = 'N'))
 
-
 setups[['most_con']] <- list(classification_technique = 'infovar_balance', 
                          classification_params = list(threshold = 1,
                                           start_threshold = 0.02), 
@@ -64,6 +63,55 @@ setups[['most_con']] <- list(classification_technique = 'infovar_balance',
                          alignment_params = list(), 
                          consensus_technique = 'mostConsensusString', 
                          consensus_params = list())
+
+#setups[['most_abs']] <- list(classification_technique = 'absolute', 
+#                         classification_params = list(threshold = 0.01,
+#                                          start_threshold = 0.01), 
+#                         alignment_technique = 'muscle', 
+#                         alignment_params = list(), 
+#                         consensus_technique = 'mostConsensusString', 
+#                         consensus_params = list())
+#
+setups_abs <- list()
+setups_abs[['abs_01']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.01,
+                                                start_threshold = 0.01), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_02']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.02,
+                                                start_threshold = 0.02), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_05']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.05,
+                                                start_threshold = 0.05), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_10']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.10,
+                                                start_threshold = 0.10), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
+setups_abs[['abs_50']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.50,
+                                                start_threshold = 0.50), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
 ```
 
 ## The error profiles
@@ -169,6 +217,18 @@ for (setup in names(setups)){
     }
   }
 }
+
+cases_abs <- list()
+for (setup in names(setups_abs)){
+  for (scenario in names(scenarios)){
+    for (seed in seeds){
+      case_name <- paste(setup, scenario, seed, sep = '-')
+      cases_abs[[case_name]] <- list(scenario = scenarios[[scenario]],
+                                 seed = seed,
+                                 setup = setups_abs[[setup]])
+    }
+  }
+}
 ```
 
 ## The test runner
@@ -191,7 +251,114 @@ save(scenario_cache, file = cache_file)
 
 ```r
 results <- run_all_tests(cases, scenario_cache)
+results_abs <- run_all_tests(cases_abs, scenario_cache)
 ```
+
+## Results: Absolute Classifier
+
+```r
+kable(results_abs)
+```
+
+
+
+|setup  |scenario      |seed | mismatch| input_len| output_len| mismatch_rate|
+|:------|:-------------|:----|--------:|---------:|----------:|-------------:|
+|abs_01 |unif_read_1   |1    |        0|       500|          0|         0.000|
+|abs_01 |unif_read_1   |2    |        0|       500|          0|         0.000|
+|abs_01 |unif_read_1   |3    |        0|       500|          0|         0.000|
+|abs_01 |unif_read_2   |1    |      500|       500|        500|         1.000|
+|abs_01 |unif_read_2   |2    |      500|       500|        500|         1.000|
+|abs_01 |unif_read_2   |3    |      500|       500|        500|         1.000|
+|abs_01 |unif_read_3   |1    |      500|       500|        500|         1.000|
+|abs_01 |unif_read_3   |2    |      500|       500|        500|         1.000|
+|abs_01 |unif_read_3   |3    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_1 |1    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_1 |2    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_1 |3    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_2 |1    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_2 |2    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_2 |3    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_3 |1    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_3 |2    |      500|       500|        500|         1.000|
+|abs_01 |unif_contam_3 |3    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_1   |1    |        0|       500|          0|         0.000|
+|abs_02 |unif_read_1   |2    |        0|       500|          0|         0.000|
+|abs_02 |unif_read_1   |3    |        0|       500|          0|         0.000|
+|abs_02 |unif_read_2   |1    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_2   |2    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_2   |3    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_3   |1    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_3   |2    |      500|       500|        500|         1.000|
+|abs_02 |unif_read_3   |3    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_1 |1    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_1 |2    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_1 |3    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_2 |1    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_2 |2    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_2 |3    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_3 |1    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_3 |2    |      500|       500|        500|         1.000|
+|abs_02 |unif_contam_3 |3    |      500|       500|        500|         1.000|
+|abs_05 |unif_read_1   |1    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_1   |2    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_1   |3    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_2   |1    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_2   |2    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_2   |3    |        0|       500|          0|         0.000|
+|abs_05 |unif_read_3   |1    |      500|       500|        500|         1.000|
+|abs_05 |unif_read_3   |2    |      500|       500|        500|         1.000|
+|abs_05 |unif_read_3   |3    |      500|       500|        500|         1.000|
+|abs_05 |unif_contam_1 |1    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_1 |2    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_1 |3    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_2 |1    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_2 |2    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_2 |3    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_3 |1    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_3 |2    |        0|       500|          0|         0.000|
+|abs_05 |unif_contam_3 |3    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_1   |1    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_1   |2    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_1   |3    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_2   |1    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_2   |2    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_2   |3    |        0|       500|          0|         0.000|
+|abs_10 |unif_read_3   |1    |      500|       500|        500|         1.000|
+|abs_10 |unif_read_3   |2    |      500|       500|        500|         1.000|
+|abs_10 |unif_read_3   |3    |      500|       500|        500|         1.000|
+|abs_10 |unif_contam_1 |1    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_1 |2    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_1 |3    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_2 |1    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_2 |2    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_2 |3    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_3 |1    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_3 |2    |        0|       500|          0|         0.000|
+|abs_10 |unif_contam_3 |3    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_1   |1    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_1   |2    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_1   |3    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_2   |1    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_2   |2    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_2   |3    |        0|       500|          0|         0.000|
+|abs_50 |unif_read_3   |1    |       79|       500|        500|         0.158|
+|abs_50 |unif_read_3   |2    |       87|       500|        500|         0.174|
+|abs_50 |unif_read_3   |3    |       76|       500|        500|         0.152|
+|abs_50 |unif_contam_1 |1    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_1 |2    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_1 |3    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_2 |1    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_2 |2    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_2 |3    |        0|       500|          0|         0.000|
+|abs_50 |unif_contam_3 |1    |       27|       500|        500|         0.054|
+|abs_50 |unif_contam_3 |2    |       38|       500|        500|         0.076|
+|abs_50 |unif_contam_3 |3    |       36|       500|        500|         0.072|
+
+Note that the input parameters for the absolute classifier should be carefully
+adapted to the input data otherwise it bombs out. Is this reasonable? How
+should this be computed? Should we set a minimum size of the bin? Should we
+just carefully choose a cutoff?
 
 ## The results
 
@@ -452,7 +619,7 @@ read of length 500 if the read error rate is 1 in 100?
 plot(dbinom(0:20, 500, 1/100))
 ```
 
-![plot of chunk unnamed-chunk-14](figure/unnamed-chunk-14-1.png) 
+![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
 
 How do we use this to decide when a bin contains outliers? If the distance
 between reads are such that it is unlikely that the only source of errors is
@@ -473,7 +640,7 @@ a read of length 1000 when the chance of a read error is 1/100.
 plot(dbinom(0:20, 1000, 1/100))
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
 
 Now, how many read errors can be allowed in a bin before we consider it to be
 suspicious? If the chance is less than 5% of there being that many read errors,
@@ -491,7 +658,7 @@ closest_95 <- (0:20)[which(dist_95 == min(dist_95))]
 abline(v=closest_95)
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
+![plot of chunk unnamed-chunk-17](figure/unnamed-chunk-17-1.png) 
 
 Now, consider the problematic case where there are more than two sequences in
 the bins. Now the question becomes, What is the probability that the largest
@@ -553,7 +720,7 @@ for (i in 1:50){
 plot(probs)
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png) 
 
 What does this mean? This means that the probability of the sequence with the
 most read errors in it having 10 or less read errors? If your bin is of size 1,
@@ -580,7 +747,7 @@ probs$bin_size <- as.factor(probs$bin_size)
 ggplot(data = probs, aes(x = x, y = f, col = bin_size)) + geom_line()
 ```
 
-![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png) 
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
 
 Now, we need to ask the question: "Are we concerned that we might be chucking
 out properly labelled reads with lots of read errors, or do we just want to
@@ -643,7 +810,7 @@ characters arising in the bin using a binomial distribution:
 plot(pbinom(0:10, 500, p_single_pos_amb))
 ```
 
-![plot of chunk unnamed-chunk-21](figure/unnamed-chunk-21-1.png) 
+![plot of chunk unnamed-chunk-22](figure/unnamed-chunk-22-1.png) 
 
 
 

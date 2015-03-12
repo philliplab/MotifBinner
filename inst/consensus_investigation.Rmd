@@ -107,6 +107,14 @@ setups_abs[['abs_10']] <- list(classification_technique = 'absolute',
                                consensus_technique = 'mostConsensusString', 
                                consensus_params = list())
 
+setups_abs[['abs_50']] <- list(classification_technique = 'absolute', 
+                               classification_params = list(threshold = 0.50,
+                                                start_threshold = 0.50), 
+                               alignment_technique = 'muscle', 
+                               alignment_params = list(), 
+                               consensus_technique = 'mostConsensusString', 
+                               consensus_params = list())
+
 ```
 
 ## The error profiles
@@ -249,6 +257,11 @@ results_abs <- run_all_tests(cases_abs, scenario_cache)
 ```{r}
 kable(results_abs)
 ```
+
+Note that the input parameters for the absolute classifier should be carefully
+adapted to the input data otherwise it bombs out. Is this reasonable? How
+should this be computed? Should we set a minimum size of the bin? Should we
+just carefully choose a cutoff?
 
 ## The results
 ```{r}
