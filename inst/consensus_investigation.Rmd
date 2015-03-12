@@ -443,6 +443,64 @@ Until I can get some input from Colin/Simon I will just implement a very simple
 absolute threshold based approach and use that as a comparator to my current
 techniques.
 
+## Ambiguity based subpopulation detection
+
+We can use the number of ambiguity characters in the consensus string to
+determine whether or not there are two or more subpopulations in the dataset.
+
+We can compute the number of ambiguity characters expected if the only source
+of variation was the sequencing process and then compare the observed number of
+ambiguity characters to this and base our decisions on this.
+
+Under the assumption that the only source of variation is read errors, the
+chance of an ambiguity character at a given position in a 4 read bin is: P(no
+mutation at position in 2 seq and the same mutation at that position in the
+other two sequences) + P(1 mutation in two sequences and a different mutation
+in the two other sequences)
+
+So call this P(none+1) and P(1+another)
+
+P(none+1) = P(any of the sequences has no mutation) x P(another sequence has no
+mutation) x P(another sequence has a mutation) x P(remaining sequences has the
+same mutation)
+  = (4c1x(99/100)) x (3c1x(99/100)) x (2c1x(1/100)) x (1c1x(1/100)x(1/3))
+  = choose(4,1)*(99/100) * choose(3,1)*(99/100) * 
+    choose(2,1)*(1/100) * choose(1,1)*(1/100)*(1/3)
+
+Likewise:
+P(1+another) = P(any of the sequences has mutation 1) x 
+               P(another of the sequences has mutation 1) x
+               P(another of the sequences has mutation 2) x
+               P(the last sequence has mutation 2)
+  = (4c1x(1/100)) x (3c1x(1/100)x(1/3)) x (2c1x(1/100)x(2/3)) x (1c1x(1/100)x(1/3))
+  = choose(4,1)*(1/100) * choose(3,1)*(1/100)*(1/3) * 
+    choose(2,1)*(1/100)*(2/3) * choose(1,1)*(1/100)*(1/3)*1
+
+
+```{r}
+p_none_plus_1 <- choose(4,1)*(99/100) * choose(3,1)*(99/100) * 
+    choose(2,1)*(1/100) * choose(1,1)*(1/100)*(1/3)
+
+p_1_plus_another <- choose(4,1)*(1/100) * choose(3,1)*(1/100)*(1/3) * 
+    choose(2,1)*(1/100)*(2/3) * choose(1,1)*(1/100)*(1/3)*1
+
+p_single_pos_amb <- p_none_plus_1 + p_1_plus_another
+```
+
+Now, using this result we can compute the probabilty distribution of ambiguity
+characters arising in the bin using a binomial distribution:
+
+```{r}
+plot(pbinom(0:10, 500, p_single_pos_amb))
+```
+
+
+
+## Clustering based subpopulation detection
+
+After removing outliers, run clustering on the distance matrices. Use NBClust
+to detect number of clusters and then pick the largest cluster(s). If more than
+one cluster, pick the tightest cluster. http://www.jstatsoft.org/v61/i06/paper
 
 
 
