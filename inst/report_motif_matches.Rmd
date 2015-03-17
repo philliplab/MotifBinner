@@ -1,0 +1,65 @@
+```{r include=F}
+library(Biostrings)
+options(scipen=999)
+em_dat <- report_dat$em_dat
+attach(em_dat)
+```
+
+## A Basic report on search for PIDs in the sequences
+
+```{r}
+Sys.time()
+```
+
+### Input parameters
+```{r}
+print(prefix)
+print(suffix)
+print(motif_length)
+```
+
+### Matched Sequences
+#### Summary of sequences
+
+```{r}
+print(motif_dat$matched_seq)
+```
+
+#### The letter frequencies
+
+```{r}
+x <- apply(consensusMatrix(motif_dat$matched_seq), 1, sum)
+x <- x[x != 0]
+print(x)
+print(round(x/sum(x), 4))
+barplot(x/sum(x))
+```
+
+#### The sequence lengths
+
+```{r}
+hist(width(motif_dat$matched_seq))
+```
+
+### Unmatched Sequences
+#### Summary of sequences
+
+```{r}
+print(motif_dat$unmatched_seq)
+```
+
+#### The letter frequencies
+
+```{r}
+x <- apply(consensusMatrix(motif_dat$unmatched_seq), 1, sum)
+x <- x[x != 0]
+print(x)
+print(round(x/sum(x), 4))
+barplot(x/sum(x))
+```
+
+#### The sequence lengths
+
+```{r}
+hist(width(motif_dat$unmatched_seq))
+```

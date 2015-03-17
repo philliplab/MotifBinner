@@ -9,6 +9,7 @@
 #' @export
 
 bin_by_name <- function(seq_dat, add_uniq_id = FALSE){
+  attr(seq_dat@ranges@NAMES, "names") <- NULL
   bins <- list()
   for (motif in unique(names(seq_dat))){
     cbin <- seq_dat[names(seq_dat) == motif]

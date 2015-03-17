@@ -11,6 +11,98 @@
 #' @include process_bin.R
 NULL
 
+#' Processes a file into consensus bins
+#' @param file_name The file name
+#' @export
+
+process_file <- function(file_name,
+                         prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
+                         suffix = "CTGAGCGTGTGGCAAGGCCC",
+                         motif_length = 9,
+                         max.mismatch = 5,
+                         fixed = FALSE,
+                         add_uniq_id = T){
+  report_dat <- list()
+  rsf_dat <- list(file_name = file_name)
+  seq_dat <- read_sequence_file(file_name)
+  rsf_dat$seq_dat <- seq_dat
+  report_dat$rsf_dat <- rsf_dat
+
+  em_dat <- list(seq_dat = seq_dat,
+                 prefix = prefix,
+                 suffix = suffix,
+                 motif_length = motif_length,
+                 max.mismatch = max.mismatch,
+                 fixed = fixed)
+  motif_dat <- do.call(extract_motifs, em_dat)
+  em_dat$motif_dat <- motif_dat
+  report_dat$em_dat <- em_dat
+
+  bbn_dat <- list(seq_dat = motif_dat$matched_seq,
+                  add_uniq_id = add_uniq_id)
+  bin_seqs <- do.call(bin_by_name, bbn_dat)
+  bbn_dat$bin_seqs <- bin_seqs
+  report_dat$bbn_dat <- bbn_dat
+
+  return(report_dat)
+}
+
+#' Provides some settings useful for testing
+get_test_settings <- function(){
+  return(list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
+              prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
+              suffix = "CTGAGCGTGTGGCAAGGCCC",
+              motif_length = 9,
+              max.mismatch = 5,
+              fixed = FALSE))
+}
+
+#' Reads in a sequence file given a file name.
+#'
+#' Detects if it is a FASTA or FASTQ file and reads it appropriately. Quality
+#' data will be dropped.
+#'
+#' @param file_name The file name
+#' @export
+
+read_sequence_file <- function(file_name){
+  if (grepl('fastq', file_name, ignore.case = TRUE)){
+    x <- readFastq(file_name)
+    x <- x@sread
+  } else {
+    x <- readDNAStringSet(file_name)
+  }
+  x <- gsub('\\+', 'N', x)
+  x <- DNAStringSet(x)
+  return(x)
+}
+
+process_all_bins <- function(bins){
+  y <- randomize_list(bins)
+#  sfInit(parallel = TRUE, cpus = 6)
+#  sfLibrary(MotifBinner)
+#  pbins <- sfLapply(y, process_bin, consensus_technique = 'mostConsensusString')
+#  sfStop()
+  pbins <- list()
+  for (bin_name in seq_along(y)){
+    print(bin_name)
+    pbins[[bin_name]] <- process_bin(y[[bin_name]], consensus_technique = 'mostConsensusString')
+  } 
+  #  Just process the ouput into a friendlier data structure
+  consensuses <- DNAStringSet()
+  for (i in seq_along(pbins)){
+    if (length(pbins[[i]]) > 0){
+      dss <- DNAStringSet(pbins[[i]][[1]])
+      names(dss) <- names(pbins[[i]])
+      consensuses <- c(consensuses, dss)
+    }
+  }
+  if (is.null(names(consensuses))){
+    names(consensuses) <- paste('seq', 1:length(consensuses), sep = '_')
+  }
+  return(consensuses)
+}
+
 #' Bins a given FASTA file and outputs each bin as a seperate file
 #'
 #' @param file_name The file name
@@ -19,7 +111,11 @@ NULL
 #' gets the same number and sequences who are not identical will get different
 #' numbers.
 #' @param number_of_front_bases_to_discard The number of bases to remove from
-#' the front of the sequence
+#' the front of the sequence. The first few bases are part of the primer
+#' sequence and needs to be trimmed off since they do not contain any extra
+#' information. This varies between sequencing approaches, so the parameter
+#' should be set with knowledge of the process. The primer can contain
+#' degeneracies, so its better to chop it off earlier rather than later.
 #' @param prefix See ?extract_motifs
 #' @param suffix See ?extract_motifs
 #' @param motif_length See ?extract_motifs

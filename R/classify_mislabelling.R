@@ -249,5 +249,3 @@ classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02,
               out = out_seq))
 }
 
-
-

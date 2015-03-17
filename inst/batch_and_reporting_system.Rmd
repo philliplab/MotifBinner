@@ -13,7 +13,7 @@ named according to its PID
 x) A html/pdf report on
 -- The number of input sequence
 -- The number of sequence with PIDs
--- The lengths of the sequence with PIDs
+-- The lengths of the sequence with/without PIDs
 -- The number of sequences with no PIDs
 -- The lengths of the sequences with no PIDs
 -- The bin sizes before outlier removal took place
@@ -30,3 +30,33 @@ functions.
 
 The html/pdf report should have switches allowing one to turn on or off certain
 portions of the report.
+
+The functions:
+file_to_consensus()
+  read_file()
+  bin_file()
+  loop over pids
+    process_bin()
+  return()
+
+The data structures:
+  original input file
+  the list of bins
+  bin_stats
+  final_consensus sequences
+
+How to report on this?
+  create a big list
+  save this thing to file
+  have a knitr document(s) that can build from this input data
+
+If you call knit2html, then the current environment in R is exposed to the
+script that is getting knitted, so this provides an easy mechanism for building
+the reporting structures.
+
+This is now working via the Rscript build_report.R report_file input_data_file
+mechanism
+
+Ok I have a lot of puzzle pieces now, but I think I should be a little more
+careful in the way I go about trying to put them all together. Take a step
+back, breathe, make a design with pen and paper.

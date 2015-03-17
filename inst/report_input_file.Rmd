@@ -1,0 +1,34 @@
+```{r include=F}
+library(Biostrings)
+options(scipen=999)
+rsf_dat <- report_dat$rsf_dat
+seq_dat <- rsf_dat$seq_dat
+```
+
+## A Basic report on the input file that was provided
+
+```{r}
+Sys.time()
+```
+
+### A summary of the input sequences
+
+```{r}
+print(seq_dat)
+```
+
+### The letter frequencies
+
+```{r}
+x <- apply(consensusMatrix(seq_dat), 1, sum)
+x <- x[x != 0]
+print(x)
+print(round(x/sum(x), 4))
+barplot(x/sum(x))
+```
+
+### The sequence lengths
+
+```{r}
+hist(width(seq_dat))
+```
