@@ -31,19 +31,25 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
       seqs <- c(seqs$src, seqs$out)
     }
   }
+  result <- list()
   x <- classify_bin(seqs, technique = classification_technique, 
                     params = classification_params)
+  result$src <- x$src
+  result$out <- x$out
+  result$dmat <- x$dmat
   x <- x$src
   if (length(x) <= 1){
-    return(DNAStringSet(NULL))
+    result$consensus <- DNAStringSet(NULL)
   } else {
     x <- align_sequences(x, technique = alignment_technique,
                          params = alignment_params)
+    result$alignment <- x
     x <- construct_consensus(x, technique = consensus_technique,
                              params = consensus_params)
     if (remove_gaps){
       x[[1]] <- gsub('-', '', x[[1]])
     }
-    return(x)
+    result$consensus <- x
   }
+  return(result)
 }
