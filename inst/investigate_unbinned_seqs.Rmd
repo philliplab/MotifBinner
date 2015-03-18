@@ -1,0 +1,125 @@
+
+```{r include=F}
+library(Biostrings)
+options(scipen=999)
+bbn_dat <- report_dat$bbn_dat
+attach(bbn_dat)
+```
+
+## A Basic report on the bins produced
+
+```{r}
+Sys.time()
+```
+
+### The number of bins
+
+```{r}
+print(length(bin_seqs))
+```
+
+### The sizes of the bins
+
+```{r}
+bin_sizes <- unlist(lapply(bin_seqs, length))
+table(bin_sizes)
+hist(bin_sizes)
+```
+
+### log log plot of the bin sizes
+
+```{r}
+loglog <- data.frame(bin_size = as.numeric(names(table(bin_sizes))),
+                     num_bins = as.numeric(table(bin_sizes)))
+plot(num_bins ~ bin_size, data = loglog)
+plot(log(num_bins) ~ bin_size, data = loglog)
+plot(log(num_bins) ~ log(bin_size), data = loglog)
+```
+
+### Detailed investigations of the distances in the bins
+
+```{r}
+#names(bbn_dat)
+#length(bin_seqs)
+#bin_seqs[[1]]
+#bin_dists <- lapply(bin_seqs, stringDist)
+comp_bins <- NULL
+bin_dists <- list()
+for (i in seq_along(bin_seqs)){
+  the_bin <- bin_seqs[[i]]
+  if (length(the_bin) > 100){
+    the_bin <- the_bin[sample(1:length(the_bin), 100)]
+  }
+  dmat <- stringDist(the_bin)  
+  bin_name <- strsplit(names(the_bin)[1], '_')[[1]][1]
+  bin_dists[[bin_name]] <- dmat
+  max_occ <- max(table(the_bin))
+  num_max <- sum(table(the_bin) == max_occ)
+  comp_bins <- rbind(comp_bins,
+                     data.frame(bin_id = i,
+                                bin_name = bin_name,
+                                bin_size = length(bin_seqs[[i]]),
+                                working_size = length(the_bin),
+                                min_dist = min(dmat),
+                                max_dist = max(dmat),
+                                mean_dist = mean(dmat),
+                                min_seq_len = min(width(bin_seqs[[i]])),
+                                max_seq_len = max(width(bin_seqs[[i]])),
+                                mean_seq_len = mean(width(bin_seqs[[i]])),
+                                max_occ = max_occ,
+                                num_max = num_max
+                                ))
+}
+```
+
+#### Sequence lengths
+
+```{r}
+hist(comp_bins$min_seq_len)
+hist(comp_bins$mean_seq_len)
+hist(comp_bins$max_seq_len)
+```
+
+#### Bins of size 2
+
+```{r}
+c_bins <- subset(comp_bins, bin_size == 2)
+hist(c_bins$mean_dist)
+kable(data.frame(bin_dist = as.numeric(names(table(c_bins$mean_dist))),
+                 num_bins = as.numeric(table(c_bins$mean_dist))))
+```
+
+#### Bins of size 3
+
+```{r}
+c_bins <- subset(comp_bins, bin_size == 3)
+hist(c_bins$min_dist)
+kable(data.frame(min_dist = as.numeric(names(table(c_bins$min_dist))),
+                 num_bins = as.numeric(table(c_bins$min_dist))))
+hist(c_bins$max_dist)
+kable(data.frame(max_dist = as.numeric(names(table(c_bins$max_dist))),
+                 num_bins = as.numeric(table(c_bins$max_dist))))
+plot(c_bins$min_dist ~ c_bins$max_dist)
+```
+
+#### Bins of size 4 and above
+
+```{r}
+c_bins <- subset(comp_bins, bin_size > 3)
+hist(c_bins$bin_size)
+
+hist(c_bins$min_dist)
+kable(data.frame(min_dist = as.numeric(names(table(c_bins$min_dist))),
+                 num_bins = as.numeric(table(c_bins$min_dist))))
+
+hist(c_bins$mean_dist)
+kable(data.frame(mean_dist = as.numeric(names(table(round(c_bins$mean_dist,0)))),
+                 num_bins = as.numeric(table(round(c_bins$mean_dist,0)))))
+
+hist(c_bins$max_dist)
+kable(data.frame(max_dist = as.numeric(names(table(c_bins$max_dist))),
+                 num_bins = as.numeric(table(c_bins$max_dist))))
+plot(c_bins$min_dist ~ c_bins$max_dist)
+hist(c_bins$max_occ)
+table(c_bins$max_occ)
+```

@@ -41,8 +41,16 @@ process_file <- function(file_name,
   bbn_dat <- list(seq_dat = motif_dat$matched_seq,
                   add_uniq_id = add_uniq_id)
   bin_seqs <- do.call(bin_by_name, bbn_dat)
+  bin_seqs <- randomize_list(bin_seqs)
   bbn_dat$bin_seqs <- bin_seqs
   report_dat$bbn_dat <- bbn_dat
+
+  pbins <- list()
+  for (bin_name in seq_along(bin_seqs)){
+    print(bin_name)
+    pbins[[bin_name]] <- process_bin(bin_seqs[[bin_name]], 
+                                     consensus_technique = 'mostConsensusString')
+  } 
 
   return(report_dat)
 }
