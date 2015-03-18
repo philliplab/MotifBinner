@@ -7,6 +7,8 @@ test_that('The abs thres based classifier works', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$src) == 17, is_true())
   expect_that(length(classified$out) == 1, is_true())
+  expect_that(all(dim(classified$dmat) == c(18, 18)), is_true())
+  expect_that(max(classified$dmat), equals(5))
 
   bin <- DNAStringSet(rep('AAAAA', 5))
   classified <- classify_absolute(bin, threshold=0.5)
@@ -24,6 +26,7 @@ test_that('The abs thres based classifier works', {
   expect_that(check_classification(bin, classified), is_true())
   expect_that(length(classified$src) == 9, is_true())
   expect_that(length(classified$out) == 2, is_true())
+  expect_that(sort(unique(as.numeric(classified$dmat))), equals(0:2))
 
   # start when more than 3 errors in 50
   classified <- classify_absolute(bin, threshold=0.999/50, start_threshold = 1.5/50)
