@@ -18,7 +18,7 @@ test_that('The classification check detects various issues', {
                "classified must be a list")
   
   expect_error(check_classification(bin, list('hello' = 1)),
-               "classified must contain and only contain the 'src' and 'out' elements")
+               "classified must contain the 'src' and 'out' elements")
 
   expect_error(check_classification(bin, list('src' = 1,
                                               'out' = 2)),

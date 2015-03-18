@@ -152,7 +152,8 @@ classify_bin_infovar_balance <- function(bin, threshold, start_threshold = 0,
   src_seq <- bin[as.integer(row.names(dmat))]
   out_seq <- c(bin[as.integer(removed_sequences)], discarded)
   return(list(src = src_seq,
-              out = out_seq))
+              out = out_seq,
+              dmat = orig_dmat))
 }
 
 #' Classifies the sequences in a set by only choosing the most frequent
@@ -246,6 +247,7 @@ classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02,
   src_seq <- bin[as.integer(row.names(dmat))]
   out_seq <- c(bin[as.integer(removed_sequences)], discarded)
   return(list(src = src_seq,
-              out = out_seq))
+              out = out_seq,
+              dmat = orig_dmat))
 }
 

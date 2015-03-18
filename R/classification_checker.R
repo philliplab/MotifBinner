@@ -20,8 +20,11 @@ check_classification <- function(bin, classified){
   if (!(class(classified) == 'list')){
     stop("classified must be a list")
   }
-  if (!all(sort(names(classified)) == c("out", "src"))){
-    stop("classified must contain and only contain the 'src' and 'out' elements")
+  if (!all(c("out", "src") %in% names(classified))){
+    stop("classified must contain the 'src' and 'out' elements")
+  }
+  if (!all(names(classified) %in% c("dmat", "out", "src"))){
+    stop("classified must only contain the 'src', 'dmat' and 'out' elements")
   }
   if (class(classified$src)!='DNAStringSet'){
     stop("'src' element of classified must be a DNSStringSet")
