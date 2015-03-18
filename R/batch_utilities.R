@@ -21,7 +21,16 @@ process_file <- function(file_name,
                          motif_length = 9,
                          max.mismatch = 5,
                          fixed = FALSE,
-                         add_uniq_id = T){
+                         add_uniq_id = T,
+                         classification_technique = 'absolute',
+                         classification_params = list(threshold = 8/600, 
+                                                      start_threshold = 14/600, 
+                                                      max_sequences = 100),
+                         alignment_technique = 'muscle',
+                         alignment_params = list(),
+                         consensus_technique = 'mostConsensusString',
+                         consensus_params = list(),
+                         remove_gaps = TRUE){
   report_dat <- list()
   rsf_dat <- list(file_name = file_name)
   seq_dat <- read_sequence_file(file_name)
@@ -45,12 +54,22 @@ process_file <- function(file_name,
   bbn_dat$bin_seqs <- bin_seqs
   report_dat$bbn_dat <- bbn_dat
 
-  pbins <- list()
+  pb_dat <- list()
+  pb_dat$classification_technique <- classification_technique
+  pb_dat$classification_params <- classification_params 
+  pb_dat$alignment_technique <- alignment_technique 
+  pb_dat$alignment_params <- alignment_params 
+  pb_dat$consensus_technique <- consensus_technique
+  pb_dat$consensus_params <- consensus_params
+  pb_dat$remove_gaps <- remove_gaps 
+  pb_out <- list()
   for (bin_name in seq_along(bin_seqs)){
     print(bin_name)
-    pbins[[bin_name]] <- process_bin(bin_seqs[[bin_name]], 
-                                     consensus_technique = 'mostConsensusString')
+    pb_dat$seqs <- bin_seqs[[bin_name]]
+    pb_out[[bin_name]] <- do.call(process_bin, pb_dat)
   } 
+  pb_dat$pb_out <- pb_out
+  report_dat$pb_dat <- pb_dat
 
   return(report_dat)
 }

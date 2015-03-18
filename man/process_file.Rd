@@ -6,7 +6,11 @@
 \usage{
 process_file(file_name, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9, max.mismatch = 5,
-  fixed = FALSE, add_uniq_id = T)
+  fixed = FALSE, add_uniq_id = T, classification_technique = "absolute",
+  classification_params = list(threshold = 8/600, start_threshold = 14/600,
+  max_sequences = 100), alignment_technique = "muscle",
+  alignment_params = list(), consensus_technique = "mostConsensusString",
+  consensus_params = list(), remove_gaps = TRUE)
 }
 \arguments{
 \item{file_name}{The file name}
