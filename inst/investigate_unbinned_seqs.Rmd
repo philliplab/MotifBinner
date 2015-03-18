@@ -38,7 +38,7 @@ plot(log(num_bins) ~ log(bin_size), data = loglog)
 
 ### Detailed investigations of the distances in the bins
 
-```{r}
+```{r include=FALSE}
 #names(bbn_dat)
 #length(bin_seqs)
 #bin_seqs[[1]]
