@@ -20,7 +20,11 @@ gets the same number and sequences who are not identical will get different
 numbers.}
 
 \item{number_of_front_bases_to_discard}{The number of bases to remove from
-the front of the sequence}
+the front of the sequence. The first few bases are part of the primer
+sequence and needs to be trimmed off since they do not contain any extra
+information. This varies between sequencing approaches, so the parameter
+should be set with knowledge of the process. The primer can contain
+degeneracies, so its better to chop it off earlier rather than later.}
 
 \item{prefix}{See ?extract_motifs}
 

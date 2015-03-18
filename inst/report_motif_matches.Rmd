@@ -18,6 +18,17 @@ print(suffix)
 print(motif_length)
 ```
 
+### Matched vs Unmatched sequences
+```{r}
+n_matched <- length(motif_dat$matched_seq)
+n_unmatched <- length(motif_dat$unmatched_seq)
+n_total <- n_matched + n_unmatched
+print(n_matched)
+print(round(n_matched / n_total, 4))
+print(n_unmatched)
+print(round(n_unmatched / n_total, 4))
+```
+
 ### Matched Sequences
 #### Summary of sequences
 

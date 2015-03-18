@@ -54,7 +54,8 @@ get_test_settings <- function(){
               suffix = "CTGAGCGTGTGGCAAGGCCC",
               motif_length = 9,
               max.mismatch = 5,
-              fixed = FALSE))
+              fixed = FALSE,
+              add_uniq_id = T))
 }
 
 #' Reads in a sequence file given a file name.
