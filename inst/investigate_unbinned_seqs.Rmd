@@ -39,10 +39,6 @@ plot(log(num_bins) ~ log(bin_size), data = loglog)
 ### Detailed investigations of the distances in the bins
 
 ```{r include=FALSE}
-#names(bbn_dat)
-#length(bin_seqs)
-#bin_seqs[[1]]
-#bin_dists <- lapply(bin_seqs, stringDist)
 comp_bins <- NULL
 bin_dists <- list()
 for (i in seq_along(bin_seqs)){
@@ -121,5 +117,6 @@ kable(data.frame(max_dist = as.numeric(names(table(c_bins$max_dist))),
                  num_bins = as.numeric(table(c_bins$max_dist))))
 plot(c_bins$min_dist ~ c_bins$max_dist)
 hist(c_bins$max_occ)
-table(c_bins$max_occ)
+kable(data.frame(max_occ = as.numeric(names(table(c_bins$max_occ))),
+                 num_bins = as.numeric(table(c_bins$max_occ))))
 ```

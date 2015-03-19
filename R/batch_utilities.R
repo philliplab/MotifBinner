@@ -11,6 +11,23 @@
 #' @include process_bin.R
 NULL
 
+paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
+               prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
+                         suffix = "CTGAGCGTGTGGCAAGGCCC",
+                         motif_length = 9,
+                         max.mismatch = 5,
+                         fixed = FALSE,
+                         add_uniq_id = T,
+                         classification_technique = 'absolute',
+                         classification_params = list(threshold = 8/600, 
+                                                      start_threshold = 14/600, 
+                                                      max_sequences = 100),
+                         alignment_technique = 'muscle',
+                         alignment_params = list(),
+                         consensus_technique = 'mostConsensusString',
+                         consensus_params = list(),
+                         remove_gaps = TRUE)
+
 #' Processes a file into consensus bins
 #' @param file_name The file name
 #' @export
@@ -63,6 +80,7 @@ process_file <- function(file_name,
   pb_dat$consensus_params <- consensus_params
   pb_dat$remove_gaps <- remove_gaps 
   pb_out <- list()
+  pb_dat$pb_out <- NULL
   for (bin_name in seq_along(bin_seqs)){
     print(bin_name)
     pb_dat$seqs <- bin_seqs[[bin_name]]

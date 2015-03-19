@@ -215,14 +215,15 @@ classify_absolute <- function(bin, threshold=0.01, start_threshold = 0.02,
   }
   seq_length <- min(nchar(bin))
   bin_dists <- stringDist(bin)
-  if (max(bin_dists)/seq_length < start_threshold){
-    return(list(src = bin,
-                out = DNAStringSet(NULL)))
-  }
   dmat <- as.matrix(bin_dists)
   row.names(dmat) <- 1:nrow(dmat)
   removed_sequences <- NULL
   orig_dmat <- dmat
+  if (max(bin_dists)/seq_length < start_threshold){
+    return(list(src = bin,
+                out = DNAStringSet(NULL),
+                dmat = orig_dmat))
+  }
   max_dist_below_threshold <- max(dmat)/seq_length < threshold
   counter <- 0
   while(!max_dist_below_threshold){

@@ -1,0 +1,72 @@
+
+```{r include=F}
+library(knitr)
+library(Biostrings)
+options(scipen=999)
+pb_dat <- report_dat$pb_dat
+attach(pb_dat)
+```
+
+### Arguments
+
+```{r}
+x <- pb_dat
+x$pb_out <- NULL
+x$seqs <- NULL
+print(x)
+```
+
+### Compute metrics
+
+```{r}
+metrics <- NULL
+i <- 1
+for (i in seq_along(pb_out)){
+  print(i)
+  input_size <- length(pb_out[[i]]$src) + length(pb_out[[i]]$out)
+  output_size <- length(pb_out[[i]]$src)
+  out <- pb_out[[i]]$out
+  src <- pb_out[[i]]$src
+  dmat <- pb_out[[i]]$dmat
+  min_dist <- min(as.dist(dmat))
+  in_max_dist <- max(pb_out[[i]]$dmat)
+  out_dmat <- dmat[match(names(src), colnames(dmat)), 
+                   match(names(src), colnames(dmat))]
+  out_max_dist <- max(out_dmat)
+  metrics <- rbind(metrics,
+    data.frame(input_size = input_size,
+               output_size = output_size,
+               min_dist = min_dist,
+               in_max_dist = in_max_dist,
+               out_max_dist = out_max_dist))
+}
+```
+
+### Effects of outlier removal
+
+#### Before and after bin sizes
+
+```{r}
+hist(metrics$input_size)
+hist(metrics$output_size)
+```
+
+#### Before and after bin distances
+
+```{r}
+hist(metrics$in_max_dist)
+hist(metrics$out_max_dist)
+```
+
+#### Where are the small bins coming from?
+
+```{r}
+plot(metrics$output_size ~ metrics$input_size)
+abline(a=0, b=1)
+```
+
+```{r}
+small_bins <- subset(metrics, output_size < 6)
+plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
+abline(a=0, b=1)
+```

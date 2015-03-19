@@ -1,4 +1,5 @@
 ```{r include=F}
+library(knitr)
 library(Biostrings)
 options(scipen=999)
 bbn_dat <- report_dat$bbn_dat
@@ -21,8 +22,9 @@ print(length(bin_seqs))
 
 ```{r}
 bin_sizes <- unlist(lapply(bin_seqs, length))
-table(bin_sizes)
 hist(bin_sizes)
+kable(data.frame(bin_size = as.numeric(names(table(bin_sizes))),
+                 num_bins = as.numeric(table(bin_sizes))))
 ```
 
 ### log log plot of the bin sizes
