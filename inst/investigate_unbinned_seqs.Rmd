@@ -6,7 +6,7 @@ bbn_dat <- report_dat$bbn_dat
 attach(bbn_dat)
 ```
 
-## A Basic report on the bins produced
+## A Basic report on the unprocessed bins produced
 
 ```{r}
 Sys.time()
@@ -32,8 +32,7 @@ hist(bin_sizes)
 loglog <- data.frame(bin_size = as.numeric(names(table(bin_sizes))),
                      num_bins = as.numeric(table(bin_sizes)))
 plot(num_bins ~ bin_size, data = loglog)
-plot(log(num_bins) ~ bin_size, data = loglog)
-plot(log(num_bins) ~ log(bin_size), data = loglog)
+plot(log10(num_bins) ~ log10(bin_size), data = loglog)
 ```
 
 ### Detailed investigations of the distances in the bins

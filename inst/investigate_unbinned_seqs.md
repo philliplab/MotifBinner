@@ -1,7 +1,7 @@
 
 
 
-## A Basic report on the bins produced
+## A Basic report on the unprocessed bins produced
 
 
 ```r
@@ -9,7 +9,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-18 14:54:59 SAST"
+## [1] "2015-03-19 13:43:46 SAST"
 ```
 
 ### The number of bins
@@ -63,16 +63,10 @@ plot(num_bins ~ bin_size, data = loglog)
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
 
 ```r
-plot(log(num_bins) ~ bin_size, data = loglog)
+plot(log10(num_bins) ~ log10(bin_size), data = loglog)
 ```
 
 ![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-2.png) 
-
-```r
-plot(log(num_bins) ~ log(bin_size), data = loglog)
-```
-
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-3.png) 
 
 ### Detailed investigations of the distances in the bins
 
@@ -251,8 +245,8 @@ kable(data.frame(mean_dist = as.numeric(names(table(round(c_bins$mean_dist,0))))
 |         2|        2|
 |         3|       27|
 |         4|       56|
-|         5|       58|
-|         6|      108|
+|         5|       59|
+|         6|      107|
 |         7|       71|
 |         8|       37|
 |         9|       16|
@@ -302,10 +296,10 @@ kable(data.frame(max_dist = as.numeric(names(table(c_bins$max_dist))),
 |       24|       15|
 |       25|       13|
 |       26|       13|
-|       27|       13|
+|       27|       14|
 |       28|        8|
 |       29|       14|
-|       30|        8|
+|       30|        7|
 |       31|        8|
 |       32|        7|
 |       33|        5|
@@ -344,11 +338,21 @@ hist(c_bins$max_occ)
 ![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-6.png) 
 
 ```r
-table(c_bins$max_occ)
+kable(data.frame(max_occ = as.numeric(names(table(c_bins$max_occ))),
+                 num_bins = as.numeric(table(c_bins$max_occ))))
 ```
 
-```
-## 
-##   1   2   3   4   5   6   7   8   9 
-## 129 124  84  43  14   6   2   1   2
-```
+
+
+| max_occ| num_bins|
+|-------:|--------:|
+|       1|      129|
+|       2|      124|
+|       3|       85|
+|       4|       42|
+|       5|       14|
+|       6|        6|
+|       7|        1|
+|       8|        1|
+|       9|        2|
+|      10|        1|
