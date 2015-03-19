@@ -1,0 +1,13 @@
+# File bin processing report
+
+```{r, child='report_input_file.Rmd'}
+```
+
+```{r, child='report_motif_matches.Rmd'}
+```
+
+```{r, child='report_binned_seqs.Rmd'}
+```
+
+```{r, child='report_processed_seqs.Rmd'}
+```

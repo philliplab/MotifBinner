@@ -1,3 +1,4 @@
+## Basic report on the processed bins
 
 ```{r include=F}
 library(knitr)
@@ -18,7 +19,7 @@ print(x)
 
 ### Compute metrics
 
-```{r}
+```{r, include=FALSE}
 metrics <- NULL
 i <- 1
 for (i in seq_along(pb_out)){
@@ -71,6 +72,16 @@ for (i in seq_along(pb_out)){
 ```{r}
 hist(metrics$input_size)
 hist(metrics$output_size)
+plot(metrics$output_size ~ metrics$input_size)
+abline(a=0, b=1)
+```
+
+##### Where are the small bins coming from?
+
+```{r}
+small_bins <- subset(metrics, output_size < 6)
+plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
+abline(a=0, b=1)
 ```
 
 #### Before and after bin distances
@@ -80,19 +91,6 @@ hist(metrics$in_max_dist)
 hist(metrics$out_max_dist)
 hist(metrics$min_out_dist)
 hist(metrics$in_max_dist - metrics$out_max_dist)
-```
-
-#### Where are the small bins coming from?
-
-```{r}
-plot(metrics$output_size ~ metrics$input_size)
-abline(a=0, b=1)
-```
-
-```{r}
-small_bins <- subset(metrics, output_size < 6)
-plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
-abline(a=0, b=1)
 ```
 
 ### Alignment step
