@@ -33,12 +33,31 @@ for (i in seq_along(pb_out)){
   out_dmat <- dmat[match(names(src), colnames(dmat)), 
                    match(names(src), colnames(dmat))]
   out_max_dist <- max(out_dmat)
+  min_out_dist <- min(as.dist(out_dmat))
+  if (is.null(pb_out[[i]]$alignment)){
+    gaps <- NA
+    pos_no_mismatch <- NA
+    pos_mismatch <- NA
+    total_mismatches <- NA
+  } else {
+    conMat <- consensusMatrix(pb_out[[i]]$alignment)
+    gaps <- sum(conMat[-(1:4),])
+    mismatches <- apply(conMat, 2, sum) - apply(conMat, 2, max)
+    pos_no_mismatch <- sum(mismatches==0)
+    pos_mismatch <- sum(mismatches!=0)
+    total_mismatches <- sum(mismatches)
+  }
   metrics <- rbind(metrics,
     data.frame(input_size = input_size,
                output_size = output_size,
                min_dist = min_dist,
                in_max_dist = in_max_dist,
-               out_max_dist = out_max_dist))
+               out_max_dist = out_max_dist,
+               min_out_dist = min_out_dist,
+               gaps = gaps,
+               pos_no_mismatch = pos_no_mismatch,
+               pos_mismatch = pos_mismatch,
+               total_mismatches = total_mismatches))
 }
 ```
 
@@ -56,6 +75,8 @@ hist(metrics$output_size)
 ```{r}
 hist(metrics$in_max_dist)
 hist(metrics$out_max_dist)
+hist(metrics$min_out_dist)
+hist(metrics$in_max_dist - metrics$out_max_dist)
 ```
 
 #### Where are the small bins coming from?
@@ -69,4 +90,27 @@ abline(a=0, b=1)
 small_bins <- subset(metrics, output_size < 6)
 plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
 abline(a=0, b=1)
+```
+
+### Alignment step
+
+#### Number of gaps inserted
+
+```{r}
+hist(metrics$gaps)
+kable(data.frame(num_gaps = as.numeric(names(table(metrics$gaps))),
+                 num_alignments = as.numeric(table(metrics$gaps))))
+```
+
+#### Number positions with mismatches in the alignment
+
+```{r}
+hist(metrics$pos_no_mismatch)
+hist(metrics$pos_mismatch)
+```
+
+#### Total number of mismatches
+
+```{r}
+hist(metrics$total_mismatches)
 ```
