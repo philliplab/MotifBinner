@@ -5,13 +5,13 @@ em_dat <- report_dat$em_dat
 attach(em_dat)
 ```
 
-## A Basic report on search for PIDs in the sequences
+## Motif Searches
 
 ```{r}
 Sys.time()
 ```
 
-### Input parameters
+### Input parameters for the searches
 ```{r}
 print(prefix)
 print(suffix)
@@ -23,13 +23,14 @@ print(motif_length)
 n_matched <- length(motif_dat$matched_seq)
 n_unmatched <- length(motif_dat$unmatched_seq)
 n_total <- n_matched + n_unmatched
-print(n_matched)
-print(round(n_matched / n_total, 4))
-print(n_unmatched)
-print(round(n_unmatched / n_total, 4))
+kable(data.frame(seq_matched_count = n_matched,
+                 seq_matched_perc = 100*round(n_matched / n_total, 4),
+                 seq_unmatched_count = n_unmatched,
+                 seq_unmatched_perc = 100*round(n_unmatched / n_total, 4)))
 ```
 
 ### Matched Sequences
+
 #### Summary of sequences
 
 ```{r}
@@ -38,18 +39,36 @@ print(motif_dat$matched_seq)
 
 #### The letter frequencies
 
+Counts of the letters in the matched sequences.
 ```{r}
 x <- apply(consensusMatrix(motif_dat$matched_seq), 1, sum)
 x <- x[x != 0]
-print(x)
-print(round(x/sum(x), 4))
-barplot(x/sum(x))
+kable(data.frame(letter = names(x),
+                 count = x,
+                 count_per_seq = round(x/length(motif_dat$matched_seq),2),
+                 row.names = 1:length(x)))
+```
+
+Normalized counts of the letters in the matched sequences.
+```{r}
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
+```
+
+```{r}
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the matched sequences')
 ```
 
 #### The sequence lengths
 
 ```{r}
-hist(width(motif_dat$matched_seq))
+hist(width(motif_dat$matched_seq),
+     main = "Histogram of the lengths of the matched sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```
 
 ### Unmatched Sequences
@@ -61,16 +80,34 @@ print(motif_dat$unmatched_seq)
 
 #### The letter frequencies
 
+Counts of the letters in the unmatched sequences.
 ```{r}
 x <- apply(consensusMatrix(motif_dat$unmatched_seq), 1, sum)
 x <- x[x != 0]
-print(x)
-print(round(x/sum(x), 4))
-barplot(x/sum(x))
+kable(data.frame(letter = names(x),
+                 count = x,
+                 count_per_seq = round(x/length(motif_dat$unmatched_seq),2),
+                 row.names = 1:length(x)))
+```
+
+Normalized counts of the letters in the unmatched sequences.
+```{r}
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
+```
+
+```{r}
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the unmatched sequences')
 ```
 
 #### The sequence lengths
 
 ```{r}
-hist(width(motif_dat$unmatched_seq))
+hist(width(motif_dat$unmatched_seq),
+     main = "Histogram of the lengths of the unmatched sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```

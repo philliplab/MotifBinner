@@ -206,7 +206,7 @@ hr {
 <pre><code class="r">Sys.time()
 </code></pre>
 
-<pre><code>## [1] &quot;2015-03-19 12:51:11 SAST&quot;
+<pre><code>## [1] &quot;2015-03-19 13:08:56 SAST&quot;
 </code></pre>
 
 <h3>A summary of the input sequences</h3>
@@ -237,6 +237,7 @@ hr {
 x &lt;- x[x != 0]
 kable(data.frame(letter = names(x),
                  count = x,
+                 count_per_seq = round(x/length(seq_dat),2),
                  row.names = 1:length(x)))
 </code></pre>
 
@@ -244,27 +245,33 @@ kable(data.frame(letter = names(x),
 <tr>
 <th align="left">letter</th>
 <th align="right">count</th>
+<th align="right">count_per_seq</th>
 </tr>
 </thead><tbody>
 <tr>
 <td align="left">A</td>
 <td align="right">1889682</td>
+<td align="right">129.65</td>
 </tr>
 <tr>
 <td align="left">C</td>
 <td align="right">1028655</td>
+<td align="right">70.58</td>
 </tr>
 <tr>
 <td align="left">G</td>
 <td align="right">973999</td>
+<td align="right">66.83</td>
 </tr>
 <tr>
 <td align="left">T</td>
 <td align="right">1394116</td>
+<td align="right">95.65</td>
 </tr>
 <tr>
 <td align="left">N</td>
 <td align="right">12</td>
+<td align="right">0.00</td>
 </tr>
 </tbody></table>
 

@@ -25,6 +25,7 @@ x <- apply(consensusMatrix(seq_dat), 1, sum)
 x <- x[x != 0]
 kable(data.frame(letter = names(x),
                  count = x,
+                 count_per_seq = round(x/length(seq_dat),2),
                  row.names = 1:length(x)))
 ```
 
@@ -48,5 +49,4 @@ hist(width(seq_dat),
      main = "Histogram of the lengths of the input sequences",
      xlab = "Sequence Length",
      ylab = "Number of Sequences")
-
 ```

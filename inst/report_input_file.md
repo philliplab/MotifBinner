@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-19 12:51:11 SAST"
+## [1] "2015-03-19 13:08:56 SAST"
 ```
 
 ### A summary of the input sequences
@@ -43,18 +43,19 @@ x <- apply(consensusMatrix(seq_dat), 1, sum)
 x <- x[x != 0]
 kable(data.frame(letter = names(x),
                  count = x,
+                 count_per_seq = round(x/length(seq_dat),2),
                  row.names = 1:length(x)))
 ```
 
 
 
-|letter |   count|
-|:------|-------:|
-|A      | 1889682|
-|C      | 1028655|
-|G      |  973999|
-|T      | 1394116|
-|N      |      12|
+|letter |   count| count_per_seq|
+|:------|-------:|-------------:|
+|A      | 1889682|        129.65|
+|C      | 1028655|         70.58|
+|G      |  973999|         66.83|
+|T      | 1394116|         95.65|
+|N      |      12|          0.00|
 
 Normalized counts of the letters in the input sequences.
 
