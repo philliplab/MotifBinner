@@ -6,7 +6,7 @@ bbn_dat <- report_dat$bbn_dat
 attach(bbn_dat)
 ```
 
-## A Basic report on the bins produced
+## The unprocessed bins produced
 
 ```{r}
 Sys.time()
@@ -27,14 +27,27 @@ kable(data.frame(bin_size = as.numeric(names(table(bin_sizes))),
                  num_bins = as.numeric(table(bin_sizes))))
 ```
 
-### log log plot of the bin sizes
+### scatter and log log plot of the bin sizes
 
 ```{r}
 loglog <- data.frame(bin_size = as.numeric(names(table(bin_sizes))),
                      num_bins = as.numeric(table(bin_sizes)))
 plot(num_bins ~ bin_size, data = loglog)
-plot(log(num_bins) ~ bin_size, data = loglog)
-plot(log(num_bins) ~ log(bin_size), data = loglog)
+plot(log10(num_bins) ~ log10(bin_size), data = loglog)
 ```
 
-### TODO: Make categories and count frequencies
+### Categories and count frequencies
+
+```{r}
+cats <- hist(bin_sizes, breaks = c(0,1,2,3,4,10,20,400,1000000), plot=FALSE)
+counts <- cats$counts
+names(counts) <- paste('(', cats$breaks[1:(length(cats$breaks)-1)], 
+                  '-', cats$breaks[2:(length(cats$breaks))], ']',
+                  sep='')
+names(counts)[length(counts)] <- paste(cats$breaks[length(cats$breaks)-1], '+',
+                                       sep = '')
+barplot(counts, main = 'Histogram of Bin Sizes')
+kable(data.frame(category = names(counts),
+                 count = counts,
+                 row.names = 1:length(counts)))
+```
