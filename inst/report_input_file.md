@@ -1,6 +1,6 @@
 
 
-## A Basic report on the input file that was provided
+## Input File
 
 
 ```r
@@ -8,7 +8,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-17 16:12:40 SAST"
+## [1] "2015-03-19 12:51:11 SAST"
 ```
 
 ### A summary of the input sequences
@@ -36,38 +36,61 @@ print(seq_dat)
 
 ### The letter frequencies
 
+Counts of the letters in the input sequences.
 
 ```r
 x <- apply(consensusMatrix(seq_dat), 1, sum)
 x <- x[x != 0]
-print(x)
+kable(data.frame(letter = names(x),
+                 count = x,
+                 row.names = 1:length(x)))
 ```
 
-```
-##       A       C       G       T       N 
-## 1889682 1028655  973999 1394116      12
-```
+
+
+|letter |   count|
+|:------|-------:|
+|A      | 1889682|
+|C      | 1028655|
+|G      |  973999|
+|T      | 1394116|
+|N      |      12|
+
+Normalized counts of the letters in the input sequences.
 
 ```r
-print(round(x/sum(x), 4))
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
 ```
 
-```
-##      A      C      G      T      N 
-## 0.3575 0.1946 0.1842 0.2637 0.0000
-```
+
+
+|letter |  count|
+|:------|------:|
+|A      | 0.3575|
+|C      | 0.1946|
+|G      | 0.1842|
+|T      | 0.2637|
+|N      | 0.0000|
+
 
 ```r
-barplot(x/sum(x))
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the input sequences')
 ```
 
-![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+![plot of chunk unnamed-chunk-6](figure/unnamed-chunk-6-1.png) 
 
 ### The sequence lengths
 
 
 ```r
-hist(width(seq_dat))
+hist(width(seq_dat),
+     main = "Histogram of the lengths of the input sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```
 
-![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+![plot of chunk unnamed-chunk-7](figure/unnamed-chunk-7-1.png) 

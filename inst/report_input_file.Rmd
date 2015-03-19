@@ -5,7 +5,7 @@ rsf_dat <- report_dat$rsf_dat
 seq_dat <- rsf_dat$seq_dat
 ```
 
-## A Basic report on the input file that was provided
+## Input File
 
 ```{r}
 Sys.time()
@@ -19,16 +19,34 @@ print(seq_dat)
 
 ### The letter frequencies
 
+Counts of the letters in the input sequences.
 ```{r}
 x <- apply(consensusMatrix(seq_dat), 1, sum)
 x <- x[x != 0]
-print(x)
-print(round(x/sum(x), 4))
-barplot(x/sum(x))
+kable(data.frame(letter = names(x),
+                 count = x,
+                 row.names = 1:length(x)))
+```
+
+Normalized counts of the letters in the input sequences.
+```{r}
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
+```
+
+```{r}
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the input sequences')
 ```
 
 ### The sequence lengths
 
 ```{r}
-hist(width(seq_dat))
+hist(width(seq_dat),
+     main = "Histogram of the lengths of the input sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
+
 ```
