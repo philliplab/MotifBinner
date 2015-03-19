@@ -39,6 +39,7 @@ for (i in seq_along(pb_out)){
     pos_no_mismatch <- NA
     pos_mismatch <- NA
     total_mismatches <- NA
+    non_acgt <- NA
   } else {
     conMat <- consensusMatrix(pb_out[[i]]$alignment)
     gaps <- sum(conMat[-(1:4),])
@@ -46,6 +47,7 @@ for (i in seq_along(pb_out)){
     pos_no_mismatch <- sum(mismatches==0)
     pos_mismatch <- sum(mismatches!=0)
     total_mismatches <- sum(mismatches)
+    non_acgt <- sum(consensusMatrix(DNAStringSet(pb_out[[i]]$consensus[[1]]))[-(1:4),])
   }
   metrics <- rbind(metrics,
     data.frame(input_size = input_size,
@@ -57,7 +59,8 @@ for (i in seq_along(pb_out)){
                gaps = gaps,
                pos_no_mismatch = pos_no_mismatch,
                pos_mismatch = pos_mismatch,
-               total_mismatches = total_mismatches))
+               total_mismatches = total_mismatches,
+               non_acgt))
 }
 ```
 
@@ -113,4 +116,12 @@ hist(metrics$pos_mismatch)
 
 ```{r}
 hist(metrics$total_mismatches)
+```
+
+#### NON-ACGT characters in consensus
+
+```{r}
+hist(metrics$non_acgt)
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt))))
 ```
