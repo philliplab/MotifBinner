@@ -11,7 +11,54 @@
 #' @include process_bin.R
 NULL
 
+#' Given a report_dat data list, save the important results into the output
+#' directory
+#' @param output The directory where the binning results are to be saved
+#' @param report_dat The binning results as produced by process_file
+#' @export
+save_bin_results <- function(output, report_dat){
+  dir.create(file.path(output, 'results'), showWarnings = FALSE)
+  writeXStringSet(report_dat$em_dat$motif_dat$matched_seq, 
+                 filepath = file.path(output, 'results', 'motif_found.FASTA'))
+  writeXStringSet(report_dat$em_dat$motif_dat$unmatched_seq, 
+                 filepath = file.path(output, 'results', 'motif_not_found.FASTA'))
+  writeXStringSet(report_dat$pb_dat$consensuses, 
+                 filepath = file.path(output, 'results', 'consensuses.FASTA'))
+  dir.create(file.path(output, 'results', 'bins'), showWarnings = FALSE)
+  for (i in seq_along(report_dat$pb_dat$pb_out)){
+    c_bin <- report_dat$pb_dat$pb_out[[i]]
+    src_seq <- c_bin$src
+    if (length(src_seq)>0){
+      names(src_seq) <- paste(names(src_seq), 'src', sep = '_')
+    }
+    out_seq <- c_bin$out
+    if (length(out_seq)>0){
+      names(out_seq) <- paste(names(out_seq), 'out', sep = '_')
+    }
+    if (length(c_bin$consensus) > 0){
+      consen <- DNAStringSet(c_bin$consensus[[1]])
+      names(consen) <- 'consensus'
+    } else {
+      consen <- DNAStringSet(c_bin$consensus)
+    }
+    c_bin_name <- names(c_bin$consensus)
+    writeXStringSet(c(src_seq, out_seq, consen), 
+                    filepath = file.path(output, 'results', 'bins', 
+                                         paste(c_bin_name, '.FASTA', sep='')))
+  }
+}
+
+#' Given a report_dat data list, generate and save the reports/log files into
+#' the output directory
+#' @param output The directory where the binning results are to be saved
+#' @param report_dat The binning results as produced by process_file
+#' @export
+save_bin_report <- function(output, report_dat){
+  return(1)
+}
+
 paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
+               output = '/tmp/MotifBinner',
                prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
                          suffix = "CTGAGCGTGTGGCAAGGCCC",
                          motif_length = 9,
@@ -33,6 +80,7 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
 #' @export
 
 process_file <- function(file_name,
+                         output_dir,
                          prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
                          suffix = "CTGAGCGTGTGGCAAGGCCC",
                          motif_length = 9,
@@ -98,6 +146,9 @@ process_file <- function(file_name,
   pb_dat$consensuses <- consensuses
   pb_dat$pb_out <- pb_out
   report_dat$pb_dat <- pb_dat
+
+  save_bin_results(output, report_dat)
+  save_bin_report(output, report_dat)
 
   return(report_dat)
 }
