@@ -3,7 +3,7 @@
 
 
 
-## A Basic report on the input file that was provided
+## Input File
 
 
 ```r
@@ -11,7 +11,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-19 11:43:31 SAST"
+## [1] "2015-03-20 14:36:54 SAST"
 ```
 
 ### A summary of the input sequences
@@ -39,46 +39,70 @@ print(seq_dat)
 
 ### The letter frequencies
 
+Counts of the letters in the input sequences.
 
 ```r
 x <- apply(consensusMatrix(seq_dat), 1, sum)
 x <- x[x != 0]
-print(x)
+kable(data.frame(letter = names(x),
+                 count = x,
+                 count_per_seq = round(x/length(seq_dat),2),
+                 row.names = 1:length(x)))
 ```
 
-```
-##       A       C       G       T       N 
-## 1889682 1028655  973999 1394116      12
-```
+
+
+|letter |   count| count_per_seq|
+|:------|-------:|-------------:|
+|A      | 1889682|        129.65|
+|C      | 1028655|         70.58|
+|G      |  973999|         66.83|
+|T      | 1394116|         95.65|
+|N      |      12|          0.00|
+
+Normalized counts of the letters in the input sequences.
 
 ```r
-print(round(x/sum(x), 4))
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
 ```
 
-```
-##      A      C      G      T      N 
-## 0.3575 0.1946 0.1842 0.2637 0.0000
-```
+
+
+|letter |  count|
+|:------|------:|
+|A      | 0.3575|
+|C      | 0.1946|
+|G      | 0.1842|
+|T      | 0.2637|
+|N      | 0.0000|
+
 
 ```r
-barplot(x/sum(x))
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the input sequences')
 ```
 
-![plot of chunk unnamed-chunk-8](figure/unnamed-chunk-8-1.png) 
+![plot of chunk unnamed-chunk-10](figure/unnamed-chunk-10-1.png) 
 
 ### The sequence lengths
 
 
 ```r
-hist(width(seq_dat))
+hist(width(seq_dat),
+     main = "Histogram of the lengths of the input sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```
 
-![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
+![plot of chunk unnamed-chunk-11](figure/unnamed-chunk-11-1.png) 
 
 
 
 
-## A Basic report on search for PIDs in the sequences
+## Motif Searches
 
 
 ```r
@@ -86,10 +110,10 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-19 11:43:31 SAST"
+## [1] "2015-03-20 14:36:54 SAST"
 ```
 
-### Input parameters
+### Input parameters for the searches
 
 ```r
 print(prefix)
@@ -121,38 +145,20 @@ print(motif_length)
 n_matched <- length(motif_dat$matched_seq)
 n_unmatched <- length(motif_dat$unmatched_seq)
 n_total <- n_matched + n_unmatched
-print(n_matched)
+kable(data.frame(seq_matched_count = n_matched,
+                 seq_matched_perc = 100*round(n_matched / n_total, 4),
+                 seq_unmatched_count = n_unmatched,
+                 seq_unmatched_perc = 100*round(n_unmatched / n_total, 4)))
 ```
 
-```
-## [1] 11561
-```
 
-```r
-print(round(n_matched / n_total, 4))
-```
 
-```
-## [1] 0.7932
-```
-
-```r
-print(n_unmatched)
-```
-
-```
-## [1] 3014
-```
-
-```r
-print(round(n_unmatched / n_total, 4))
-```
-
-```
-## [1] 0.2068
-```
+| seq_matched_count| seq_matched_perc| seq_unmatched_count| seq_unmatched_perc|
+|-----------------:|----------------:|-------------------:|------------------:|
+|             11561|            79.32|                3014|              20.68|
 
 ### Matched Sequences
+
 #### Summary of sequences
 
 
@@ -178,41 +184,65 @@ print(motif_dat$matched_seq)
 
 #### The letter frequencies
 
+Counts of the letters in the matched sequences.
 
 ```r
 x <- apply(consensusMatrix(motif_dat$matched_seq), 1, sum)
 x <- x[x != 0]
-print(x)
+kable(data.frame(letter = names(x),
+                 count = x,
+                 count_per_seq = round(x/length(motif_dat$matched_seq),2),
+                 row.names = 1:length(x)))
 ```
 
-```
-##       A       C       G       T       + 
-## 1296178  675110  536220  978310       2
-```
+
+
+|letter |   count| count_per_seq|
+|:------|-------:|-------------:|
+|A      | 1296178|        112.12|
+|C      |  675110|         58.40|
+|G      |  536220|         46.38|
+|T      |  978310|         84.62|
+|+      |       2|          0.00|
+
+Normalized counts of the letters in the matched sequences.
 
 ```r
-print(round(x/sum(x), 4))
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
 ```
 
-```
-##      A      C      G      T      + 
-## 0.3718 0.1937 0.1538 0.2807 0.0000
-```
+
+
+|letter |  count|
+|:------|------:|
+|A      | 0.3718|
+|C      | 0.1937|
+|G      | 0.1538|
+|T      | 0.2807|
+|+      | 0.0000|
+
 
 ```r
-barplot(x/sum(x))
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the matched sequences')
 ```
 
-![plot of chunk unnamed-chunk-15](figure/unnamed-chunk-15-1.png) 
+![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png) 
 
 #### The sequence lengths
 
 
 ```r
-hist(width(motif_dat$matched_seq))
+hist(width(motif_dat$matched_seq),
+     main = "Histogram of the lengths of the matched sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```
 
-![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
 
 ### Unmatched Sequences
 #### Summary of sequences
@@ -240,46 +270,70 @@ print(motif_dat$unmatched_seq)
 
 #### The letter frequencies
 
+Counts of the letters in the unmatched sequences.
 
 ```r
 x <- apply(consensusMatrix(motif_dat$unmatched_seq), 1, sum)
 x <- x[x != 0]
-print(x)
+kable(data.frame(letter = names(x),
+                 count = x,
+                 count_per_seq = round(x/length(motif_dat$unmatched_seq),2),
+                 row.names = 1:length(x)))
 ```
 
-```
-##      A      C      G      T      + 
-## 466241 213997 241376 266341      8
-```
+
+
+|letter |  count| count_per_seq|
+|:------|------:|-------------:|
+|A      | 466241|        154.69|
+|C      | 213997|         71.00|
+|G      | 241376|         80.08|
+|T      | 266341|         88.37|
+|+      |      8|          0.00|
+
+Normalized counts of the letters in the unmatched sequences.
 
 ```r
-print(round(x/sum(x), 4))
+x_freq <- round(x/sum(x), 4)
+kable(data.frame(letter = names(x_freq),
+                 count = x_freq,
+                 row.names = 1:length(x_freq)))
 ```
 
-```
-##      A      C      G      T      + 
-## 0.3925 0.1801 0.2032 0.2242 0.0000
-```
+
+
+|letter |  count|
+|:------|------:|
+|A      | 0.3925|
+|C      | 0.1801|
+|G      | 0.2032|
+|T      | 0.2242|
+|+      | 0.0000|
+
 
 ```r
-barplot(x/sum(x))
+barplot(x/sum(x),
+        main = 'Normalized counts of the letters\nin the unmatched sequences')
 ```
 
-![plot of chunk unnamed-chunk-18](figure/unnamed-chunk-18-1.png) 
+![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24-1.png) 
 
 #### The sequence lengths
 
 
 ```r
-hist(width(motif_dat$unmatched_seq))
+hist(width(motif_dat$unmatched_seq),
+     main = "Histogram of the lengths of the unmatched sequences",
+     xlab = "Sequence Length",
+     ylab = "Number of Sequences")
 ```
 
-![plot of chunk unnamed-chunk-19](figure/unnamed-chunk-19-1.png) 
+![plot of chunk unnamed-chunk-25](figure/unnamed-chunk-25-1.png) 
 
 
 
 
-## A Basic report on the bins produced
+## The unprocessed bins produced
 
 
 ```r
@@ -287,7 +341,7 @@ Sys.time()
 ```
 
 ```
-## [1] "2015-03-19 11:43:31 SAST"
+## [1] "2015-03-20 14:36:55 SAST"
 ```
 
 ### The number of bins
@@ -309,7 +363,7 @@ bin_sizes <- unlist(lapply(bin_seqs, length))
 hist(bin_sizes)
 ```
 
-![plot of chunk unnamed-chunk-23](figure/unnamed-chunk-23-1.png) 
+![plot of chunk unnamed-chunk-29](figure/unnamed-chunk-29-1.png) 
 
 ```r
 kable(data.frame(bin_size = as.numeric(names(table(bin_sizes))),
@@ -404,7 +458,7 @@ kable(data.frame(bin_size = as.numeric(names(table(bin_sizes))),
 |      113|        1|
 |      119|        1|
 
-### log log plot of the bin sizes
+### scatter and log log plot of the bin sizes
 
 
 ```r
@@ -413,21 +467,48 @@ loglog <- data.frame(bin_size = as.numeric(names(table(bin_sizes))),
 plot(num_bins ~ bin_size, data = loglog)
 ```
 
-![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24-1.png) 
+![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-1.png) 
 
 ```r
-plot(log(num_bins) ~ bin_size, data = loglog)
+plot(log10(num_bins) ~ log10(bin_size), data = loglog)
 ```
 
-![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24-2.png) 
+![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-2.png) 
+
+### Categories and count frequencies
+
 
 ```r
-plot(log(num_bins) ~ log(bin_size), data = loglog)
+cats <- hist(bin_sizes, breaks = c(0,1,2,3,4,10,20,400,1000000), plot=FALSE)
+counts <- cats$counts
+names(counts) <- paste('(', cats$breaks[1:(length(cats$breaks)-1)], 
+                  '-', cats$breaks[2:(length(cats$breaks))], ']',
+                  sep='')
+names(counts)[length(counts)] <- paste(cats$breaks[length(cats$breaks)-1], '+',
+                                       sep = '')
+barplot(counts, main = 'Histogram of Bin Sizes')
 ```
 
-![plot of chunk unnamed-chunk-24](figure/unnamed-chunk-24-3.png) 
+![plot of chunk unnamed-chunk-31](figure/unnamed-chunk-31-1.png) 
 
-### TODO: Make categories and count frequencies
+```r
+kable(data.frame(category = names(counts),
+                 count = counts,
+                 row.names = 1:length(counts)))
+```
+
+
+
+|category | count|
+|:--------|-----:|
+|(0-1]    |   482|
+|(1-2]    |    76|
+|(2-3]    |    35|
+|(3-4]    |    32|
+|(4-10]   |    92|
+|(10-20]  |    92|
+|(20-400] |   189|
+|400+     |     0|
 
 
 ## Basic report on the processed bins
@@ -453,7 +534,7 @@ print(x)
 ## [1] 0.01333333
 ## 
 ## $classification_params$start_threshold
-## [1] 0.02333333
+## [1] 0.01333333
 ## 
 ## $classification_params$max_sequences
 ## [1] 100
@@ -488,20 +569,20 @@ print(x)
 hist(metrics$input_size)
 ```
 
-![plot of chunk unnamed-chunk-28](figure/unnamed-chunk-28-1.png) 
+![plot of chunk unnamed-chunk-35](figure/unnamed-chunk-35-1.png) 
 
 ```r
 hist(metrics$output_size)
 ```
 
-![plot of chunk unnamed-chunk-28](figure/unnamed-chunk-28-2.png) 
+![plot of chunk unnamed-chunk-35](figure/unnamed-chunk-35-2.png) 
 
 ```r
 plot(metrics$output_size ~ metrics$input_size)
 abline(a=0, b=1)
 ```
 
-![plot of chunk unnamed-chunk-28](figure/unnamed-chunk-28-3.png) 
+![plot of chunk unnamed-chunk-35](figure/unnamed-chunk-35-3.png) 
 
 ##### Where are the small bins coming from?
 
@@ -512,7 +593,7 @@ plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
 abline(a=0, b=1)
 ```
 
-![plot of chunk unnamed-chunk-29](figure/unnamed-chunk-29-1.png) 
+![plot of chunk unnamed-chunk-36](figure/unnamed-chunk-36-1.png) 
 
 #### Before and after bin distances
 
@@ -521,25 +602,25 @@ abline(a=0, b=1)
 hist(metrics$in_max_dist)
 ```
 
-![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-1.png) 
+![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-37-1.png) 
 
 ```r
 hist(metrics$out_max_dist)
 ```
 
-![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-2.png) 
+![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-37-2.png) 
 
 ```r
 hist(metrics$min_out_dist)
 ```
 
-![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-3.png) 
+![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-37-3.png) 
 
 ```r
 hist(metrics$in_max_dist - metrics$out_max_dist)
 ```
 
-![plot of chunk unnamed-chunk-30](figure/unnamed-chunk-30-4.png) 
+![plot of chunk unnamed-chunk-37](figure/unnamed-chunk-37-4.png) 
 
 ### Alignment step
 
@@ -550,7 +631,7 @@ hist(metrics$in_max_dist - metrics$out_max_dist)
 hist(metrics$gaps)
 ```
 
-![plot of chunk unnamed-chunk-31](figure/unnamed-chunk-31-1.png) 
+![plot of chunk unnamed-chunk-38](figure/unnamed-chunk-38-1.png) 
 
 ```r
 kable(data.frame(num_gaps = as.numeric(names(table(metrics$gaps))),
@@ -561,17 +642,17 @@ kable(data.frame(num_gaps = as.numeric(names(table(metrics$gaps))),
 
 | num_gaps| num_alignments|
 |--------:|--------------:|
-|        0|            359|
-|        1|             76|
+|        0|            356|
+|        1|             75|
 |        2|             26|
-|        3|              8|
+|        3|              7|
 |        4|              5|
 |        5|              2|
-|        6|              2|
-|        7|              2|
+|        6|              3|
+|        7|              1|
 |        8|              1|
-|        9|              2|
-|       15|              2|
+|       14|              1|
+|       15|              1|
 |       17|              1|
 |       18|              1|
 |       19|              1|
@@ -600,13 +681,13 @@ kable(data.frame(num_gaps = as.numeric(names(table(metrics$gaps))),
 hist(metrics$pos_no_mismatch)
 ```
 
-![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-1.png) 
+![plot of chunk unnamed-chunk-39](figure/unnamed-chunk-39-1.png) 
 
 ```r
 hist(metrics$pos_mismatch)
 ```
 
-![plot of chunk unnamed-chunk-32](figure/unnamed-chunk-32-2.png) 
+![plot of chunk unnamed-chunk-39](figure/unnamed-chunk-39-2.png) 
 
 #### Total number of mismatches
 
@@ -615,7 +696,7 @@ hist(metrics$pos_mismatch)
 hist(metrics$total_mismatches)
 ```
 
-![plot of chunk unnamed-chunk-33](figure/unnamed-chunk-33-1.png) 
+![plot of chunk unnamed-chunk-40](figure/unnamed-chunk-40-1.png) 
 
 #### NON-ACGT characters in consensus
 
@@ -624,7 +705,7 @@ hist(metrics$total_mismatches)
 hist(metrics$non_acgt)
 ```
 
-![plot of chunk unnamed-chunk-34](figure/unnamed-chunk-34-1.png) 
+![plot of chunk unnamed-chunk-41](figure/unnamed-chunk-41-1.png) 
 
 ```r
 kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
@@ -635,15 +716,10 @@ kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
 
 | num_non_acgt| num_con_seq|
 |------------:|-----------:|
-|            0|         326|
-|            1|          74|
-|            2|          42|
-|            3|          19|
-|            4|          17|
-|            5|          14|
-|            6|           9|
-|            8|           2|
-|            9|           1|
-|           10|           1|
-|           11|           1|
-|           13|           2|
+|            0|         324|
+|            1|          70|
+|            2|          46|
+|            3|          18|
+|            4|          18|
+|            5|          15|
+|            6|          10|

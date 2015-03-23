@@ -20,7 +20,7 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
                          add_uniq_id = T,
                          classification_technique = 'absolute',
                          classification_params = list(threshold = 8/600, 
-                                                      start_threshold = 14/600, 
+                                                      start_threshold = 8/600, 
                                                       max_sequences = 100),
                          alignment_technique = 'muscle',
                          alignment_params = list(),
@@ -41,7 +41,7 @@ process_file <- function(file_name,
                          add_uniq_id = T,
                          classification_technique = 'absolute',
                          classification_params = list(threshold = 8/600, 
-                                                      start_threshold = 14/600, 
+                                                      start_threshold = 8/600, 
                                                       max_sequences = 100),
                          alignment_technique = 'muscle',
                          alignment_params = list(),
@@ -86,6 +86,16 @@ process_file <- function(file_name,
     pb_dat$seqs <- bin_seqs[[bin_name]]
     pb_out[[bin_name]] <- do.call(process_bin, pb_dat)
   } 
+  #  Just process the ouput into a friendlier data structure
+  consensuses <- DNAStringSet()
+  for (i in seq_along(pb_out)){
+    if (length(pb_out[[i]]$consensus) > 0){
+      dss <- DNAStringSet(pb_out[[i]]$consensus[[1]])
+      names(dss) <- names(pb_out[[i]]$consensus)
+      consensuses <- c(consensuses, dss)
+    }
+  }
+  pb_dat$consensuses <- consensuses
   pb_dat$pb_out <- pb_out
   report_dat$pb_dat <- pb_dat
 

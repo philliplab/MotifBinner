@@ -1,2 +1,3 @@
 *.swp
 inst/report_dat.rda
+inst/report_dat*.rda
