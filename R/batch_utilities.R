@@ -54,7 +54,16 @@ save_bin_results <- function(output, report_dat){
 #' @param report_dat The binning results as produced by process_file
 #' @export
 save_bin_report <- function(output, report_dat){
-  return(1)
+  knitr_file_location <- file.path(find.package('MotifBinner'),
+                                   'report_bin_file.Rmd')
+  if (!file.exists(knitr_file_location)){
+    knitr_file_location <- file.path(find.package('MotifBinner'),
+                                     'inst', 'report_bin_file.Rmd')
+  }
+  cwd <- getwd()
+  setwd(output)
+  knit2html(knitr_file_location)
+  setwd(cwd)
 }
 
 paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
