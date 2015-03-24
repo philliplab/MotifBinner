@@ -27,6 +27,24 @@ kable(data.frame(bin_size = as.numeric(names(table(bin_sizes))),
                  num_bins = as.numeric(table(bin_sizes))))
 ```
 
+### How many sequences are duplicated?
+```{r}
+uniq_len <- function(x){
+  length(unique(x))
+}
+unique_bin_sizes <- unlist(lapply(bin_seqs, uniq_len))
+plot(unique_bin_sizes ~ bin_sizes,
+     ylim = c(0,max(bin_sizes)),
+     ylab = 'Number unique sequences',
+     xlab = 'Total number of sequences')
+abline(h = max(unique_bin_sizes))
+```
+
+Total number of sequences (x-axis) vs Number of unique sequences (y-axis)
+```{r}
+kable(table(cut(unique_bin_sizes, 5), cut(bin_sizes, 5)))
+```
+
 ### scatter and log log plot of the bin sizes
 
 ```{r}
