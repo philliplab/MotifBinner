@@ -186,11 +186,18 @@ classify_bin_most_frequent <- function(bin){
 #' error. Thus, before applying the thresholds to the distances between the
 #' sequences, they are doubled.
 #'
-#' The rationale for doubling the threshold is that a sequences has a read
+#' The rationale for doubling the threshold is that a sequence has a read
 #' error if there is an error in 1 of the bases the sequence sequence while the
 #' distance between 2 sequences is 1 if there is a read error in any of the
 #' bases of the two sequences under consideration. Obviously its more subtle
-#' than this, see the bnechmarking document for more details.
+#' than this, see the benchmarking document for more details.
+#'
+#' Note that as the thresholds get bigger, the behaviour will get strange.
+#' This is because it assumes that the likihood of the same mutation occuring
+#' in the two sequences being very low. However, as the error rate gets much
+#' higher, that assumption becomes invalid and strange things happen. This will
+#' not be fixed, since this library is not designed to work in an environment
+#' where the error rates are high.
 #'
 #' @param bin The input bin as a single DNAStringSet.
 #' @param threshold Outlier sequences are removed from the bin until the
