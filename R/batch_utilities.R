@@ -17,14 +17,14 @@ NULL
 #' @param report_dat The binning results as produced by process_file
 #' @export
 save_bin_results <- function(output, report_dat){
-  dir.create(file.path(output, 'results'), showWarnings = FALSE)
+  dir.create(file.path(output, 'results'), showWarnings = FALSE, recursive = TRUE)
   writeXStringSet(report_dat$em_dat$motif_dat$matched_seq, 
                  filepath = file.path(output, 'results', 'motif_found.FASTA'))
   writeXStringSet(report_dat$em_dat$motif_dat$unmatched_seq, 
                  filepath = file.path(output, 'results', 'motif_not_found.FASTA'))
   writeXStringSet(report_dat$pb_dat$consensuses, 
                  filepath = file.path(output, 'results', 'consensuses.FASTA'))
-  dir.create(file.path(output, 'results', 'bins'), showWarnings = FALSE)
+  dir.create(file.path(output, 'results', 'bins'), showWarnings = FALSE, recursive = TRUE)
   for (i in seq_along(report_dat$pb_dat$pb_out)){
     c_bin <- report_dat$pb_dat$pb_out[[i]]
     src_seq <- c_bin$src

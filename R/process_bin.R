@@ -32,6 +32,10 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
     }
   }
   result <- list()
+  if (length(names(seqs)) != length(unique(names(seqs)))){
+    warning('sequence names must be unique for process_bin - adding unique id')
+    names(seqs) <- paste(names(seqs), 1:length(seqs), sep = '_')
+  }
   x <- classify_bin(seqs, technique = classification_technique, 
                     params = classification_params)
   result$src <- x$src
