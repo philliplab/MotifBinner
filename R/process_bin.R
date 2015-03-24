@@ -15,6 +15,9 @@
 #' @param consensus_params The parameters for the consensus generator
 #' @param remove_gaps If set to TRUE (the default, then gaps will be removed
 #' from the consensus sequences)
+#' @param strip_uids Remove the unique identifiers from the sequence. It is not
+#' intelligent. The names will be split on '_' and the first and last pieces
+#' will be kept.
 #' @export
 
 process_bin <- function(seqs, classification_technique = 'infovar_balance',
@@ -25,7 +28,8 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
                         alignment_params = list(),
                         consensus_technique = 'Biostrings::consensusString',
                         consensus_params = list(),
-                        remove_gaps = TRUE){
+                        remove_gaps = TRUE,
+                        strip_uids = FALSE){
   if (is.list(seqs)){
     if (all(sort(c('src', 'out')) == sort(names(seqs)))){
       seqs <- c(seqs$src, seqs$out)
@@ -52,6 +56,10 @@ process_bin <- function(seqs, classification_technique = 'infovar_balance',
                              params = consensus_params)
     if (remove_gaps){
       x[[1]] <- gsub('-', '', x[[1]])
+    }
+    if (strip_uids){
+      y <- strsplit(names(x), '_')[[1]]
+      names(x) <- paste(y[1], y[length(y)], sep = '_')
     }
     result$consensus <- x
   }

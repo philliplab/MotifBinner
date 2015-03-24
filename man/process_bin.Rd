@@ -10,7 +10,7 @@ process_bin(seqs, classification_technique = "infovar_balance",
   max_sequences = 100), alignment_technique = "muscle",
   alignment_params = list(),
   consensus_technique = "Biostrings::consensusString",
-  consensus_params = list(), remove_gaps = TRUE)
+  consensus_params = list(), remove_gaps = TRUE, strip_uids = FALSE)
 }
 \arguments{
 \item{seqs}{The sequences that were binned together}
@@ -31,6 +31,10 @@ consensus sequence}
 
 \item{remove_gaps}{If set to TRUE (the default, then gaps will be removed
 from the consensus sequences)}
+
+\item{strip_uids}{Remove the unique identifiers from the sequence. It is not
+intelligent. The names will be split on '_' and the first and last pieces
+will be kept.}
 }
 \description{
 The output will be a list with a DNAString. The name of the DNAString in the

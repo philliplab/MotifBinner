@@ -82,7 +82,8 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
                          alignment_params = list(),
                          consensus_technique = 'mostConsensusString',
                          consensus_params = list(),
-                         remove_gaps = TRUE)
+                         remove_gaps = TRUE,
+                         strip_uids = TRUE)
 
 #' Processes a file into consensus bins
 #' @param file_name The file name
@@ -104,7 +105,8 @@ process_file <- function(file_name,
                          alignment_params = list(),
                          consensus_technique = 'mostConsensusString',
                          consensus_params = list(),
-                         remove_gaps = TRUE){
+                         remove_gaps = TRUE,
+                         strip_uids = TRUE){
   report_dat <- list()
   rsf_dat <- list(file_name = file_name)
   seq_dat <- read_sequence_file(file_name)
@@ -136,6 +138,7 @@ process_file <- function(file_name,
   pb_dat$consensus_technique <- consensus_technique
   pb_dat$consensus_params <- consensus_params
   pb_dat$remove_gaps <- remove_gaps 
+  pb_dat$strip_uids <- strip_uids
   pb_out <- list()
   pb_dat$pb_out <- NULL
   for (bin_name in seq_along(bin_seqs)){

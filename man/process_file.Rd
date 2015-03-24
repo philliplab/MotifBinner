@@ -10,7 +10,7 @@ process_file(file_name, output_dir, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   classification_params = list(threshold = 8/600, start_threshold = 8/600,
   max_sequences = 100), alignment_technique = "muscle",
   alignment_params = list(), consensus_technique = "mostConsensusString",
-  consensus_params = list(), remove_gaps = TRUE)
+  consensus_params = list(), remove_gaps = TRUE, strip_uids = TRUE)
 }
 \arguments{
 \item{file_name}{The file name}
