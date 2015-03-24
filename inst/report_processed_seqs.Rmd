@@ -160,3 +160,13 @@ By bin size after outliers have been removed: (Number of non-acgt on the y-axis 
 ```{r}
 kable(with(metrics, table(non_acgt, output_size_bins)))
 ```
+
+#### Letters in the final consensus sequences
+```{r}
+let_count <- apply(consensusMatrix(pb_dat$consensuses), 1, sum)
+let_count <- let_count[let_count != 0]
+kable(data.frame(letter = names(let_count),
+                 count = as.numeric(let_count)))
+non_acgt_counts <- let_count[!names(let_count) %in% c('A','C','G','T')]
+barplot(non_acgt_counts)
+```
