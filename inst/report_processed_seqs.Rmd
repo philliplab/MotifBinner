@@ -23,7 +23,7 @@ print(x)
 metrics <- NULL
 i <- 1
 for (i in seq_along(pb_out)){
-  print(i)
+#  print(i)
   input_size <- length(pb_out[[i]]$src) + length(pb_out[[i]]$out)
   output_size <- length(pb_out[[i]]$src)
   out <- pb_out[[i]]$out
@@ -41,6 +41,7 @@ for (i in seq_along(pb_out)){
     pos_mismatch <- NA
     total_mismatches <- NA
     non_acgt <- NA
+    align_length <- NA
   } else {
     conMat <- consensusMatrix(pb_out[[i]]$alignment)
     gaps <- sum(conMat[-(1:4),])
@@ -49,6 +50,7 @@ for (i in seq_along(pb_out)){
     pos_mismatch <- sum(mismatches!=0)
     total_mismatches <- sum(mismatches)
     non_acgt <- sum(consensusMatrix(DNAStringSet(pb_out[[i]]$consensus[[1]]))[-(1:4),])
+    align_length <- max(width(pb_out[[i]]$alignment))
   }
   metrics <- rbind(metrics,
     data.frame(input_size = input_size,
@@ -61,7 +63,8 @@ for (i in seq_along(pb_out)){
                pos_no_mismatch = pos_no_mismatch,
                pos_mismatch = pos_mismatch,
                total_mismatches = total_mismatches,
-               non_acgt))
+               non_acgt = non_acgt,
+               align_length = align_length))
 }
 ```
 
@@ -70,10 +73,12 @@ for (i in seq_along(pb_out)){
 #### Before and after bin sizes
 
 ```{r}
+par(mfrow=c(2,2))
 hist(metrics$input_size)
 hist(metrics$output_size)
 plot(metrics$output_size ~ metrics$input_size)
 abline(a=0, b=1)
+par(mfrow=c(1,1))
 ```
 
 ##### Where are the small bins coming from?
@@ -87,10 +92,11 @@ abline(a=0, b=1)
 #### Before and after bin distances
 
 ```{r}
+par(mfrow=c(2,2))
 hist(metrics$in_max_dist)
 hist(metrics$out_max_dist)
 hist(metrics$min_out_dist)
-hist(metrics$in_max_dist - metrics$out_max_dist)
+par(mfrow=c(1,1))
 ```
 
 ### Alignment step
@@ -98,28 +104,49 @@ hist(metrics$in_max_dist - metrics$out_max_dist)
 #### Number of gaps inserted
 
 ```{r}
-hist(metrics$gaps)
-kable(data.frame(num_gaps = as.numeric(names(table(metrics$gaps))),
-                 num_alignments = as.numeric(table(metrics$gaps))))
+norm_gap <- (100*metrics$gaps)/(metrics$output_size * metrics$align_length)
+hist(norm_gap,
+     main = "Histogram of the number of gaps per\n100 characters in the alignment",
+     xlab = "Gaps per 100 characters",
+     ylab = "Number of alignments")
+kable(data.frame(num_gaps = as.numeric(names(table(round(norm_gap,1)))),
+                 num_alignments = as.numeric(table(round(norm_gap,1)))))
 ```
 
 #### Number positions with mismatches in the alignment
 
 ```{r}
-hist(metrics$pos_no_mismatch)
-hist(metrics$pos_mismatch)
+par(mfrow=c(1,2))
+hist(metrics$pos_no_mismatch/metrics$align_length,
+     main = "Histogram of percentage of\npositions with no mismatches",
+     xlab = "Percentage of Positions",
+     ylab = "Number of Alignments")
+hist(metrics$pos_mismatch/metrics$align_length,
+     main = "Histogram of percentage of\npositions with mismatches",
+     xlab = "Percentage of Positions",
+     ylab = "Number of Alignments")
+par(mfrow=c(1,1))
 ```
 
 #### Total number of mismatches
 
 ```{r}
-hist(metrics$total_mismatches)
+hist(metrics$total_mismatches/(metrics$output_size * metrics$align_length),
+     main = "Percentage of alignment that\nconflicts with consensus sequence",
+     xlab = "Percentage of conflicting characters",
+     ylab = "Number of Alignments")
 ```
 
 #### NON-ACGT characters in consensus
 
 ```{r}
-hist(metrics$non_acgt)
+barplot(table(metrics$non_acgt))
 kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
                  num_con_seq = as.numeric(table(metrics$non_acgt))))
+```
+
+What kinds of bins yield consensus sequences with non-acgt characters?
+
+```{r}
+
 ```
