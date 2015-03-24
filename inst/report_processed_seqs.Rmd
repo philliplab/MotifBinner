@@ -66,6 +66,10 @@ for (i in seq_along(pb_out)){
                non_acgt = non_acgt,
                align_length = align_length))
 }
+metrics$input_size_bins <- cut(metrics$input_size, breaks =
+                               c(0,1,2,3,10,50,100000))
+metrics$output_size_bins <- cut(metrics$output_size, breaks =
+                               c(0,1,2,3,10,50,100000))
 ```
 
 ### Effects of outlier removal
@@ -147,6 +151,12 @@ kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
 
 What kinds of bins yield consensus sequences with non-acgt characters?
 
+By starting bin size: (Number of non-acgt on the y-axis and bin size on x-axis)
 ```{r}
+kable( with(metrics, table(non_acgt, input_size_bins)))
+```
 
+By bin size after outliers have been removed: (Number of non-acgt on the y-axis and bin size on x-axis)
+```{r}
+kable(with(metrics, table(non_acgt, output_size_bins)))
 ```
