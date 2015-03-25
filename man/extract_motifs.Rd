@@ -14,6 +14,8 @@ extract_motifs(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
 
 \item{suffix}{The suffix that is used to identify the motif}
 
+\item{motif_length}{The length of the motif that forms the pid.}
+
 \item{max.mismatch}{See ?vmatchPattern}
 
 \item{fixed}{See ?vmatchPattern}

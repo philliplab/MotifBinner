@@ -6,14 +6,40 @@
 \usage{
 process_file(file_name, output_dir, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9, max.mismatch = 5,
-  fixed = FALSE, add_uniq_id = T, classification_technique = "absolute",
-  classification_params = list(threshold = 8/600, start_threshold = 8/600,
-  max_sequences = 100), alignment_technique = "muscle",
-  alignment_params = list(), consensus_technique = "mostConsensusString",
-  consensus_params = list(), remove_gaps = TRUE, strip_uids = TRUE)
+  threshold = 8/600, start_threshold = 8/600, max_sequences = 100,
+  remove_gaps = TRUE, strip_uids = TRUE)
 }
 \arguments{
 \item{file_name}{The file name}
+
+\item{output_dir}{The directory where the output must be stored}
+
+\item{prefix}{The prefix that is used to identify the motif}
+
+\item{suffix}{The suffix that is used to identify the motif}
+
+\item{motif_length}{The length of the motif that forms the pid.}
+
+\item{max.mismatch}{The maximum number of mismatches to allow when searching
+for the pid}
+
+\item{threshold}{Outlier sequences are removed from the bin until the
+maximum distance between any two sequences drops below this threshold.}
+
+\item{start_threshold}{Only start the classification if the maximum
+distance between and two sequences in the bin is greater than this.}
+
+\item{max_sequences}{The maximum number of sequences to use for the
+computation of the distance matrix. If more sequences than this is present,
+then randomly select this many sequences and run the classification
+algorithm on them. This is only to improve the computation speed.}
+
+\item{remove_gaps}{If set to TRUE (the default, then gaps will be removed
+from the consensus sequences)}
+
+\item{strip_uids}{Remove the unique identifiers from the sequence. It is not
+intelligent. The names will be split on '_' and the first and last pieces
+will be kept.}
 }
 \description{
 Processes a file into consensus bins

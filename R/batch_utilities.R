@@ -69,44 +69,62 @@ save_bin_report <- function(output, report_dat){
 paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
                output = '/tmp/MotifBinner',
                prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
-                         suffix = "CTGAGCGTGTGGCAAGGCCC",
-                         motif_length = 9,
-                         max.mismatch = 5,
-                         fixed = FALSE,
-                         add_uniq_id = T,
-                         classification_technique = 'absolute',
-                         classification_params = list(threshold = 8/600, 
-                                                      start_threshold = 8/600, 
-                                                      max_sequences = 100),
-                         alignment_technique = 'muscle',
-                         alignment_params = list(),
-                         consensus_technique = 'mostConsensusString',
-                         consensus_params = list(),
-                         remove_gaps = TRUE,
-                         strip_uids = TRUE)
+               suffix = "CTGAGCGTGTGGCAAGGCCC",
+               motif_length = 9,
+               max.mismatch = 5,
+               threshold = 8/600, 
+               start_threshold = 8/600, 
+               max_sequences = 100,
+               remove_gaps = TRUE,
+               strip_uids = TRUE)
 
 #' Processes a file into consensus bins
 #' @param file_name The file name
+#' @param output_dir The directory where the output must be stored
+#' @param prefix The prefix that is used to identify the motif
+#' @param suffix The suffix that is used to identify the motif
+#' @param motif_length The length of the motif that forms the pid.
+#' @param max.mismatch The maximum number of mismatches to allow when searching
+#' for the pid
+#' @param threshold Outlier sequences are removed from the bin until the
+#' maximum distance between any two sequences drops below this threshold.
+#' @param  start_threshold Only start the classification if the maximum
+#' distance between and two sequences in the bin is greater than this.
+#' @param max_sequences The maximum number of sequences to use for the
+#' computation of the distance matrix. If more sequences than this is present,
+#' then randomly select this many sequences and run the classification
+#' algorithm on them. This is only to improve the computation speed.
+#' @param remove_gaps If set to TRUE (the default, then gaps will be removed
+#' from the consensus sequences)
+#' @param strip_uids Remove the unique identifiers from the sequence. It is not
+#' intelligent. The names will be split on '_' and the first and last pieces
+#' will be kept.
 #' @export
 
 process_file <- function(file_name,
-                         output_dir,
+                         output,
                          prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
                          suffix = "CTGAGCGTGTGGCAAGGCCC",
                          motif_length = 9,
                          max.mismatch = 5,
-                         fixed = FALSE,
-                         add_uniq_id = T,
-                         classification_technique = 'absolute',
-                         classification_params = list(threshold = 8/600, 
-                                                      start_threshold = 8/600, 
-                                                      max_sequences = 100),
-                         alignment_technique = 'muscle',
-                         alignment_params = list(),
-                         consensus_technique = 'mostConsensusString',
-                         consensus_params = list(),
+                         threshold = 8/600, 
+                         start_threshold = 8/600, 
+                         max_sequences = 100,
                          remove_gaps = TRUE,
                          strip_uids = TRUE){
+
+  fixed <- FALSE
+  add_uniq_id <- T
+  classification_technique <- 'absolute'
+  classification_params <- list(
+                         threshold = threshold, 
+                         start_threshold = start_threshold, 
+                         max_sequences = max_sequences)
+  alignment_technique <- 'muscle'
+  alignment_params <- list()
+  consensus_technique <- 'mostConsensusString'
+  consensus_params <- list()
+
   report_dat <- list()
   rsf_dat <- list(file_name = file_name)
   seq_dat <- read_sequence_file(file_name)

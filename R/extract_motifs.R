@@ -2,6 +2,7 @@
 #' @param seq_data The sequences whose motifs must be extracted
 #' @param prefix The prefix that is used to identify the motif
 #' @param suffix The suffix that is used to identify the motif
+#' @param motif_length The length of the motif that forms the pid.
 #' @param max.mismatch See ?vmatchPattern
 #' @param fixed See ?vmatchPattern
 #' @export
