@@ -35,5 +35,6 @@ Collate:
     'batch_utilities.R'
     'benchmarking.R'
     'consensus_checker.R'
+    'distances.R'
     'reporting_utilities.R'
     'sim_read.R'

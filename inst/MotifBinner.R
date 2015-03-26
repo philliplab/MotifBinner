@@ -44,6 +44,7 @@ opt <- parse_args(OptionParser(option_list=option_list))
 
 opt$help <- NULL
 print(opt)
+dput(opt)
 do.call(process_file, opt)
 
 # ./MotifBinner.R --file_name=~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq --output=/tmp/MotifBinner --prefix=CCAGCTGGTTATGCGATTCTMARGTG --suffix=CTGAGCGTGTGGCAAGGCCC --motif_length=9 --max_mismatch=5 --threshold=0.01333 --start_threshold=0.01333 --max_sequences=100

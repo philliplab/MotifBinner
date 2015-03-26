@@ -4,15 +4,13 @@
 \alias{process_file}
 \title{Processes a file into consensus bins}
 \usage{
-process_file(file_name, output_dir, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
+process_file(file_name, output, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9, max.mismatch = 5,
   threshold = 8/600, start_threshold = 8/600, max_sequences = 100,
   remove_gaps = TRUE, strip_uids = TRUE)
 }
 \arguments{
 \item{file_name}{The file name}
-
-\item{output_dir}{The directory where the output must be stored}
 
 \item{prefix}{The prefix that is used to identify the motif}
 
@@ -40,6 +38,8 @@ from the consensus sequences)}
 \item{strip_uids}{Remove the unique identifiers from the sequence. It is not
 intelligent. The names will be split on '_' and the first and last pieces
 will be kept.}
+
+\item{output_dir}{The directory where the output must be stored}
 }
 \description{
 Processes a file into consensus bins

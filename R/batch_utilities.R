@@ -159,8 +159,13 @@ process_file <- function(file_name,
   pb_dat$strip_uids <- strip_uids
   pb_out <- list()
   pb_dat$pb_out <- NULL
+  start_time <- Sys.time()
   for (bin_name in seq_along(bin_seqs)){
-    print(bin_name)
+    print(c(bin_name, 
+            length(bin_seqs), 
+            round(bin_name/length(bin_seqs), 3), 
+            round(difftime(Sys.time(), start_time, units = 'mins'), 3),
+            round(difftime(Sys.time(), start_time, units = 'mins') / bin_name, 3)))
     pb_dat$seqs <- bin_seqs[[bin_name]]
     pb_out[[bin_name]] <- do.call(process_bin, pb_dat)
   } 
@@ -179,6 +184,7 @@ process_file <- function(file_name,
 
   save_bin_results(output, report_dat)
   save_bin_report(output, report_dat)
+  save(report_dat, file = file.path(output, 'report_dat.rda'))
 
   return(report_dat)
 }
