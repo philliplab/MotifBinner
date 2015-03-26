@@ -99,6 +99,9 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
 #' @param strip_uids Remove the unique identifiers from the sequence. It is not
 #' intelligent. The names will be split on '_' and the first and last pieces
 #' will be kept.
+#' @param n_bins_to_process The number of bins to process through the outlier
+#' detection, alignment and consensus generation. If smaller than or equal to
+#' 0, all bins will be processed.
 #' @export
 
 process_file <- function(file_name,
@@ -111,7 +114,8 @@ process_file <- function(file_name,
                          start_threshold = 8/600, 
                          max_sequences = 100,
                          remove_gaps = TRUE,
-                         strip_uids = TRUE){
+                         strip_uids = TRUE,
+                         n_bins_to_process = 0){
 
   fixed <- FALSE
   add_uniq_id <- T
@@ -171,7 +175,12 @@ process_file <- function(file_name,
   } 
   #  Just process the ouput into a friendlier data structure
   consensuses <- DNAStringSet()
-  for (i in seq_along(pb_out)){
+  if (n_bins_to_process > 0){
+    pb_seq <- 1:ceiling(n_bins_to_process)
+  } else {
+    pb_seq <- seq_along(pb_out)
+  }
+  for (i in pb_seq){
     if (length(pb_out[[i]]$consensus) > 0){
       dss <- DNAStringSet(pb_out[[i]]$consensus[[1]])
       names(dss) <- names(pb_out[[i]]$consensus)
