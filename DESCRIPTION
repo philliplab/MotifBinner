@@ -9,6 +9,7 @@ Maintainer: Phillip Labuschagne <philliplab@gmail.com>
 Depends:
     ShortRead,
     ape,
+    doMC,
     knitr,
     shiny,
     snowfall,

@@ -29,7 +29,6 @@ extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.misma
                  max.mismatch = max.mismatch,
                  fixed = fixed)
   all_params <- list()
-  library(doMC)
   registerDoMC(cores=ncpu)
   list_results <- foreach(i=seq_along(seq_sets)) %dopar% {
     params <- list(prefix = prefix,
