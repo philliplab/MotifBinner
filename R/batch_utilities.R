@@ -170,6 +170,9 @@ process_file <- function(file_name,
                  max.mismatch = max.mismatch,
                  fixed = fixed)
   system.time(
+  motif_dat <- do.call(extract_motifs_iterative, em_dat)
+  )
+  system.time(
   motif_dat <- do.call(extract_motifs_par, em_dat)
   )
   system.time(

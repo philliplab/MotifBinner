@@ -1,3 +1,40 @@
+#' A wrapper for extract motifs parallel that will iteratively allow for more
+#' mismatches in the prefix and suffix surrounding the pids.
+#' @param seq_data The sequences whose motifs must be extracted
+#' @param prefix The prefix that is used to identify the motif
+#' @param suffix The suffix that is used to identify the motif
+#' @param motif_length The length of the motif that forms the pid.
+#' @param max.mismatch See ?vmatchPattern
+#' @param fixed See ?vmatchPattern
+#' @param ncpu The number of cores to use
+#' @param job_size The number of sequences to group into a single job
+#' @export
+
+extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
+                          fixed = FALSE, ncpu = 6, job_size = NULL){
+  matched_seq <- DNAStringSet(NULL)
+  unmatched_seq <- seq_data
+  params <- list(prefix = prefix,
+                 suffix = suffix,
+                 motif_length = motif_length,
+                 fixed = fixed,
+                 ncpu = ncpu,
+                 job_size = job_size)
+  start_time <- Sys.time()
+  for (i in 0:max.mismatch){
+    params$max.mismatch <- i
+    params$seq_data <- unmatched_seq
+    result <- do.call(extract_motifs_par, params)
+    matched_seq <- c(matched_seq, result$matched_seq)
+    unmatched_seq <- result$unmatched_seq
+    print(i)
+    print(c(length(seq_data), length(matched_seq), 
+            length(unmatched_seq), round(Sys.time()-start_time, 2)))
+  }
+  return(list(matched_seq = matched_seq,
+              unmatched_seq = unmatched_seq))
+}
+
 #' A wrapper for extract motifs that will execute it in a parallel nature using
 #' the specified number of cpus
 #' @param seq_data The sequences whose motifs must be extracted
