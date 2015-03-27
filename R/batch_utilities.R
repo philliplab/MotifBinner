@@ -78,6 +78,33 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
                remove_gaps = TRUE,
                strip_uids = TRUE)
 
+
+paramz <- list(file_name = "~/projects/ship/data/colin_20150326/CAP256_v1v2/CAP256_3100_030_V1V2.fastq", 
+               output = "~/projects/ship/data/colin_20150326/CAP256_v1v2/binned/CAP256_3100_030_V1V2", 
+               prefix = "CAGYACAGTACAATGTACACATGGAAT", 
+               suffix = "CTGAGCGTGTGGCAAGGC", 
+               motif_length = 9, 
+               max.mismatch = 5L, 
+               threshold = 0.01333, 
+               start_threshold = 0.01333, 
+               max_sequences = 100, 
+               remove_gaps = TRUE, 
+               strip_uids = TRUE, 
+               n_bins_to_process = 100L)
+
+paramz <- list(file_name = "~/projects/ship/data/colin_20150320/CAP256/v1v2/CAP256_3100_030_V1V2.fastq", 
+               output = "~/projects/ship/data/colin_20150320/CAP256/v1v2/binned/CAP256_3100_030_V1V2", 
+               prefix = "CAGYACAGTACAATGTACACATGGAAT", 
+               suffix = "CTGAGCGTGTGGCAAGGC", 
+               motif_length = 9, 
+               max.mismatch = 5L, 
+               threshold = 0.01333, 
+               start_threshold = 0.01333, 
+               max_sequences = 100, 
+               remove_gaps = TRUE, 
+               strip_uids = TRUE, 
+               n_bins_to_process = 0L)
+
 #' Processes a file into consensus bins
 #' @param file_name The file name
 #' @param output_dir The directory where the output must be stored
@@ -117,6 +144,7 @@ process_file <- function(file_name,
                          strip_uids = TRUE,
                          n_bins_to_process = 0){
 
+  print('hello')
   fixed <- FALSE
   add_uniq_id <- T
   classification_technique <- 'absolute'
@@ -141,7 +169,12 @@ process_file <- function(file_name,
                  motif_length = motif_length,
                  max.mismatch = max.mismatch,
                  fixed = fixed)
+  system.time(
+  motif_dat <- do.call(extract_motifs_par, em_dat)
+  )
+  system.time(
   motif_dat <- do.call(extract_motifs, em_dat)
+  )
   em_dat$motif_dat <- motif_dat
   report_dat$em_dat <- em_dat
 
@@ -176,8 +209,10 @@ process_file <- function(file_name,
   #  Just process the ouput into a friendlier data structure
   consensuses <- DNAStringSet()
   if (n_bins_to_process > 0){
+    print('limited')
     pb_seq <- 1:ceiling(n_bins_to_process)
   } else {
+    print('unlimited')
     pb_seq <- seq_along(pb_out)
   }
   for (i in pb_seq){

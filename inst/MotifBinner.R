@@ -39,7 +39,7 @@ make_option("--dont_strip_uids",
             dest = 'strip_uids', action = 'store_false', default = TRUE,
             help = "Use this option to prevent the removal of the unique identifiers from the final consensus sequences. It is not intelligent. The names will be split on '_' and the first and last pieces will be kept."),
 make_option("--n_bins_to_process", 
-            default = 0,
+            default = 0, type = 'integer',
             help = "The number of bins to process through the outlier detection, alignment and consensus generation. If smaller than or equal to 0, all bins will be processed.")
                       )
 

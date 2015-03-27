@@ -1,3 +1,55 @@
+#' A wrapper for extract motifs that will execute it in a parallel nature using
+#' the specified number of cpus
+#' @param seq_data The sequences whose motifs must be extracted
+#' @param prefix The prefix that is used to identify the motif
+#' @param suffix The suffix that is used to identify the motif
+#' @param motif_length The length of the motif that forms the pid.
+#' @param max.mismatch See ?vmatchPattern
+#' @param fixed See ?vmatchPattern
+#' @param ncpu The number of cores to use
+#' @param job_size The number of sequences to group into a single job
+#' @export
+
+extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
+                          fixed = FALSE, ncpu = 6, job_size = NULL){
+  if (is.null(job_size)){
+    job_size <- ceiling(sqrt(length(seq_data)))
+  }
+  if (job_size < 10){
+    job_size <- 10
+  }
+  seq_sets <- list()
+  for (i in 1:(ceiling(length(seq_data)/job_size))){
+    seq_sets[[i]] <- seq_data[(((i-1)*job_size)+1):min(i*job_size, length(seq_data))]
+  }
+
+  params <- list(prefix = prefix,
+                 suffix = suffix,
+                 motif_length = motif_length,
+                 max.mismatch = max.mismatch,
+                 fixed = fixed)
+  all_params <- list()
+  library(doMC)
+  registerDoMC(cores=ncpu)
+  list_results <- foreach(i=seq_along(seq_sets)) %dopar% {
+    params <- list(prefix = prefix,
+                   suffix = suffix,
+                   motif_length = motif_length,
+                   max.mismatch = max.mismatch,
+                   fixed = fixed,
+                   seq_data = seq_sets[[i]])
+    do.call(extract_motifs, params)
+  }
+  matched_seq <- DNAStringSet(NULL)
+  unmatched_seq <- DNAStringSet(NULL)
+  for (i in seq_along(list_results)){
+    matched_seq <- c(matched_seq, list_results[[i]]$matched_seq)
+    unmatched_seq <- c(unmatched_seq, list_results[[i]]$unmatched_seq)
+  }
+  return(list(matched_seq = matched_seq,
+              unmatched_seq = unmatched_seq))
+}
+
 #' Extracts motifs from a set of reads
 #' @param seq_data The sequences whose motifs must be extracted
 #' @param prefix The prefix that is used to identify the motif
