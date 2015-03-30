@@ -71,7 +71,10 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
                prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
                suffix = "CTGAGCGTGTGGCAAGGCCC",
                motif_length = 9,
-               max.mismatch = 5,
+               max.mismatch = 4,
+               ncpu = 6, 
+               job_size = NULL, 
+               max.suffix.chop = NULL,
                threshold = 8/600, 
                start_threshold = 8/600, 
                max_sequences = 100,
@@ -84,7 +87,10 @@ paramz <- list(file_name = "~/projects/ship/data/colin_20150326/CAP256_v1v2/CAP2
                prefix = "CAGYACAGTACAATGTACACATGGAAT", 
                suffix = "CTGAGCGTGTGGCAAGGC", 
                motif_length = 9, 
-               max.mismatch = 5L, 
+               max.mismatch = 4, 
+               ncpu = 6, 
+               job_size = NULL, 
+               max.suffix.chop = NULL,
                threshold = 0.01333, 
                start_threshold = 0.01333, 
                max_sequences = 100, 
@@ -97,7 +103,10 @@ paramz <- list(file_name = "~/projects/ship/data/colin_20150320/CAP256/v1v2/CAP2
                prefix = "CAGYACAGTACAATGTACACATGGAAT", 
                suffix = "CTGAGCGTGTGGCAAGGC", 
                motif_length = 9, 
-               max.mismatch = 5L, 
+               max.mismatch = 4, 
+               ncpu = 6, 
+               job_size = NULL, 
+               max.suffix.chop = NULL,
                threshold = 0.01333, 
                start_threshold = 0.01333, 
                max_sequences = 100, 
@@ -163,21 +172,13 @@ process_file <- function(file_name,
   rsf_dat$seq_dat <- seq_dat
   report_dat$rsf_dat <- rsf_dat
 
-  em_dat <- list(seq_dat = seq_dat,
+  em_dat <- list(seq_data = seq_dat,
                  prefix = prefix,
                  suffix = suffix,
                  motif_length = motif_length,
                  max.mismatch = max.mismatch,
                  fixed = fixed)
-  system.time(
   motif_dat <- do.call(extract_motifs_iterative, em_dat)
-  )
-  system.time(
-  motif_dat <- do.call(extract_motifs_par, em_dat)
-  )
-  system.time(
-  motif_dat <- do.call(extract_motifs, em_dat)
-  )
   em_dat$motif_dat <- motif_dat
   report_dat$em_dat <- em_dat
 

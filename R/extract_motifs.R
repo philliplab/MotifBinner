@@ -8,10 +8,16 @@
 #' @param fixed See ?vmatchPattern
 #' @param ncpu The number of cores to use
 #' @param job_size The number of sequences to group into a single job
+#' @param max.suffix.chop The maximum amount whereby to shorten the suffix
+#' defaults to 0.5*length(suffix)
 #' @export
 
 extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
-                          fixed = FALSE, ncpu = 6, job_size = NULL){
+                          fixed = FALSE, ncpu = 6, job_size = NULL, max.suffix.chop = NULL){
+  if (is.null(max.suffix.chop)){
+    max.suffix.chop <- trunc(nchar(suffix)/3)
+  }
+  print(max.suffix.chop)
   matched_seq <- DNAStringSet(NULL)
   unmatched_seq <- seq_data
   params <- list(prefix = prefix,
@@ -30,6 +36,19 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
     print(i)
     print(c(length(seq_data), length(matched_seq), 
             length(unmatched_seq), round(Sys.time()-start_time, 2)))
+  }
+  if (max.suffix.chop > 0){
+    for (i in 0:max.suffix.chop){
+      params$max.mismatch <- max.mismatch
+      params$suffix <- substr(suffix, 1, length(suffix) - i)
+      params$seq_data <- unmatched_seq
+      result <- do.call(extract_motifs_par, params)
+      matched_seq <- c(matched_seq, result$matched_seq)
+      unmatched_seq <- result$unmatched_seq
+      print(i)
+      print(c(length(seq_data), length(matched_seq), 
+              length(unmatched_seq), round(Sys.time()-start_time, 2)))
+    }
   }
   return(list(matched_seq = matched_seq,
               unmatched_seq = unmatched_seq))
