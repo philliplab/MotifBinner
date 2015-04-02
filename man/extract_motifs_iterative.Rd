@@ -7,7 +7,7 @@ mismatches in the prefix and suffix surrounding the pids.}
 \usage{
 extract_motifs_iterative(seq_data, prefix, suffix, motif_length,
   max.mismatch = 5, fixed = FALSE, ncpu = 6, job_size = NULL,
-  max.suffix.chop = NULL)
+  max.suffix.chop = NULL, max.mismatch_start = 0)
 }
 \arguments{
 \item{seq_data}{The sequences whose motifs must be extracted}
@@ -28,6 +28,9 @@ extract_motifs_iterative(seq_data, prefix, suffix, motif_length,
 
 \item{max.suffix.chop}{The maximum amount whereby to shorten the suffix
 defaults to 0.5*length(suffix)}
+
+\item{max.mismatch_start}{What is the minimum number of mismatches to search
+for?}
 }
 \description{
 A wrapper for extract motifs parallel that will iteratively allow for more

@@ -4,11 +4,13 @@
 \alias{clean_matches}
 \title{Internal Function: Clean matches to the motifs}
 \usage{
-clean_matches(matches)
+clean_matches(matches, pattern_length)
 }
 \arguments{
-\item{matches}{The matches to the motifs which potentially contains multiple
-matches per sequence}
+\item{matches}{The matches to the motifs which potentially contains multiple}
+
+\item{pattern_length}{The minimum length that the match must be in order to
+be kept}
 }
 \description{
 Internal Function: Clean matches to the motifs

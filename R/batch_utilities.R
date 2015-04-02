@@ -86,6 +86,7 @@ paramz <- list(file_name = "~/projects/ship/data/colin_20150326/CAP256_v1v2/CAP2
                prefix = "CAGYACAGTACAATGTACACATGGAAT", 
                suffix = "CTGAGCGTGTGGCAAGGC", 
                motif_length = 9, 
+               max.mismatch_start = 3, 
                max.mismatch = 4, 
                ncpu = 6, 
                job_size = NULL, 
@@ -144,6 +145,7 @@ process_file <- function(file_name,
                          prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
                          suffix = "CTGAGCGTGTGGCAAGGCCC",
                          motif_length = 9,
+                         max.mismatch_start = 0,
                          max.mismatch = 5,
                          threshold = 8/600, 
                          start_threshold = 8/600, 
@@ -152,7 +154,6 @@ process_file <- function(file_name,
                          strip_uids = TRUE,
                          n_bins_to_process = 0){
 
-  print('hello')
   fixed <- FALSE
   add_uniq_id <- T
   classification_technique <- 'absolute'
@@ -175,6 +176,7 @@ process_file <- function(file_name,
                  prefix = prefix,
                  suffix = suffix,
                  motif_length = motif_length,
+                 max.mismatch_start = max.mismatch_start,
                  max.mismatch = max.mismatch,
                  fixed = fixed)
   motif_dat <- do.call(extract_motifs_iterative, em_dat)

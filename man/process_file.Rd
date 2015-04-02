@@ -5,9 +5,10 @@
 \title{Processes a file into consensus bins}
 \usage{
 process_file(file_name, output, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
-  suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9, max.mismatch = 5,
-  threshold = 8/600, start_threshold = 8/600, max_sequences = 100,
-  remove_gaps = TRUE, strip_uids = TRUE, n_bins_to_process = 0)
+  suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9,
+  max.mismatch_start = 0, max.mismatch = 5, threshold = 8/600,
+  start_threshold = 8/600, max_sequences = 100, remove_gaps = TRUE,
+  strip_uids = TRUE, n_bins_to_process = 0)
 }
 \arguments{
 \item{file_name}{The file name}

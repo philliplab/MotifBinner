@@ -10,10 +10,13 @@
 #' @param job_size The number of sequences to group into a single job
 #' @param max.suffix.chop The maximum amount whereby to shorten the suffix
 #' defaults to 0.5*length(suffix)
+#' @param max.mismatch_start What is the minimum number of mismatches to search
+#' for?
 #' @export
 
 extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
-                          fixed = FALSE, ncpu = 6, job_size = NULL, max.suffix.chop = NULL){
+                          fixed = FALSE, ncpu = 6, job_size = NULL, max.suffix.chop = NULL,
+                          max.mismatch_start = 0){
   if (is.null(max.suffix.chop)){
     max.suffix.chop <- trunc(nchar(suffix)/3)
   }
@@ -27,7 +30,7 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
                  ncpu = ncpu,
                  job_size = job_size)
   start_time <- Sys.time()
-  for (i in 0:max.mismatch){
+  for (i in max.mismatch_start:max.mismatch){
     params$max.mismatch <- i
     params$seq_data <- unmatched_seq
     result <- do.call(extract_motifs_par, params)
@@ -120,25 +123,24 @@ extract_motifs <- function(seq_data, prefix, suffix, motif_length, max.mismatch 
 
   motif_n <- paste(rep("N", motif_length), collapse="")
   padded_motif <- DNAString(paste0(prefix, motif_n, suffix))
+  pattern_length <- nchar(padded_motif)-4
   matches <- vmatchPattern(padded_motif, 
                            seq_data, 
                            max.mismatch = max.mismatch, 
                            with.indels=FALSE, 
                            fixed = fixed)
 
-  matching_seq <- sapply(matches, length)
+  last_match <- clean_matches(matches, pattern_length)
+  matching_seq <- names(seq_data) %in% names(last_match)
 
-  if (all(matching_seq == rep(0, length(matching_seq)))){
+  if (sum(matching_seq) == 0){
     return(list(matched_seq = DNAStringSet(NULL),
                 unmatched_seq = seq_data))
   }
 
-  matching_seq <- matching_seq != 0
   matched_seq <- seq_data[matching_seq]
   unmatched_seq <- seq_data[!matching_seq]
   
-  last_match <- clean_matches(matches)
-
   matches <- IRanges(start=unlist(lapply(last_match, start)),
                      end=unlist(lapply(last_match, end)),
                      names=names(last_match))
@@ -193,14 +195,16 @@ clean_seq_data <- function(seq_data){
 
 #' Internal Function: Clean matches to the motifs
 #' @param matches The matches to the motifs which potentially contains multiple
-#' matches per sequence
+#' @param pattern_length The minimum length that the match must be in order to
+#' be kept
 
-clean_matches <- function(matches){
+clean_matches <- function(matches, pattern_length){
   last_match <- list()
   for (i in seq_along(matches)){
-    nr <- length(matches[[i]])
+    c_matches <- matches[[i]][width(matches[[i]]) >= pattern_length]
+    nr <- length(c_matches)
     if (nr > 0){
-      last_match[[names(matches)[i]]] <- matches[[i]][nr]
+      last_match[[names(matches)[i]]] <- c_matches[nr]
     }
   }
   return(last_match)
