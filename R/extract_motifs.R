@@ -167,6 +167,7 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
     tmpfile_name <- paste("/tmp/badmot", paste(sample(c(LETTERS, letters), 20), collapse=""),".csv")
     write.csv(data.frame(in_seq = matched_seq[invalid_motifs],
                          motif = motifs[invalid_motifs],
+                         width = width(shifted_matches[invalid_motifs]),
                          start = start(shifted_matches[invalid_motifs]),
                          end = end(shifted_matches[invalid_motifs])),
               file = tmpfile_name)
