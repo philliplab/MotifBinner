@@ -81,7 +81,6 @@ paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fas
                remove_gaps = TRUE,
                strip_uids = TRUE)
 
-
 paramz <- list(file_name = "~/projects/ship/data/colin_20150326/CAP256_v1v2/CAP256_3100_030_V1V2.fastq", 
                output = "~/projects/ship/data/colin_20150326/CAP256_v1v2/binned/CAP256_3100_030_V1V2", 
                prefix = "CAGYACAGTACAATGTACACATGGAAT", 
@@ -201,25 +200,33 @@ process_file <- function(file_name,
   pb_out <- list()
   pb_dat$pb_out <- NULL
   start_time <- Sys.time()
-  for (bin_name in seq_along(bin_seqs)){
-    print(c(bin_name, 
-            length(bin_seqs), 
-            round(bin_name/length(bin_seqs), 3), 
-            round(difftime(Sys.time(), start_time, units = 'mins'), 3),
-            round(difftime(Sys.time(), start_time, units = 'mins') / bin_name, 3)))
-    pb_dat$seqs <- bin_seqs[[bin_name]]
-    pb_out[[bin_name]] <- do.call(process_bin, pb_dat)
-  } 
-  #  Just process the ouput into a friendlier data structure
-  consensuses <- DNAStringSet()
+#  for (bin_name in seq_along(bin_seqs)){
+#    print(c(bin_name, 
+#            length(bin_seqs), 
+#            round(bin_name/length(bin_seqs), 3), 
+#            round(difftime(Sys.time(), start_time, units = 'mins'), 3),
+#            round(difftime(Sys.time(), start_time, units = 'mins') / bin_name, 3)))
+#    pb_dat$seqs <- bin_seqs[[bin_name]]
+#    pb_out[[bin_name]] <- do.call(process_bin, pb_dat)
+#  } 
+
   if (n_bins_to_process > 0){
     print('limited')
     pb_seq <- 1:ceiling(n_bins_to_process)
   } else {
     print('unlimited')
-    pb_seq <- seq_along(pb_out)
+    pb_seq <- seq_along(bin_seqs)
   }
-  for (i in pb_seq){
+
+  pb_out <- foreach(bin_name = pb_seq) %dopar% {
+    x <- pb_dat
+    x$seqs <- bin_seqs[[bin_name]]
+    do.call(process_bin, x)
+  }
+
+  #  Just process the ouput into a friendlier data structure
+  consensuses <- DNAStringSet()
+  for (i in seq_along(pb_out)){
     if (length(pb_out[[i]]$consensus) > 0){
       dss <- DNAStringSet(pb_out[[i]]$consensus[[1]])
       names(dss) <- names(pb_out[[i]]$consensus)
