@@ -162,6 +162,15 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)
   motifs <- padAndClip(matched_seq, shifted_matches, Lpadding.letter="+", 
                        Rpadding.letter="+")
+  invalid_motifs <- grep("\\+", motifs)
+  if (length(invalid_motifs)>0){
+    tmpfile_name <- paste("/tmp/badmot", paste(sample(c(LETTERS, letters), 20), collapse=""),".csv")
+    write.csv(data.frame(in_seq = matched_seq[invalid_motifs],
+                         motif = motifs[invalid_motifs],
+                         start = start(shifted_matches[invalid_motifs]),
+                         end = end(shifted_matches[invalid_motifs])),
+              file = tmpfile_name)
+  }
   end(matches) <- start(matches) - 1
   start(matches) <- 1
   motif_free_matched_seq <- padAndClip(matched_seq, matches, Lpadding.letter="+", 
