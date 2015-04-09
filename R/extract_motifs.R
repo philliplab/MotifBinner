@@ -33,22 +33,22 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
   for (i in max.mismatch_start:max.mismatch){
     params$max.mismatch <- i
     params$seq_data <- unmatched_seq
+    print(params)
     result <- do.call(extract_motifs_par, params)
     matched_seq <- c(matched_seq, result$matched_seq)
     unmatched_seq <- result$unmatched_seq
-    print(i)
     print(c(length(seq_data), length(matched_seq), 
             length(unmatched_seq), round(Sys.time()-start_time, 2)))
   }
   if (max.suffix.chop > 0){
     for (i in 0:max.suffix.chop){
       params$max.mismatch <- max.mismatch
-      params$suffix <- substr(suffix, 1, length(suffix) - i)
+      params$suffix <- substr(suffix, 1, nchar(suffix) - i)
       params$seq_data <- unmatched_seq
+      print(params)
       result <- do.call(extract_motifs_par, params)
       matched_seq <- c(matched_seq, result$matched_seq)
       unmatched_seq <- result$unmatched_seq
-      print(i)
       print(c(length(seq_data), length(matched_seq), 
               length(unmatched_seq), round(Sys.time()-start_time, 2)))
     }
@@ -166,13 +166,10 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
                        Rpadding.letter="+")
   invalid_motifs <- grep("\\+", motifs)
   if (length(invalid_motifs)>0){
-    tmpfile_name <- paste("/tmp/badmot", paste(sample(c(LETTERS, letters), 20), collapse=""),".csv")
-    write.csv(data.frame(in_seq = matched_seq[invalid_motifs],
-                         motif = motifs[invalid_motifs],
-                         width = width(shifted_matches[invalid_motifs]),
-                         start = start(shifted_matches[invalid_motifs]),
-                         end = end(shifted_matches[invalid_motifs])),
-              file = tmpfile_name)
+    random_file_name <- paste('badmot_', paste(sample(c(LETTERS, letters), 20), collapse=""), '.fasta', sep = '')
+    tmpfile_name <- file.path(tempdir(), random_file_name)
+    writeXStringSet(DNAStringSet(matched_seq[invalid_motifs]),
+                    tmpfile_name)
   }
   end(matches) <- start(matches) - 1
   start(matches) <- 1
@@ -188,6 +185,9 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
 clean_seq_data <- function(seq_data){
   if (is.null(names(seq_data))){
     names(seq_data) <- paste('seq', 1:length(seq_data), sep="_")
+  }
+  if (length(unique(names(seq_data))) != length(names(seq_data))){
+    names(seq_data) <- paste(names(seq_data), 1:length(seq_data), sep = '_')
   }
   seq_data <- DNAStringSet(gsub("[^ACGT]", "+", seq_data))
   return(seq_data)
