@@ -41,6 +41,11 @@ for (i in seq_along(pb_out)){
     pos_mismatch <- NA
     total_mismatches <- NA
     non_acgt <- NA
+    non_acgt1 <- NA
+    non_acgt2 <- NA
+    non_acgt3 <- NA
+    non_acgt4 <- NA
+    non_acgt5 <- NA
     align_length <- NA
   } else {
     conMat <- consensusMatrix(pb_out[[i]]$alignment)
@@ -50,6 +55,16 @@ for (i in seq_along(pb_out)){
     pos_mismatch <- sum(mismatches!=0)
     total_mismatches <- sum(mismatches)
     non_acgt <- sum(consensusMatrix(DNAStringSet(pb_out[[i]]$consensus[[1]]))[-(1:4),])
+    non_acgt1 <- sum(consensusMatrix(DNAStringSet(substr(pb_out[[i]]$consensus[[1]], 2, 10000)))[-(1:4),])
+    non_acgt2 <- sum(consensusMatrix(DNAStringSet(substr(pb_out[[i]]$consensus[[1]], 3, 10000)))[-(1:4),])
+    non_acgt3 <- sum(consensusMatrix(DNAStringSet(substr(pb_out[[i]]$consensus[[1]], 4, 10000)))[-(1:4),])
+    non_acgt4 <- sum(consensusMatrix(DNAStringSet(substr(pb_out[[i]]$consensus[[1]], 5, 10000)))[-(1:4),])
+    non_acgt5 <- sum(consensusMatrix(DNAStringSet(substr(pb_out[[i]]$consensus[[1]], 6, 10000)))[-(1:4),])
+    if (is.na(non_acgt1)) {non_acgt1 <- 0}
+    if (is.na(non_acgt2)) {non_acgt2 <- 0}
+    if (is.na(non_acgt3)) {non_acgt3 <- 0}
+    if (is.na(non_acgt4)) {non_acgt4 <- 0}
+    if (is.na(non_acgt5)) {non_acgt5 <- 0}
     align_length <- max(width(pb_out[[i]]$alignment))
   }
   metrics <- rbind(metrics,
@@ -64,6 +79,11 @@ for (i in seq_along(pb_out)){
                pos_mismatch = pos_mismatch,
                total_mismatches = total_mismatches,
                non_acgt = non_acgt,
+               non_acgt1 = non_acgt1,
+               non_acgt2 = non_acgt2,
+               non_acgt3 = non_acgt3,
+               non_acgt4 = non_acgt4,
+               non_acgt5 = non_acgt5,
                align_length = align_length))
 }
 metrics$input_size_bins <- cut(metrics$input_size, breaks =
@@ -89,6 +109,9 @@ par(mfrow=c(1,1))
 
 ```{r}
 small_bins <- subset(metrics, output_size < 6)
+plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
+abline(a=0, b=1)
+small_bins <- subset(small_bins, input_size < 10)
 plot(jitter(small_bins$output_size) ~ jitter(small_bins$input_size))
 abline(a=0, b=1)
 ```
@@ -147,6 +170,46 @@ hist(metrics$total_mismatches/(metrics$output_size * metrics$align_length),
 barplot(table(metrics$non_acgt))
 kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt))),
                  num_con_seq = as.numeric(table(metrics$non_acgt))))
+```
+
+#### NON-ACGT characters in consensus chop 1 base left
+
+```{r}
+barplot(table(metrics$non_acgt1))
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt1))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt1))))
+```
+
+#### NON-ACGT characters in consensus chop 2 bases left
+
+```{r}
+barplot(table(metrics$non_acgt2))
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt2))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt2))))
+```
+
+#### NON-ACGT characters in consensus chop 3 bases left
+
+```{r}
+barplot(table(metrics$non_acgt3))
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt3))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt3))))
+```
+
+#### NON-ACGT characters in consensus chop 4 bases left
+
+```{r}
+barplot(table(metrics$non_acgt4))
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt4))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt4))))
+```
+
+#### NON-ACGT characters in consensus chop 5 bases left
+
+```{r}
+barplot(table(metrics$non_acgt5))
+kable(data.frame(num_non_acgt = as.numeric(names(table(metrics$non_acgt5))),
+                 num_con_seq = as.numeric(table(metrics$non_acgt5))))
 ```
 
 What kinds of bins yield consensus sequences with non-acgt characters?
