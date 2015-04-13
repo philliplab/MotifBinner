@@ -1,5 +1,19 @@
 context('Extract Motifs')
 
+randomize_ambig <- function(seq_dat){
+  ambig_char <- IUPAC_CODE_MAP[!(names(IUPAC_CODE_MAP) %in% c('A', 'C', 'G', 'T'))]
+  for (i in 1:nchar(seq_dat)){
+    curr_char <- substr(seq_dat, i, i)
+    if (!(curr_char %in% c('A', 'C', 'G', 'T'))){
+      n_options <- nchar(ambig_char[curr_char])
+      sample_indx <- sample(1:n_options, 1)
+      new_let <- substr(ambig_char[curr_char], sample_indx, sample_indx)
+      seq_dat <- gsub(curr_char, new_let, seq_dat)
+    }
+  }
+  return(seq_dat)
+}
+
 test_that('The motif extractor works when motifs identifiers match perfectly', {
   seq_data <- DNAStringSet(c(
           paste(c(paste0(sample(c('A', 'C', 'G', 'T'), 20, replace=T), collapse=""),
@@ -27,9 +41,9 @@ test_that('The motif extractor works when motif identifiers have errors', {
           paste(c(paste0(sample(c('A', 'C', 'G', 'T'), 20, replace=T), collapse=""),
                   'CACGAATTAA', 'ACGTACGT', 'CCAACCGCTC'), collapse = "")
                         ))
+
   extracted <- extract_motifs(seq_data, prefix = 'AACGAATTAA', motif_length=8, 
                               suffix = 'CCAACCGCTC', max.mismatch=0)
-
   expect_that(length(extracted$matched_seq) == 0, is_true())
   expect_that(length(extracted$unmatched_seq) == 2, is_true())
   expect_that(names(extracted$unmatched_seq)[1]=='seq_1', is_true())
@@ -37,7 +51,6 @@ test_that('The motif extractor works when motif identifiers have errors', {
 
   extracted <- extract_motifs(seq_data, prefix = 'AACGAATTAA', motif_length=8, 
                               suffix = 'CCAACCGCTC', max.mismatch=1)
-
   expect_that(names(extracted$matched_seq)[1]=='ACGTACGT', is_true())
   expect_that(names(extracted$matched_seq)[2]=='ACGTACGT', is_true())
   expect_that(length(extracted$unmatched_seq) == 0, is_true())
@@ -49,12 +62,27 @@ test_that('The motif extractor works when motif identifiers have errors', {
                   'CTCGAATTAA', 'ACGTACGT', 'CCAACCGCTC'), collapse = "")
                         ))
   names(seq_data) <- c('s1', 's2')
+
   extracted <- extract_motifs(seq_data, prefix = 'AACGAATTAA', motif_length=8, 
                               suffix = 'CCAACCGCTC', max.mismatch=1)
-
   expect_that(names(extracted$matched_seq)[1]=='ACGTACGT', is_true())
   expect_that(names(extracted$unmatched_seq)[1]=='s2', is_true())
   expect_that(length(extracted$unmatched_seq) == 1, is_true())
   expect_that(width(extracted$matched_seq) < width(extracted$unmatched_seq), is_true())
+})
+
+test_that('The motif extractor works with realistic prefixes and suffixes', {
+  prefix <- "CAGYACAGTACAATGTACACATGGAAT" 
+  suffix <- "CTGAGCGTGTGGCAAGGC" 
+  r_seq <- function(n){paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse="")}
+  pid <- 'AAAGGCAAA'
+  motif_length <- nchar(pid)
+  max.mismatch <- 1
+  seq_data <- DNAStringSet(paste0(r_seq(50), prefix, pid, suffix))
+  seq_data <- randomize_ambig(seq_data[1])
+  
+  extracted <- extract_motifs(seq_data, prefix = prefix, 
+                              motif_length = motif_length, 
+                              suffix = suffix, max.mismatch = max.mismatch)
 })
 
