@@ -170,6 +170,18 @@ randomize_ambig <- function(seq_dat){
   return(seq_dat)
 }
 
+#' Mutates a single base to another base
+#' @param x The input letter
+#' @export
+
+mutate_base <- function(x){
+  stopifnot(length(x) == 1)
+  stopifnot(nchar(x) == 1)
+  alphabet <- c('A', 'C', 'G', 'T')
+  alphabet <- alphabet[!(alphabet %in% x)]
+  return(sample(alphabet, 1))
+}
+
 #' Adds n snps to each sequence in seq_dat
 #' @param seq_dat The sequences in which to introduce the snps
 #' @param n The number of snps to introduce in each sequence

@@ -59,6 +59,29 @@ test_that('multiple input sequences are handled correctly', {
 
 })
 
+context('mutate_base')
+
+test_that('mutate_base works', {
+  x <- 'A'
+  y <- mutate_base(x)
+  expect_that(y != x, is_true())
+  expect_that(y %in% c('A', 'C', 'G', 'T'), is_true())
+  expect_that(length(y), equals(1))
+  expect_that(nchar(y), equals(1))
+
+  x <- 'C'
+  y <- mutate_base(x)
+  expect_that(y != x, is_true())
+  expect_that(y %in% c('A', 'C', 'G', 'T'), is_true())
+  expect_that(length(y), equals(1))
+  expect_that(nchar(y), equals(1))
+
+  x <- 'CC'
+  expect_that(mutate_base(x), throws_error())
+  x <- c('T','A')
+  expect_that(mutate_base(x), throws_error())
+})
+
 context('add_snps')
 
 test_that('length of sequence is longer than number of desired snps', {
