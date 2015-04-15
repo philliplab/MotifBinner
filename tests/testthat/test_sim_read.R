@@ -92,3 +92,28 @@ test_that('length of sequence is longer than number of desired snps', {
   expect_that(add_snps(seq_dat, 5), throws_error())
   expect_that(add_snps(seq_dat, 100), throws_error())
 })
+
+test_that('the correct number of snps are inserted', {
+  seq_dat <- DNAStringSet('ACGT')
+  mut_seq <- add_snps(seq_dat, 1)
+  seq_dist <- stringDist(DNAStringSet(c(as.character(seq_dat), 
+                                        as.character(mut_seq))))
+  expect_that(seq_dist == 1, is_true())
+
+
+  seq_dat <- DNAStringSet('ACGT')
+  mut_seq <- add_snps(seq_dat, 3)
+  seq_dist <- stringDist(DNAStringSet(c(as.character(seq_dat), 
+                                        as.character(mut_seq))))
+  expect_that(seq_dist == 3, is_true())
+
+  seq_dat <- DNAStringSet(c('ACGTACGT', 'GGTTCCAA'))
+  mut_seq <- add_snps(seq_dat, 2)
+
+  seq_dist1 <- stringDist(DNAStringSet(c(as.character(seq_dat[1]), 
+                                         as.character(mut_seq[1]))))
+  seq_dist2 <- stringDist(DNAStringSet(c(as.character(seq_dat[2]), 
+                                         as.character(mut_seq[2]))))
+  expect_that(seq_dist1 == 2, is_true())
+  expect_that(seq_dist2 == 2, is_true())
+})

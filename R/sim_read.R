@@ -195,7 +195,7 @@ add_snps <- function(seq_dat, n){
     for (snp_pos in snp_positions){
       snp_range <- IRanges(snp_pos, snp_pos)
       old_let <- as.character(subseq(curr_seq, snp_pos, snp_pos))
-      new_let <- 'A'
+      new_let <- mutate_base(old_let)
       curr_seq <- replaceAt(curr_seq, snp_range, new_let)
     }
     seq_dat[j] <- curr_seq
