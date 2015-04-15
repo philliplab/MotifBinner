@@ -137,3 +137,11 @@ gen_and_contaminate_reads <- function(ref_seq,
                 true_consensus = ref_seq))
   }
 }
+
+#' Simulates a random sequence of a given length
+#' @param n The length of the desired sequence
+#' @export
+
+gen_seq <- function(n){
+  paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse="")
+}

@@ -74,15 +74,16 @@ test_that('The motif extractor works when motif identifiers have errors', {
 test_that('The motif extractor works with realistic prefixes and suffixes', {
   prefix <- "CAGYACAGTACAATGTACACATGGAAT" 
   suffix <- "CTGAGCGTGTGGCAAGGC" 
-  r_seq <- function(n){paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse="")}
   pid <- 'AAAGGCAAA'
   motif_length <- nchar(pid)
-  max.mismatch <- 1
-  seq_data <- DNAStringSet(paste0(r_seq(50), prefix, pid, suffix))
+  max.mismatch <- 0
+  seq_data <- DNAStringSet(paste0(gen_seq(50), prefix, pid, suffix))
   seq_data <- randomize_ambig(seq_data[1])
   
   extracted <- extract_motifs(seq_data, prefix = prefix, 
                               motif_length = motif_length, 
                               suffix = suffix, max.mismatch = max.mismatch)
+
+  
 })
 
