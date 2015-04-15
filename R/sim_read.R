@@ -170,3 +170,12 @@ randomize_ambig <- function(seq_dat){
   return(seq_dat)
 }
 
+#' Adds n snps to each sequence in seq_dat
+#' @param seq_dat The sequences in which to introduce the snps
+#' @param n The number of snps to introduce in each sequence
+#' @export
+
+add_snps <- function(seq_dat, n){
+  stopifnot(all(width(seq_dat) >= n))
+  return(seq_dat)
+}

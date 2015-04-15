@@ -1,4 +1,4 @@
-context('sim_read')
+context('gen_seq')
 
 test_that('gen_seq works as expected', {
   seq_dat <- gen_seq(400)
@@ -6,6 +6,8 @@ test_that('gen_seq works as expected', {
   uniq_lets <- sort(unique(strsplit(seq_dat, '')[[1]]))
   expect_that(uniq_lets, equals(c('A', 'C', 'G', 'T')))
 })
+
+context('randomize_ambig')
 
 test_that('randomize_ambig preserves input class reasonably', {
   seq_dat <- 'AA'
@@ -55,4 +57,15 @@ test_that('multiple input sequences are handled correctly', {
               all(proc_seq == targets[[2]]), 
               is_true())
 
+})
+
+context('add_snps')
+
+test_that('length of sequence is longer than number of desired snps', {
+  seq_dat <- DNAStringSet(c('AAAA', 'CCCC'))
+  expect_that(class(add_snps(seq_dat, 1)) == 'DNAStringSet', is_true())
+  expect_that(class(add_snps(seq_dat, 4)) == 'DNAStringSet', is_true())
+
+  expect_that(add_snps(seq_dat, 5), throws_error())
+  expect_that(add_snps(seq_dat, 100), throws_error())
 })
