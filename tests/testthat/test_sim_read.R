@@ -21,3 +21,19 @@ test_that('randomize_ambig preserves input class reasonably', {
   expect_that(class(seq_dat), equals(class(proc_seq)))
 })
 
+test_that('degeneracy is removed', {
+  seq_dat <- 'AY'
+  targets <- c('AC', 'AT')
+  proc_seq <- randomize_ambig(seq_dat)
+  expect_that(proc_seq %in% targets, is_true())
+
+  seq_dat <- 'AK'
+  targets <- c('AG', 'AT')
+  proc_seq <- randomize_ambig(seq_dat)
+  expect_that(proc_seq %in% targets, is_true())
+
+  seq_dat <- 'MK'
+  targets <- c('AG', 'AT', 'CG', 'CT')
+  proc_seq <- randomize_ambig(seq_dat)
+  expect_that(proc_seq %in% targets, is_true())
+})
