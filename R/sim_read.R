@@ -177,5 +177,16 @@ randomize_ambig <- function(seq_dat){
 
 add_snps <- function(seq_dat, n){
   stopifnot(all(width(seq_dat) >= n))
+  for (j in 1:length(seq_dat)){
+    curr_seq <- seq_dat[j]
+    snp_positions <- sample(1:nchar(curr_seq), n)
+    for (snp_pos in snp_positions){
+      snp_range <- IRanges(snp_pos, snp_pos)
+      old_let <- as.character(subseq(curr_seq, snp_pos, snp_pos))
+      new_let <- 'A'
+      curr_seq <- replaceAt(curr_seq, snp_range, new_let)
+    }
+    seq_dat[j] <- curr_seq
+  }
   return(seq_dat)
 }
