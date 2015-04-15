@@ -1,19 +1,5 @@
 context('Extract Motifs')
 
-randomize_ambig <- function(seq_dat){
-  ambig_char <- IUPAC_CODE_MAP[!(names(IUPAC_CODE_MAP) %in% c('A', 'C', 'G', 'T'))]
-  for (i in 1:nchar(seq_dat)){
-    curr_char <- substr(seq_dat, i, i)
-    if (!(curr_char %in% c('A', 'C', 'G', 'T'))){
-      n_options <- nchar(ambig_char[curr_char])
-      sample_indx <- sample(1:n_options, 1)
-      new_let <- substr(ambig_char[curr_char], sample_indx, sample_indx)
-      seq_dat <- gsub(curr_char, new_let, seq_dat)
-    }
-  }
-  return(seq_dat)
-}
-
 test_that('The motif extractor works when motifs identifiers match perfectly', {
   seq_data <- DNAStringSet(c(
           paste(c(paste0(sample(c('A', 'C', 'G', 'T'), 20, replace=T), collapse=""),

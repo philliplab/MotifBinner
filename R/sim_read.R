@@ -145,3 +145,26 @@ gen_and_contaminate_reads <- function(ref_seq,
 gen_seq <- function(n){
   paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse="")
 }
+
+#' Removes ambiguous letters from a sequence by replacing them with a randomly
+#' selected letter they represent
+#' @param seq_dat The sequence in which to remove the ambiguity characters
+#' @export
+
+randomize_ambig <- function(seq_dat){
+  if (class(seq_dat) == 'DNAString'){
+    seq_dat <- DNAStringSet(seq_dat)
+  }
+  ambig_char <- IUPAC_CODE_MAP[!(names(IUPAC_CODE_MAP) %in% c('A', 'C', 'G', 'T'))]
+  for (i in 1:nchar(seq_dat)){
+    curr_char <- substr(seq_dat, i, i)
+    if (!(curr_char %in% c('A', 'C', 'G', 'T'))){
+      n_options <- nchar(ambig_char[curr_char])
+      sample_indx <- sample(1:n_options, 1)
+      new_let <- substr(ambig_char[curr_char], sample_indx, sample_indx)
+      seq_dat <- gsub(curr_char, new_let, seq_dat)
+    }
+  }
+  return(seq_dat)
+}
+
