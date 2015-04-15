@@ -37,3 +37,22 @@ test_that('degeneracy is removed', {
   proc_seq <- randomize_ambig(seq_dat)
   expect_that(proc_seq %in% targets, is_true())
 })
+
+test_that('multiple input sequences are handled correctly', {
+  seq_dat <- DNAStringSet(c('AA', 'AY'))
+  targets <- list('1' = DNAStringSet(c('AA', 'AC')),
+                  '2' = DNAStringSet(c('AA', 'AT')))
+  proc_seq <- randomize_ambig(seq_dat)
+  expect_that(all(proc_seq == targets[[1]]) | 
+              all(proc_seq == targets[[2]]), 
+              is_true())
+
+  seq_dat <- DNAStringSet(c('WA', 'CG'))
+  targets <- list('1' = DNAStringSet(c('AA', 'CG')),
+                  '2' = DNAStringSet(c('TA', 'CG')))
+  proc_seq <- randomize_ambig(seq_dat)
+  expect_that(all(proc_seq == targets[[1]]) | 
+              all(proc_seq == targets[[2]]), 
+              is_true())
+
+})
