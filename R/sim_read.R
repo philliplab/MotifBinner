@@ -202,3 +202,20 @@ add_snps <- function(seq_dat, n){
   }
   return(seq_dat)
 }
+
+#' Simulate a scenario that can be used to test PID detection
+#'
+#' @param seq_len The length of the random sequence to put before the prefix
+#' @param prefix_len The length of the prefix
+#' @param pid_len The length of the pid
+#' @param suffix_len The length of the suffix
+#' @param prefix_snps The number of snps to introduce to the prefix
+#' @param suffix_snps The number of snps to introduce to the suffix
+#' @param suffix_chop The number of bases to chop from the end of the suffix
+#' @export
+
+gen_pid_search_scenario <- function(seq_len, prefix_len, pid_len, 
+                                    suffix_len, prefix_snps, suffix_snps,
+                                    suffix_chop){
+  return('bazinga')
+}
