@@ -118,12 +118,20 @@ test_that('the correct number of snps are inserted', {
   expect_that(seq_dist2 == 2, is_true())
 })
 
+test_that('zero snps can be handled', {
+  seq_dat <- DNAStringSet('ACGT')
+  mut_seq <- add_snps(seq_dat, 0)
+  seq_dist <- stringDist(DNAStringSet(c(as.character(seq_dat), 
+                                        as.character(mut_seq))))
+  expect_that(seq_dist == 0, is_true())
+})
+
 context('gen_pid_search_scenario ')
 
 test_that('the output is in the correct format', {
   pid_search <- gen_pid_search_scenario(seq_len = 500, prefix_len = 25, 
                                         pid_len = 9, suffix_len = 15, 
-                                        prefix_snps = 1, suffix_snps = 1, 
+                                        prefix_snps = 0, suffix_snps = 0, 
                                         suffix_chop = 0)
   expect_that('seq_dat' %in% names(pid_search), is_true())
   expect_that('prefix' %in% names(pid_search), is_true())
@@ -133,4 +141,7 @@ test_that('the output is in the correct format', {
   expect_that(nchar(pid_search$prefix), equals(25))
   expect_that(nchar(pid_search$suffix), equals(15))
   expect_that(nchar(pid_search$pid), equals(9))
+})
+
+test_that('prefix and suffix mutation works', {
 })
