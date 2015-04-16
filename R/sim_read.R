@@ -223,6 +223,7 @@ gen_pid_search_scenario <- function(seq_len, prefix_len, pid_len,
   seq_prefix <- add_snps(prefix, prefix_snps)
   suffix <- gen_seq(suffix_len)
   seq_suffix <- add_snps(suffix, suffix_snps)
+  seq_suffix <- substr(seq_suffix, 1, (nchar(seq_suffix)-suffix_chop))
   seq_dat <- paste0(read_dat, seq_prefix, pid, seq_suffix)
   return(list(seq_dat = seq_dat,
               prefix = prefix,
