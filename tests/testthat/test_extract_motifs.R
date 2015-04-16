@@ -66,10 +66,32 @@ test_that('The motif extractor works with different sequence lengths', {
                  prefix_snps = 1,
                  suffix_snps = 0,
                  suffix_chop = 1)
-  for (i in 1:5){ # do some repeats of each test
+  for (i in 1:3){ # do some repeats of each test
     for (len in c(100, 300, 400, 500, 600, 700, 1000)){
       c_params <- params
       c_params$seq_len <- len
+      pid_search <- do.call(gen_pid_search_scenario, c_params)
+      em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                           prefix = pid_search$prefix, 
+                           motif_length = c_params$pid_len,
+                           suffix = pid_search$suffix, 
+                           max.mismatch = 4)
+      expect_that(names(em$matched_seq) == pid_search$pid, is_true())
+    }
+  }
+})
+
+test_that('The motif extractor works with different pid lengths', {
+  params <- list(seq_len = 500,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:3){ # do some repeats of each test
+    for (len in 5:15){
+      c_params <- params
+      c_params$pid_len <- len
       pid_search <- do.call(gen_pid_search_scenario, c_params)
       em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
                            prefix = pid_search$prefix, 
@@ -88,7 +110,7 @@ test_that('The motif extractor works with different prefix lengths', {
                  prefix_snps = 1,
                  suffix_snps = 0,
                  suffix_chop = 1)
-  for (i in 1:5){ # do some repeats of each test
+  for (i in 1:3){ # do some repeats of each test
     for (len in seq(19, 31, by=2)){
       c_params <- params
       c_params$prefix_len <- len
