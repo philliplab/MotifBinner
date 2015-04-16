@@ -94,6 +94,7 @@ test_that('length of sequence is longer than number of desired snps', {
 })
 
 test_that('the correct number of snps are inserted', {
+  set.seed(1)
   seq_dat <- DNAStringSet('ACGT')
   mut_seq <- add_snps(seq_dat, 1)
   seq_dist <- stringDist(DNAStringSet(c(as.character(seq_dat), 

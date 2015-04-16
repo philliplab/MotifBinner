@@ -213,3 +213,107 @@ test_that('The motif extractor works with different number of chops from the suf
   }
 })
 
+context('Extract Motifs - indels in prefix and pid')
+
+test_that('what happens with indels in pid', {
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    c_params <- params
+    wrong_pid_len <- 8
+    pid_search <- do.call(gen_pid_search_scenario, c_params)
+    em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                         prefix = pid_search$prefix, 
+                         motif_length = wrong_pid_len,
+                         suffix = pid_search$suffix, 
+                         max.mismatch = 5)
+    expect_that(length(em$matched_seq) == 0, is_true())
+  }
+
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    c_params <- params
+    wrong_pid_len <- 10
+    pid_search <- do.call(gen_pid_search_scenario, c_params)
+    em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                         prefix = pid_search$prefix, 
+                         motif_length = wrong_pid_len,
+                         suffix = pid_search$suffix, 
+                         max.mismatch = 5)
+    expect_that(length(em$matched_seq) == 0, is_true())
+  }
+})
+
+test_that('what happens with indels in pid', {
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    c_params <- params
+    pid_search <- do.call(gen_pid_search_scenario, c_params)
+    p <- pid_search$prefix
+    wrong_prefix <- DNAStringSet(paste0(substr(p, 1, 11), 'A', substr(p, 12, 100)))
+    em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                         prefix = wrong_prefix, 
+                         motif_length = c_params$pid_len,
+                         suffix = pid_search$suffix, 
+                         max.mismatch = 5)
+    expect_that(length(em$matched_seq) == 0, is_true())
+  }
+
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    c_params <- params
+    pid_search <- do.call(gen_pid_search_scenario, c_params)
+    p <- pid_search$prefix
+    wrong_prefix <- DNAStringSet(paste0(substr(p, 1, 10), substr(p, 12, 100)))
+    em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                         prefix = wrong_prefix, 
+                         motif_length = c_params$pid_len,
+                         suffix = pid_search$suffix, 
+                         max.mismatch = 5)
+    expect_that(length(em$matched_seq) == 0, is_true())
+  }
+
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 0,
+                 suffix_snps = 0,
+                 suffix_chop = 0)
+  for (i in 1:5){ # do some repeats of each test
+    c_params <- params
+    pid_search <- do.call(gen_pid_search_scenario, c_params)
+    p <- pid_search$prefix
+    wrong_prefix <- DNAStringSet(paste0(substr(p, 1, 2), substr(p, 4, 100)))
+    em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                         prefix = wrong_prefix, 
+                         motif_length = c_params$pid_len,
+                         suffix = pid_search$suffix, 
+                         max.mismatch = 5)
+    expect_that(names(em$matched_seq) == pid_search$pid, is_true())
+  }
+})
+
