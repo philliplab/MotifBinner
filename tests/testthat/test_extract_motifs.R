@@ -1,4 +1,4 @@
-context('Extract Motifs')
+context('Extract Motifs - simple sequences')
 
 test_that('The motif extractor works when motifs identifiers match perfectly', {
   seq_data <- DNAStringSet(c(
@@ -57,19 +57,27 @@ test_that('The motif extractor works when motif identifiers have errors', {
   expect_that(width(extracted$matched_seq) < width(extracted$unmatched_seq), is_true())
 })
 
-test_that('The motif extractor works with realistic prefixes and suffixes', {
-  prefix <- "CAGYACAGTACAATGTACACATGGAAT" 
-  suffix <- "CTGAGCGTGTGGCAAGGC" 
-  pid <- 'AAAGGCAAA'
-  motif_length <- nchar(pid)
-  max.mismatch <- 0
-  seq_data <- DNAStringSet(paste0(gen_seq(50), prefix, pid, suffix))
-  seq_data <- randomize_ambig(seq_data[1])
-  
-  extracted <- extract_motifs(seq_data, prefix = prefix, 
-                              motif_length = motif_length, 
-                              suffix = suffix, max.mismatch = max.mismatch)
+context('extract motifs - MiSeq like')
 
-  
+test_that('The motif extractor works with different sequence lengths', {
+  params <- list(pid_len = 9,
+                 prefix_len = 27,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    for (len in c(100, 300, 400, 500, 600, 700, 1000)){
+      c_params <- params
+      c_params$seq_len <- len
+      pid_search <- do.call(gen_pid_search_scenario, c_params)
+      em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                           prefix = pid_search$prefix, 
+                           motif_length = c_params$pid_len,
+                           suffix = pid_search$suffix, 
+                           max.mismatch = 4)
+      expect_that(names(em$matched_seq) == pid_search$pid, is_true())
+    }
+  }
 })
 
