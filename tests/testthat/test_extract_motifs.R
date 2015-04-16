@@ -81,3 +81,25 @@ test_that('The motif extractor works with different sequence lengths', {
   }
 })
 
+test_that('The motif extractor works with different prefix lengths', {
+  params <- list(seq_len = 500,
+                 pid_len = 9,
+                 suffix_len = 18,
+                 prefix_snps = 1,
+                 suffix_snps = 0,
+                 suffix_chop = 1)
+  for (i in 1:5){ # do some repeats of each test
+    for (len in seq(19, 31, by=2)){
+      c_params <- params
+      c_params$prefix_len <- len
+      pid_search <- do.call(gen_pid_search_scenario, c_params)
+      em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
+                           prefix = pid_search$prefix, 
+                           motif_length = c_params$pid_len,
+                           suffix = pid_search$suffix, 
+                           max.mismatch = 4)
+      expect_that(names(em$matched_seq) == pid_search$pid, is_true())
+    }
+  }
+})
+
