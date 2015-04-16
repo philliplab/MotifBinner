@@ -143,7 +143,7 @@ gen_and_contaminate_reads <- function(ref_seq,
 #' @export
 
 gen_seq <- function(n){
-  paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse="")
+  DNAStringSet(paste0(sample(c('A', 'C', 'G', 'T'), n, replace=T), collapse=""))
 }
 
 #' Removes ambiguous letters from a sequence by replacing them with a randomly
@@ -217,5 +217,15 @@ add_snps <- function(seq_dat, n){
 gen_pid_search_scenario <- function(seq_len, prefix_len, pid_len, 
                                     suffix_len, prefix_snps, suffix_snps,
                                     suffix_chop){
-  return('bazinga')
+  read_dat <- gen_seq(seq_len)
+  pid <- gen_seq(pid_len)
+  prefix <- gen_seq(prefix_len)
+  seq_prefix <- add_snps(prefix, prefix_snps)
+  suffix <- gen_seq(suffix_len)
+  seq_suffix <- add_snps(suffix, suffix_snps)
+  seq_dat <- paste0(read_dat, seq_prefix, pid, seq_suffix)
+  return(list(seq_dat = seq_dat,
+              prefix = prefix,
+              pid = pid,
+              suffix = suffix))
 }

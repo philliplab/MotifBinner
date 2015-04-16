@@ -3,7 +3,7 @@ context('gen_seq')
 test_that('gen_seq works as expected', {
   seq_dat <- gen_seq(400)
   expect_that(nchar(seq_dat), equals(400))
-  uniq_lets <- sort(unique(strsplit(seq_dat, '')[[1]]))
+  uniq_lets <- sort(unique(strsplit(as.character(seq_dat), '')[[1]]))
   expect_that(uniq_lets, equals(c('A', 'C', 'G', 'T')))
 })
 
@@ -116,4 +116,21 @@ test_that('the correct number of snps are inserted', {
                                          as.character(mut_seq[2]))))
   expect_that(seq_dist1 == 2, is_true())
   expect_that(seq_dist2 == 2, is_true())
+})
+
+context('gen_pid_search_scenario ')
+
+test_that('the output is in the correct format', {
+  pid_search <- gen_pid_search_scenario(seq_len = 500, prefix_len = 25, 
+                                        pid_len = 9, suffix_len = 15, 
+                                        prefix_snps = 1, suffix_snps = 1, 
+                                        suffix_chop = 0)
+  expect_that('seq_dat' %in% names(pid_search), is_true())
+  expect_that('prefix' %in% names(pid_search), is_true())
+  expect_that('suffix' %in% names(pid_search), is_true())
+  expect_that('pid' %in% names(pid_search), is_true())
+  expect_that(nchar(pid_search$seq_dat), equals(500 + 25 + 9 + 15))
+  expect_that(nchar(pid_search$prefix), equals(25))
+  expect_that(nchar(pid_search$suffix), equals(15))
+  expect_that(nchar(pid_search$pid), equals(9))
 })
