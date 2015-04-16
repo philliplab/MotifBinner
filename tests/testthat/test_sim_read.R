@@ -144,4 +144,18 @@ test_that('the output is in the correct format', {
 })
 
 test_that('prefix and suffix mutation works', {
+  pid_search <- gen_pid_search_scenario(seq_len = 500, prefix_len = 25, 
+                                        pid_len = 9, suffix_len = 15, 
+                                        prefix_snps = 2, suffix_snps = 1, 
+                                        suffix_chop = 0)
+
+  seq_prefix <- substr(pid_search$seq_dat[1], 501, 525)
+  seq_dist <- stringDist(DNAStringSet(c(seq_prefix, 
+                                        as.character(pid_search$prefix))))
+  expect_that(seq_dist == 2, is_true())
+
+  seq_suffix <- substr(pid_search$seq_dat[1], 535, 550)
+  seq_dist <- stringDist(DNAStringSet(c(seq_suffix, 
+                                        as.character(pid_search$suffix))))
+  expect_that(seq_dist == 1, is_true())
 })
