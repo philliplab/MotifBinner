@@ -24,6 +24,9 @@ extract_motifs_par(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
 \item{ncpu}{The number of cores to use}
 
 \item{job_size}{The number of sequences to group into a single job}
+
+\item{verbose}{If set to true a progress report will be given via file
+creation in the sessions temp dir}
 }
 \description{
 A wrapper for extract motifs that will execute it in a parallel nature using

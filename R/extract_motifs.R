@@ -12,6 +12,9 @@
 #' defaults to 0.5*length(suffix)
 #' @param max.mismatch_start What is the minimum number of mismatches to search
 #' for?
+#' @param verbose If set to true a progress report will be given via file
+#' creation in the sessions temp dir (passthrough to the extract_motifs_par
+#' function)
 #' @export
 
 extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
@@ -68,6 +71,8 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
 #' @param fixed See ?vmatchPattern
 #' @param ncpu The number of cores to use
 #' @param job_size The number of sequences to group into a single job
+#' @param verbose If set to true a progress report will be given via file
+#' creation in the sessions temp dir
 #' @export
 
 extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
