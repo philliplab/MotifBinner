@@ -16,7 +16,7 @@
 
 extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
                           fixed = FALSE, ncpu = 6, job_size = NULL, max.suffix.chop = NULL,
-                          max.mismatch_start = 0){
+                          max.mismatch_start = 0, verbose = FALSE){
   if (is.null(max.suffix.chop)){
     max.suffix.chop <- trunc(nchar(suffix)/3)
   }
@@ -28,7 +28,8 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
                  motif_length = motif_length,
                  fixed = fixed,
                  ncpu = ncpu,
-                 job_size = job_size)
+                 job_size = job_size,
+                 verbose = verbose)
   start_time <- Sys.time()
   for (i in max.mismatch_start:max.mismatch){
     params$max.mismatch <- i
@@ -70,7 +71,7 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
 #' @export
 
 extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
-                          fixed = FALSE, ncpu = 6, job_size = NULL){
+                          fixed = FALSE, ncpu = 6, job_size = NULL, verbose=FALSE){
   if (is.null(job_size)){
     job_size <- ceiling(sqrt(length(seq_data)))
   }
@@ -90,6 +91,11 @@ extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.misma
   all_params <- list()
   registerDoMC(cores=ncpu)
   list_results <- foreach(i=seq_along(seq_sets)) %dopar% {
+    if (verbose){
+      random_file_name <- paste('motsearch_', i, '_', length(seq_sets), '.fasta', sep = '')
+      tmpfile_name <- file.path(tempdir(), random_file_name)
+      file.create(tmpfile_name)
+    }
     params <- list(prefix = prefix,
                    suffix = suffix,
                    motif_length = motif_length,
@@ -164,13 +170,15 @@ remove_motifs <- function(matches, prefix, suffix, matched_seq){
   end(shifted_matches) <- end(shifted_matches) - nchar(suffix)
   motifs <- padAndClip(matched_seq, shifted_matches, Lpadding.letter="+", 
                        Rpadding.letter="+")
-  invalid_motifs <- grep("\\+", motifs)
-  if (length(invalid_motifs)>0){
-    random_file_name <- paste('badmot_', paste(sample(c(LETTERS, letters), 20), collapse=""), '.fasta', sep = '')
-    tmpfile_name <- file.path(tempdir(), random_file_name)
-    writeXStringSet(DNAStringSet(matched_seq[invalid_motifs]),
-                    tmpfile_name)
-  }
+# old code used to debug invalid motifs that were picked up due to error in
+# iterative search function
+#  invalid_motifs <- grep("\\+", motifs)
+#  if (length(invalid_motifs)>0){
+#    random_file_name <- paste('badmot_', paste(sample(c(LETTERS, letters), 20), collapse=""), '.fasta', sep = '')
+#    tmpfile_name <- file.path(tempdir(), random_file_name)
+#    writeXStringSet(DNAStringSet(matched_seq[invalid_motifs]),
+#                    tmpfile_name)
+#  }
   end(matches) <- start(matches) - 1
   start(matches) <- 1
   motif_free_matched_seq <- padAndClip(matched_seq, matches, Lpadding.letter="+", 

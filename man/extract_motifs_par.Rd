@@ -6,7 +6,7 @@
 the specified number of cpus}
 \usage{
 extract_motifs_par(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
-  fixed = FALSE, ncpu = 6, job_size = NULL)
+  fixed = FALSE, ncpu = 6, job_size = NULL, verbose = FALSE)
 }
 \arguments{
 \item{seq_data}{The sequences whose motifs must be extracted}

@@ -178,7 +178,8 @@ process_file <- function(file_name,
                  motif_length = motif_length,
                  max.mismatch_start = max.mismatch_start,
                  max.mismatch = max.mismatch,
-                 fixed = fixed)
+                 fixed = fixed,
+                 verbose = TRUE)
   motif_dat <- do.call(extract_motifs_iterative, em_dat)
   em_dat$motif_dat <- motif_dat
   report_dat$em_dat <- em_dat
