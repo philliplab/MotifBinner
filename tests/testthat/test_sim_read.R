@@ -176,22 +176,22 @@ test_that('suffix_chop works', {
 })
 
 test_that('prefix and suffix can be supplied', {
-  prefix_input <- "CCAGCTGGTTATGCGATTCTCAGGTG"
-  suffix <- "CTGAGCGTGTGGCAAGGCCC"
+  prefix <- DNAStringSet("CCAGCTGGTTATGCGATTCTCAGGTG")
+  suffix <- DNAStringSet("CTGAGCGTGTGGCAAGGCCC")
   pid_search <- gen_pid_search_scenario(seq_len = 500, 
-                                        prefix_len = prefix_input, 
+                                        prefix_len = prefix, 
                                         pid_len = 9, 
                                         suffix_len = suffix, 
                                         prefix_snps = 0, 
                                         suffix_snps = 0, 
                                         suffix_chop = 1)
-  expect_that(prefix_input, equals(pid_search$prefix))
-  expect_that(suffix, equals(pid_search$suffix))
+  expect_that(prefix == pid_search$prefix, is_true())
+  expect_that(suffix == pid_search$suffix, is_true())
   
   # this below is not a good test cause it assumes that a lot of other stuff
   # works
   em <- extract_motifs(DNAStringSet(pid_search$seq_dat), 
-                       prefix = prefix_input, 
+                       prefix = prefix, 
                        motif_length = 9,
                        suffix = suffix, 
                        max.mismatch = 5)

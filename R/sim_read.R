@@ -219,16 +219,16 @@ gen_pid_search_scenario <- function(seq_len, prefix_len, pid_len,
                                     suffix_chop){
   read_dat <- gen_seq(seq_len)
   pid <- gen_seq(pid_len)
-  if (!is.character(prefix_len)){
+  if (is.numeric(prefix_len)){
     prefix <- gen_seq(prefix_len)
   } else {
-    prefix <- prefix_len
+    prefix <- DNAStringSet(prefix_len)
   }
   seq_prefix <- add_snps(prefix, prefix_snps)
-  if (!is.character(suffix_len)){
+  if (is.numeric(suffix_len)){
     suffix <- gen_seq(suffix_len)
   } else {
-    suffix <- suffix_len
+    suffix <- DNAStringSet(suffix_len)
   }
   seq_suffix <- add_snps(suffix, suffix_snps)
   seq_suffix <- substr(seq_suffix, 1, (nchar(seq_suffix)-suffix_chop))

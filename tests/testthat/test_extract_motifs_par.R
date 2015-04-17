@@ -61,12 +61,14 @@ test_that('The motif extractor works when motif identifiers have errors', {
 context('Extract Motifs Parallel - datasets')
 
 test_that('results between single core and parallel versions of motif finder matches', {
+#  prefix <- "CCAGCTGGTTATGCGATTCTCAGGTG"
+#  suffix <- "CTGAGCGTGTGGCAAGGCCC"
 #  for (i in 1:3){
 #    in_data <- DNAStringSet(NULL)
 #    params <- list(seq_len = 500,
 #                   pid_len = 9,
-#                   prefix_len = 27,
-#                   suffix_len = 18,
+#                   prefix_len = prefix,
+#                   suffix_len = suffix,
 #                   prefix_snps = 1,
 #                   suffix_snps = 0,
 #                   suffix_chop = 1)
@@ -74,21 +76,15 @@ test_that('results between single core and parallel versions of motif finder mat
 #      pid_search <- do.call(gen_pid_search_scenario, params)
 #      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
 #    } 
-#    params <- list(seq_len = 500,
-#                   pid_len = 7,
-#                   prefix_len = 27,
-#                   suffix_len = 18,
-#                   prefix_snps = 1,
-#                   suffix_snps = 0,
-#                   suffix_chop = 1)
+#    params$pid_len <- 7
 #    for (j in 1:10){
 #      pid_search <- do.call(gen_pid_search_scenario, params)
 #      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
 #    } 
 #    em <- extract_motifs(in_data, 
-#                         prefix = wrong_prefix, 
+#                         prefix = prefix, 
 #                         motif_length = 9,
-#                         suffix = pid_search$suffix, 
+#                         suffix = suffix, 
 #                         max.mismatch = 5)
 #  }
 })
