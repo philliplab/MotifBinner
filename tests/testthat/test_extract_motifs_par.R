@@ -61,31 +61,41 @@ test_that('The motif extractor works when motif identifiers have errors', {
 context('Extract Motifs Parallel - datasets')
 
 test_that('results between single core and parallel versions of motif finder matches', {
-#  prefix <- "CCAGCTGGTTATGCGATTCTCAGGTG"
-#  suffix <- "CTGAGCGTGTGGCAAGGCCC"
-#  for (i in 1:3){
-#    in_data <- DNAStringSet(NULL)
-#    params <- list(seq_len = 500,
-#                   pid_len = 9,
-#                   prefix_len = prefix,
-#                   suffix_len = suffix,
-#                   prefix_snps = 1,
-#                   suffix_snps = 0,
-#                   suffix_chop = 1)
-#    for (j in 1:90){
-#      pid_search <- do.call(gen_pid_search_scenario, params)
-#      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
-#    } 
-#    params$pid_len <- 7
-#    for (j in 1:10){
-#      pid_search <- do.call(gen_pid_search_scenario, params)
-#      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
-#    } 
-#    em <- extract_motifs(in_data, 
-#                         prefix = prefix, 
-#                         motif_length = 9,
-#                         suffix = suffix, 
-#                         max.mismatch = 5)
-#  }
+  prefix <- "CCAGCTGGTTATGCGATTCTCAGGTG"
+  suffix <- "CTGAGCGTGTGGCAAGGCCC"
+  for (i in 1:4){
+    in_data <- DNAStringSet(NULL)
+    params <- list(seq_len = 500,
+                   pid_len = 9,
+                   prefix_len = prefix,
+                   suffix_len = suffix,
+                   prefix_snps = 1,
+                   suffix_snps = 0,
+                   suffix_chop = 1)
+    for (j in 1:90){
+      pid_search <- do.call(gen_pid_search_scenario, params)
+      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
+    } 
+    params$pid_len <- 7
+    for (j in 1:10){
+      pid_search <- do.call(gen_pid_search_scenario, params)
+      in_data <- c(in_data, DNAStringSet(pid_search$seq_dat))
+    } 
+    em <- extract_motifs(in_data, 
+                         prefix = prefix, 
+                         motif_length = 9,
+                         suffix = suffix, 
+                         max.mismatch = 5)
+    em_par <- extract_motifs_par(in_data, 
+                                 prefix = prefix, 
+                                 motif_length = 9,
+                                 suffix = suffix, 
+                                 max.mismatch = 5)
+    expect_that(all(names(em$matched) %in% names(em_par$matched)), is_true())
+    expect_that(all(names(em_par$matched) %in% names(em$matched)), is_true())
+
+    expect_that(all(em$matched %in% em_par$matched), is_true())
+    expect_that(all(em_par$matched %in% em$matched), is_true())
+  }
 })
 
