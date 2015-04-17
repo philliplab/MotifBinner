@@ -1,3 +1,5 @@
+set.seed(1)
+
 context('Extract Motifs - simple sequences')
 
 test_that('The motif extractor works when motifs identifiers match perfectly', {
