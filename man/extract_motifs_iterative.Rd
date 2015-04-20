@@ -32,9 +32,9 @@ defaults to 0.5*length(suffix)}
 \item{max.mismatch_start}{What is the minimum number of mismatches to search
 for?}
 
-\item{verbose}{If set to true a progress report will be given via file
-creation in the sessions temp dir (passthrough to the extract_motifs_par
-function)}
+\item{verbose}{If set to true a progress will be printed after each loop
+iteration. Also passed through to the extract_motifs_par
+function.}
 }
 \description{
 A wrapper for extract motifs parallel that will iteratively allow for more

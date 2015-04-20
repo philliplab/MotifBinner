@@ -12,9 +12,9 @@
 #' defaults to 0.5*length(suffix)
 #' @param max.mismatch_start What is the minimum number of mismatches to search
 #' for?
-#' @param verbose If set to true a progress report will be given via file
-#' creation in the sessions temp dir (passthrough to the extract_motifs_par
-#' function)
+#' @param verbose If set to true a progress will be printed after each loop
+#' iteration. Also passed through to the extract_motifs_par
+#' function.
 #' @export
 
 extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max.mismatch = 5,
@@ -37,24 +37,28 @@ extract_motifs_iterative <- function(seq_data, prefix, suffix, motif_length, max
   for (i in max.mismatch_start:max.mismatch){
     params$max.mismatch <- i
     params$seq_data <- unmatched_seq
-    print(params)
+    if (verbose) {print(params)}
     result <- do.call(extract_motifs_par, params)
     matched_seq <- c(matched_seq, result$matched_seq)
     unmatched_seq <- result$unmatched_seq
-    print(c(length(seq_data), length(matched_seq), 
-            length(unmatched_seq), round(Sys.time()-start_time, 2)))
+    if (verbose){
+      print(c(length(seq_data), length(matched_seq), 
+              length(unmatched_seq), round(Sys.time()-start_time, 2)))
+    }
   }
   if (max.suffix.chop > 0){
     for (i in 0:max.suffix.chop){
       params$max.mismatch <- max.mismatch
       params$suffix <- substr(suffix, 1, nchar(suffix) - i)
       params$seq_data <- unmatched_seq
-      print(params)
+      if (verbose) {print(params)}
       result <- do.call(extract_motifs_par, params)
       matched_seq <- c(matched_seq, result$matched_seq)
       unmatched_seq <- result$unmatched_seq
-      print(c(length(seq_data), length(matched_seq), 
-              length(unmatched_seq), round(Sys.time()-start_time, 2)))
+      if (verbose){
+        print(c(length(seq_data), length(matched_seq), 
+                length(unmatched_seq), round(Sys.time()-start_time, 2)))
+      }
     }
   }
   return(list(matched_seq = matched_seq,
