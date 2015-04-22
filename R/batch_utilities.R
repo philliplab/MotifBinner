@@ -177,16 +177,13 @@ process_file <- function(file_name,
 
   pb_out <- foreach(bin_name = pb_seq) %dopar% {
     if (verbose){
-      random_file_name <- paste('process_bin_', i, '_', length(pb_seq), '.txt', sep = '')
+      random_file_name <- paste('process_bin_', bin_name, '_', length(pb_seq), '.txt', sep = '')
       tmpfile_name <- file.path(tempdir(), random_file_name)
       file.create(tmpfile_name)
     }
     x <- pb_dat
     x$seqs <- bin_seqs[[bin_name]]
     y <- do.call(process_bin, x)
-#    if (verbose){
-#      file.remove(tmpfile_name)
-#    }
     y
   }
 

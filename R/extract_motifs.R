@@ -111,7 +111,8 @@ extract_motifs_par <- function(seq_data, prefix, suffix, motif_length, max.misma
                    max.mismatch = max.mismatch,
                    fixed = fixed,
                    seq_data = seq_sets[[i]])
-    do.call(extract_motifs, params)
+    y <- do.call(extract_motifs, params)
+    y
   }
   matched_seq <- DNAStringSet(NULL)
   unmatched_seq <- DNAStringSet(NULL)
