@@ -36,10 +36,12 @@ align_sequences <- function(seqs, technique = 'muscle', params = list()){
 #' messages from the external program.
 #' @param original.ordering a logical specifying whether to return the aligned
 #' sequences in the same order than in ‘x’.
+#' @param keep_alignment_files Default is FALSE. If set to TRUE, then the files
+#' produced by muscle will not be deleted.
 #' @export
 
 muscle_par <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE, 
-                       original.ordering = TRUE){
+                       original.ordering = TRUE, keep_alignment_files = FALSE){
   if (missing(x)){
     system(exec)
     return(invisible(NULL))
@@ -61,6 +63,9 @@ muscle_par <- function(x, exec = "muscle", MoreArgs = "", quiet = TRUE,
   if (original.ordering){
     res <- res[labels(x), ]
   }
+  if (!keep_alignment_files){
+    file.remove(inf)
+    file.remove(outf)
+  }
   return(res)
 }
-

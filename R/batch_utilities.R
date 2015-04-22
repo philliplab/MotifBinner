@@ -66,54 +66,6 @@ save_bin_report <- function(output, report_dat){
   setwd(cwd)
 }
 
-paramz <- list(file_name = '~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq',
-               output = '/tmp/MotifBinner',
-               prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
-               suffix = "CTGAGCGTGTGGCAAGGCCC",
-               motif_length = 9,
-               max.mismatch = 4,
-               ncpu = 6, 
-               job_size = NULL, 
-               max.suffix.chop = NULL,
-               threshold = 8/600, 
-               start_threshold = 8/600, 
-               max_sequences = 100,
-               remove_gaps = TRUE,
-               strip_uids = TRUE)
-
-paramz <- list(file_name = "~/projects/ship/data/colin_20150326/CAP256_v1v2/CAP256_3100_030_V1V2.fastq", 
-               output = "~/projects/ship/data/colin_20150326/CAP256_v1v2/binned/CAP256_3100_030_V1V2", 
-               prefix = "CAGYACAGTACAATGTACACATGGAAT", 
-               suffix = "CTGAGCGTGTGGCAAGGC", 
-               motif_length = 9, 
-               max.mismatch_start = 3, 
-               max.mismatch = 4, 
-               ncpu = 6, 
-               job_size = NULL, 
-               max.suffix.chop = NULL,
-               threshold = 0.01333, 
-               start_threshold = 0.01333, 
-               max_sequences = 100, 
-               remove_gaps = TRUE, 
-               strip_uids = TRUE, 
-               n_bins_to_process = 100L)
-
-paramz <- list(file_name = "~/projects/ship/data/colin_20150320/CAP256/v1v2/CAP256_3100_030_V1V2.fastq", 
-               output = "~/projects/ship/data/colin_20150320/CAP256/v1v2/binned/CAP256_3100_030_V1V2", 
-               prefix = "CAGYACAGTACAATGTACACATGGAAT", 
-               suffix = "CTGAGCGTGTGGCAAGGC", 
-               motif_length = 9, 
-               max.mismatch = 4, 
-               ncpu = 6, 
-               job_size = NULL, 
-               max.suffix.chop = NULL,
-               threshold = 0.01333, 
-               start_threshold = 0.01333, 
-               max_sequences = 100, 
-               remove_gaps = TRUE, 
-               strip_uids = TRUE, 
-               n_bins_to_process = 0L)
-
 #' Processes a file into consensus bins
 #' @param file_name The file name
 #' @param output_dir The directory where the output must be stored
@@ -138,6 +90,7 @@ paramz <- list(file_name = "~/projects/ship/data/colin_20150320/CAP256/v1v2/CAP2
 #' @param n_bins_to_process The number of bins to process through the outlier
 #' detection, alignment and consensus generation. If smaller than or equal to
 #' 0, all bins will be processed.
+#' @param verbose Progress information will be provided if set to TRUE
 #' @export
 
 process_file <- function(file_name,
@@ -149,10 +102,11 @@ process_file <- function(file_name,
                          max.mismatch = 5,
                          threshold = 8/600, 
                          start_threshold = 8/600, 
-                         max_sequences = 100,
+                         max_sequences = 400,
                          remove_gaps = TRUE,
                          strip_uids = TRUE,
-                         n_bins_to_process = 0){
+                         n_bins_to_process = 0,
+                         verbose = TRUE){
 
   fixed <- FALSE
   add_uniq_id <- T
@@ -222,9 +176,18 @@ process_file <- function(file_name,
   }
 
   pb_out <- foreach(bin_name = pb_seq) %dopar% {
+    if (verbose){
+      random_file_name <- paste('process_bin_', i, '_', length(pb_seq), '.txt', sep = '')
+      tmpfile_name <- file.path(tempdir(), random_file_name)
+      file.create(tmpfile_name)
+    }
     x <- pb_dat
     x$seqs <- bin_seqs[[bin_name]]
-    do.call(process_bin, x)
+    y <- do.call(process_bin, x)
+#    if (verbose){
+#      file.remove(tmpfile_name)
+#    }
+    y
   }
 
   #  Just process the ouput into a friendlier data structure

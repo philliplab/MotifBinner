@@ -7,8 +7,8 @@
 process_file(file_name, output, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9,
   max.mismatch_start = 0, max.mismatch = 5, threshold = 8/600,
-  start_threshold = 8/600, max_sequences = 100, remove_gaps = TRUE,
-  strip_uids = TRUE, n_bins_to_process = 0)
+  start_threshold = 8/600, max_sequences = 400, remove_gaps = TRUE,
+  strip_uids = TRUE, n_bins_to_process = 0, verbose = TRUE)
 }
 \arguments{
 \item{file_name}{The file name}
@@ -43,6 +43,8 @@ will be kept.}
 \item{n_bins_to_process}{The number of bins to process through the outlier
 detection, alignment and consensus generation. If smaller than or equal to
 0, all bins will be processed.}
+
+\item{verbose}{Progress information will be provided if set to TRUE}
 
 \item{output_dir}{The directory where the output must be stored}
 }

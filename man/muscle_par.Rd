@@ -6,7 +6,7 @@
 execution}
 \usage{
 muscle_par(x, exec = "muscle", MoreArgs = "", quiet = TRUE,
-  original.ordering = TRUE)
+  original.ordering = TRUE, keep_alignment_files = FALSE)
 }
 \arguments{
 \item{x}{an object of class ‘"DNAbin"’.}
@@ -22,6 +22,9 @@ messages from the external program.}
 
 \item{original.ordering}{a logical specifying whether to return the aligned
 sequences in the same order than in ‘x’.}
+
+\item{keep_alignment_files}{Default is FALSE. If set to TRUE, then the files
+produced by muscle will not be deleted.}
 
 \item{pw.gapopen}{gap opening and gap extension penalties used by Clustal
 during pairwise alignments.}
