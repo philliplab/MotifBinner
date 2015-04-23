@@ -1,0 +1,265 @@
+# Report of the performance and accuracy of an alternative distance measure
+
+Use the data from CAP 256 3100 V1V2 to the distances.
+
+```{r}
+library(MotifBinner)
+library(ggplot2)
+load('~/projects/ship/data/colin_20150326/CAP256_v1v2/binned/CAP256_3100_030_V1V2/report_dat.rda')
+```
+
+The 15 largest bins in this dataset:
+```{r}
+n_seq_large <- sort(sapply(report_dat$bbn_dat$bin_seqs, length), TRUE)[1:15]
+
+large_bins <- list()
+i <- 0
+for (large_bin in unique(n_seq_large)){
+  bin_indx <- which(sapply(report_dat$bbn_dat$bin_seqs, length) == large_bin)
+  for (indx in bin_indx){
+    i <- i + 1
+    large_bins[[as.character(i)]] <- report_dat$bbn_dat$bin_seqs[[indx]]
+  }
+}
+```
+
+For each bin, compute the normal stringDist and the optimized distances with up
+to 8 anchors
+
+```{r, results='hide'}
+registerDoMC(cores=4)
+
+results <- foreach(i = names(large_bins), .combine=rbind) %dopar% {
+  results_tmp <- data.frame(normal_time = numeric(0),
+                        fast_time = numeric(0),
+                        bin_size = numeric(0),
+                        anchors = numeric(0),
+                        r_squared = numeric(0))
+  normal_time <- system.time(normal_dist <- stringDist(large_bins[[i]]))
+  for (j in 2:7){
+    print(c(i, j))
+    fast_time <- system.time(fast_dist <- fast_stringDist(large_bins[[i]], anchors = j))
+    h2h_dmat <- compare_dists(normal_dist, fast_dist)
+    mod <- lm(d1 ~ d2, h2h_dmat)
+    r_squared <- summary(mod)$r.squared
+    results_tmp <- rbind(results_tmp, data.frame(normal_time = as.numeric(normal_time)[1],
+                                         fast_time = as.numeric(fast_time)[1],
+                                         bin_size = length(large_bins[[i]]),
+                                         anchors = j,
+                                         r_squared = r_squared))
+  }
+  results_tmp
+}
+```
+### R-squared value showing agreement between different distance measures
+```{r}
+ggplot(aes(x = anchors, y = r_squared, col = as.factor(bin_size)), data = results) + geom_point()
+```
+
+Note that at least 5 anchors are needed to get an r squared value > 80%. Also,
+the r squared value does not show much improvement for more than 5 anchors.
+
+### Relative computation times
+```{r}
+ggplot(aes(x = as.factor(anchors), y = fast_time/normal_time, col = as.factor(bin_size)), data = results) + geom_point()
+```
+
+Note that only for the large bins is the speed up at 5 anchors significant. For
+a bin of size 385, computation time is about 18% of the time with stringDist,
+while for a bin of size 195, it is about 37%. (numbers subject to change due to
+cpu contention from parallelized code)
+
+### Detection of central most sequences and most outlying sequences
+
+### smallest of the large bins selected for previous analysis
+
+```{r}
+curr_bin <- large_bins[[length(large_bins)]]
+print('bin size:')
+print(length(curr_bin))
+normal_dist <- stringDist(curr_bin)
+fast_dist <- fast_stringDist(curr_bin)
+dist_comp <- compare_dists(normal_dist, fast_dist)
+ggplot(aes(x=d1, y=d2), data=dist_comp)+ 
+  geom_point() +
+  xlab('stringDist') +
+  ylab('fast_stringDist')
+```
+
+See how well the ranks are preserved. For the 20 most outlying sequences as
+computed by stringDist, what are their ranks according to fast_stringDist?
+
+```{r results='asis'}
+normal_tot_dist <- apply(as.matrix(normal_dist), 1, sum)
+fast_tot_dist <- apply(as.matrix(fast_dist), 1, sum)
+
+par(mfrow=c(1,2))
+hist(normal_tot_dist)
+hist(fast_tot_dist)
+par(mfrow=c(1,1))
+```
+
+The basic shape of the graphs of the most outlying sequences is preserved.
+
+```{r results='asis'}
+normal_ranks <- rank(normal_tot_dist)
+normal_ranks <- normal_ranks[order(normal_ranks)]
+fast_ranks <- rank(fast_tot_dist)
+
+rank_comp <- data.frame(seq_name = names(normal_ranks),
+           normal_rank = normal_ranks,
+           fast_rank = fast_ranks[match(names(normal_ranks), names(fast_ranks))],
+           normal_dist = normal_tot_dist[match(names(normal_ranks),
+                                           names(normal_tot_dist))],
+           fast_dist = fast_tot_dist[match(names(normal_ranks),
+                                           names(fast_tot_dist))])
+rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+
+kable(head(rank_comp, 25))
+kable(tail(rank_comp, 25))
+```
+
+From the first table, we note that the ranks for the central most sequences are
+not well preserved - however, this is not a major concern since the central
+most sequences are extremely close to each other.
+
+The most important thing is to note that there is one sequence that is very
+distant from the other sequences (the last one in the table) and that both
+distance measures places this one last. Hence serious outliers can still be
+detected.
+
+### 2nd smallest of the large bins selected for previous analysis
+
+```{r}
+curr_bin <- large_bins[[length(large_bins) - 1]]
+print('bin size:')
+print(length(curr_bin))
+normal_dist <- stringDist(curr_bin)
+fast_dist <- fast_stringDist(curr_bin)
+dist_comp <- compare_dists(normal_dist, fast_dist)
+ggplot(aes(x=d1, y=d2), data=dist_comp)+ 
+  geom_point() +
+  xlab('stringDist') +
+  ylab('fast_stringDist')
+```
+
+See how well the ranks are preserved. For the 20 most outlying sequences as
+computed by stringDist, what are their ranks according to fast_stringDist?
+
+```{r results='asis'}
+normal_tot_dist <- apply(as.matrix(normal_dist), 1, sum)
+fast_tot_dist <- apply(as.matrix(fast_dist), 1, sum)
+
+par(mfrow=c(1,2))
+hist(normal_tot_dist)
+hist(fast_tot_dist)
+par(mfrow=c(1,1))
+```
+
+The basic shape of the graphs of the most outlying sequences is preserved.
+
+```{r results='asis'}
+normal_ranks <- rank(normal_tot_dist)
+normal_ranks <- normal_ranks[order(normal_ranks)]
+fast_ranks <- rank(fast_tot_dist)
+
+rank_comp <- data.frame(seq_name = names(normal_ranks),
+           normal_rank = normal_ranks,
+           fast_rank = fast_ranks[match(names(normal_ranks), names(fast_ranks))],
+           normal_dist = normal_tot_dist[match(names(normal_ranks),
+                                           names(normal_tot_dist))],
+           fast_dist = fast_tot_dist[match(names(normal_ranks),
+                                           names(fast_tot_dist))])
+rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+
+kable(head(rank_comp, 25))
+kable(tail(rank_comp, 25))
+```
+
+From the first table, we note that the ranks for the central most sequences are
+not well preserved - however, this is not a major concern since the central
+most sequences are extremely close to each other.
+
+The most important thing is to note that there is one sequence that is very
+distant from the other sequences (the last one in the table) and that both
+distance measures places this one last. Hence serious outliers can still be
+detected.
+
+### 3rd smallest of the large bins selected for previous analysis
+
+```{r}
+curr_bin <- large_bins[[length(large_bins) - 2]]
+print('bin size:')
+print(length(curr_bin))
+normal_dist <- stringDist(curr_bin)
+fast_dist <- fast_stringDist(curr_bin)
+dist_comp <- compare_dists(normal_dist, fast_dist)
+ggplot(aes(x=d1, y=d2), data=dist_comp)+ 
+  geom_point() +
+  xlab('stringDist') +
+  ylab('fast_stringDist')
+```
+
+See how well the ranks are preserved. For the 20 most outlying sequences as
+computed by stringDist, what are their ranks according to fast_stringDist?
+
+```{r results='asis'}
+normal_tot_dist <- apply(as.matrix(normal_dist), 1, sum)
+fast_tot_dist <- apply(as.matrix(fast_dist), 1, sum)
+
+par(mfrow=c(1,2))
+hist(normal_tot_dist)
+hist(fast_tot_dist)
+par(mfrow=c(1,1))
+```
+
+The basic shape of the graphs of the most outlying sequences is preserved.
+
+```{r results='asis'}
+normal_ranks <- rank(normal_tot_dist)
+normal_ranks <- normal_ranks[order(normal_ranks)]
+fast_ranks <- rank(fast_tot_dist)
+
+rank_comp <- data.frame(seq_name = names(normal_ranks),
+           normal_rank = normal_ranks,
+           fast_rank = fast_ranks[match(names(normal_ranks), names(fast_ranks))],
+           normal_dist = normal_tot_dist[match(names(normal_ranks),
+                                           names(normal_tot_dist))],
+           fast_dist = fast_tot_dist[match(names(normal_ranks),
+                                           names(fast_tot_dist))])
+rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+
+kable(head(rank_comp, 25))
+kable(tail(rank_comp, 25))
+```
+
+From the first table, we note that the ranks for the central most sequences are
+not well preserved - however, this is not a major concern since the central
+most sequences are extremely close to each other.
+
+The most important thing is to note that there are two sequences that are very
+distant from the other sequences (the last two in the table) and that both
+distance measures places these ones last. Hence serious outliers can still be
+detected.
+
+## Conclusions
+
+For very large bins (>500) the speedup is very significant. At a bin size of
+3000, the normal stringDist takes more than an hour to run while
+fast_stringDist with 5 anchors takes 122 seconds to run.
+
+The loss in accuracy seems to be about 10% when using 5 or more anchors. This
+is acceptible for exploratory procedures.
+
+A very preliminary investigation on 3 bins shows that most serious outliers can
+still be detected.
+
+Future uses:
+
+1) Will work well for quickly finding outliers in a data set before you perform
+multiple alignment
+
+2) Is a potential candidate for use in very large bins during the mislabeling
+detection step. However, performance must still be compared vs just down
+selecting to 400 sequences for example. Hence just leave the down selection
+with a max bin size of 400 for now.
