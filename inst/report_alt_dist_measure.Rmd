@@ -114,6 +114,7 @@ rank_comp <- data.frame(seq_name = names(normal_ranks),
            fast_dist = fast_tot_dist[match(names(normal_ranks),
                                            names(fast_tot_dist))])
 rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+row.names(rank_comp) <- 1:nrow(rank_comp)
 
 kable(head(rank_comp, 25))
 kable(tail(rank_comp, 25))
@@ -171,6 +172,7 @@ rank_comp <- data.frame(seq_name = names(normal_ranks),
            fast_dist = fast_tot_dist[match(names(normal_ranks),
                                            names(fast_tot_dist))])
 rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+row.names(rank_comp) <- 1:nrow(rank_comp)
 
 kable(head(rank_comp, 25))
 kable(tail(rank_comp, 25))
@@ -228,6 +230,7 @@ rank_comp <- data.frame(seq_name = names(normal_ranks),
            fast_dist = fast_tot_dist[match(names(normal_ranks),
                                            names(fast_tot_dist))])
 rank_comp$mismatch <- rank_comp[,2] - rank_comp[,3]
+row.names(rank_comp) <- 1:nrow(rank_comp)
 
 kable(head(rank_comp, 25))
 kable(tail(rank_comp, 25))

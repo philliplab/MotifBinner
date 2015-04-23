@@ -1,5 +1,6 @@
 library(knitr)
 args <- commandArgs(TRUE)
+print(args)
 if (length(args) < 2) stop("Bad args, usage report_script_name input_data_file_name")
 
 report_script_name <- args[1]

@@ -1,0 +1,49 @@
+# Quick summary of final dataset obtained
+
+```{r, include=FALSE}
+library(MotifBinner)
+library(ggplot2)
+consensuses <- report_dat$pb_dat$consensuses
+```
+
+## Number of sequences
+
+```{r echo = FALSE}
+print(length(consensuses))
+```
+
+## Number of ambiguity characters
+
+```{r echo=FALSE}
+non_acgt <- NULL
+for (i in seq_along(consensuses)){
+  x <- sum(consensusMatrix(DNAStringSet(consensuses[[i]]))[-(1:4),])
+  non_acgt <- c(non_acgt, x)
+}
+barplot(table(non_acgt))
+print(table(non_acgt))
+```
+
+## Outlying sequences
+
+```{r echo=FALSE}
+dmat <- fast_stringDist(consensuses, 5)
+tot_dist <- apply(as.matrix(dmat), 1, sum)
+hist(tot_dist)
+```
+
+### Top most outlying sequences
+
+```{r}
+normal_ranks <- rank(tot_dist)
+normal_ranks <- normal_ranks[order(normal_ranks)]
+
+rank_comp <- data.frame(seq_name = names(normal_ranks),
+           normal_rank = normal_ranks,
+           normal_dist = tot_dist[match(names(normal_ranks),
+                                        names(tot_dist))])
+row.names(rank_comp) <- 1:nrow(rank_comp)
+kable(head(rank_comp, 25))
+kable(tail(rank_comp, 25))
+
+```
