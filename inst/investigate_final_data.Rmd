@@ -3,6 +3,7 @@
 ```{r, include=FALSE}
 library(MotifBinner)
 library(ggplot2)
+library(ape)
 consensuses <- report_dat$pb_dat$consensuses
 ```
 
@@ -30,6 +31,13 @@ print(table(non_acgt))
 dmat <- fast_stringDist(consensuses, 5)
 tot_dist <- apply(as.matrix(dmat), 1, sum)
 hist(tot_dist)
+```
+
+### PCA of dist matrix
+
+```{r, echo=FALSE}
+x <- pcoa(dmat)
+biplot(x)
 ```
 
 ### Top most outlying sequences

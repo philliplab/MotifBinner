@@ -23,6 +23,10 @@
 
 ![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
 
+### PCA of dist matrix
+
+![plot of chunk unnamed-chunk-5](figure/unnamed-chunk-5-1.png) 
+
 ### Top most outlying sequences
 
 
