@@ -11,3 +11,6 @@
 
 ```{r, child='report_processed_seqs.Rmd'}
 ```
+
+```{r, child='investigate_final_data.Rmd'}
+```
