@@ -8,7 +8,8 @@ process_file(file_name, output, prefix = "CCAGCTGGTTATGCGATTCTMARGTG",
   suffix = "CTGAGCGTGTGGCAAGGCCC", motif_length = 9,
   max.mismatch_start = 0, max.mismatch = 5, threshold = 8/600,
   start_threshold = 8/600, max_sequences = 400, remove_gaps = TRUE,
-  strip_uids = TRUE, n_bins_to_process = 0, verbose = TRUE)
+  strip_uids = TRUE, n_bins_to_process = 0, verbose = TRUE,
+  prefix_fasta_headers = "")
 }
 \arguments{
 \item{file_name}{The file name}
@@ -45,6 +46,9 @@ detection, alignment and consensus generation. If smaller than or equal to
 0, all bins will be processed.}
 
 \item{verbose}{Progress information will be provided if set to TRUE}
+
+\item{prefix_fasta_headers}{Add this bit of text to the front of each
+sequence in the resulting consensus sequences.}
 
 \item{output_dir}{The directory where the output must be stored}
 }

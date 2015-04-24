@@ -91,6 +91,8 @@ save_bin_report <- function(output, report_dat){
 #' detection, alignment and consensus generation. If smaller than or equal to
 #' 0, all bins will be processed.
 #' @param verbose Progress information will be provided if set to TRUE
+#' @param prefix_fasta_headers Add this bit of text to the front of each
+#' sequence in the resulting consensus sequences.
 #' @export
 
 process_file <- function(file_name,
@@ -106,7 +108,8 @@ process_file <- function(file_name,
                          remove_gaps = TRUE,
                          strip_uids = TRUE,
                          n_bins_to_process = 0,
-                         verbose = TRUE){
+                         verbose = TRUE,
+                         prefix_fasta_headers = ''){
 
   fixed <- FALSE
   add_uniq_id <- T
@@ -196,6 +199,7 @@ process_file <- function(file_name,
       consensuses <- c(consensuses, dss)
     }
   }
+  names(consensuses) <- paste0(prefix_fasta_headers, names(consensuses))
   pb_dat$consensuses <- consensuses
   pb_dat$pb_out <- pb_out
   report_dat$pb_dat <- pb_dat
