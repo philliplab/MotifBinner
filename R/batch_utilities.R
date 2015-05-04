@@ -15,16 +15,27 @@ NULL
 #' directory
 #' @param output The directory where the binning results are to be saved
 #' @param report_dat The binning results as produced by process_file
+#' @param prefix_for_names Add this bit of text to the front of each
+#' sequence in the resulting consensus sequences.
 #' @export
-save_bin_results <- function(output, report_dat){
-  dir.create(file.path(output, 'results'), showWarnings = FALSE, recursive = TRUE)
-  writeXStringSet(report_dat$em_dat$motif_dat$matched_seq, 
-                 filepath = file.path(output, 'results', 'motif_found.FASTA'))
-  writeXStringSet(report_dat$em_dat$motif_dat$unmatched_seq, 
-                 filepath = file.path(output, 'results', 'motif_not_found.FASTA'))
+save_bin_results <- function(output, report_dat, prefix_for_names){
+  dir.create(file.path(output), showWarnings = FALSE, recursive = TRUE)
+  named_matched_seq <- report_dat$em_dat$motif_dat$matched_seq
+  names(named_matched_seq) <- paste(prefix_for_names, 
+                                    names(named_matched_seq), sep = '_')
+  named_unmatched_seq <- report_dat$em_dat$motif_dat$unmatched_seq
+  names(named_unmatched_seq) <- paste(prefix_for_names, 
+                                      names(named_unmatched_seq), sep = '_')
+  writeXStringSet(named_matched_seq, 
+                  filepath = file.path(output, paste(prefix_for_names, 
+                                                     'pid_found.fasta', sep = '_')))
+  writeXStringSet(named_unmatched_seq, 
+                 filepath = file.path(output, paste(prefix_for_names, 
+                                                    'pid_not_found.fasta', sep = '_')))
   writeXStringSet(report_dat$pb_dat$consensuses, 
-                 filepath = file.path(output, 'results', 'consensuses.FASTA'))
-  dir.create(file.path(output, 'results', 'bins'), showWarnings = FALSE, recursive = TRUE)
+                 filepath = file.path(output, paste(prefix_for_names, 
+                                                    'consensuses.fasta', sep = '_')))
+  dir.create(file.path(output, 'bins'), showWarnings = FALSE, recursive = TRUE)
   for (i in seq_along(report_dat$pb_dat$pb_out)){
     c_bin <- report_dat$pb_dat$pb_out[[i]]
     src_seq <- c_bin$src
@@ -43,8 +54,8 @@ save_bin_results <- function(output, report_dat){
     }
     c_bin_name <- names(c_bin$consensus)
     writeXStringSet(c(src_seq, out_seq, consen), 
-                    filepath = file.path(output, 'results', 'bins', 
-                                         paste(c_bin_name, '.FASTA', sep='')))
+                    filepath = file.path(output, 'bins', 
+                                         paste(c_bin_name, '.fasta', sep='')))
   }
 }
 
@@ -52,17 +63,22 @@ save_bin_results <- function(output, report_dat){
 #' the output directory
 #' @param output The directory where the binning results are to be saved
 #' @param report_dat The binning results as produced by process_file
+#' @param prefix_for_names Add this bit of text to the front of each
+#' sequence in the resulting consensus sequences.
 #' @export
-save_bin_report <- function(output, report_dat){
+save_bin_report <- function(output, report_dat, prefix_for_names){
+  new_report_name <- paste(prefix_for_names, 'bin_report.Rmd', sep = '_')
   knitr_file_location <- file.path(find.package('MotifBinner'),
                                    'report_bin_file.Rmd')
   if (!file.exists(knitr_file_location)){
     knitr_file_location <- file.path(find.package('MotifBinner'),
                                      'inst', 'report_bin_file.Rmd')
   }
+  output_knitr_file_location <- gsub('report_bin_file.Rmd', new_report_name, 
+                                     knitr_file_location)
   cwd <- getwd()
   setwd(output)
-  knit2html(knitr_file_location)
+  knit2html(knitr_file_location, output=output_knitr_file_location)
   setwd(cwd)
 }
 
@@ -91,7 +107,7 @@ save_bin_report <- function(output, report_dat){
 #' detection, alignment and consensus generation. If smaller than or equal to
 #' 0, all bins will be processed.
 #' @param verbose Progress information will be provided if set to TRUE
-#' @param prefix_fasta_headers Add this bit of text to the front of each
+#' @param prefix_for_names Add this bit of text to the front of each
 #' sequence in the resulting consensus sequences.
 #' @export
 
@@ -109,7 +125,7 @@ process_file <- function(file_name,
                          strip_uids = TRUE,
                          n_bins_to_process = 0,
                          verbose = TRUE,
-                         prefix_fasta_headers = ''){
+                         prefix_for_names = ''){
 
   fixed <- FALSE
   add_uniq_id <- T
@@ -199,15 +215,15 @@ process_file <- function(file_name,
       consensuses <- c(consensuses, dss)
     }
   }
-  names(consensuses) <- paste0(prefix_fasta_headers, names(consensuses))
+  names(consensuses) <- paste(prefix_for_names, names(consensuses), sep = '_')
   pb_dat$consensuses <- consensuses
   pb_dat$pb_out <- pb_out
   report_dat$pb_dat <- pb_dat
 
-  save_bin_results(output, report_dat)
-  save_bin_report(output, report_dat)
-  save(report_dat, file = file.path(output, 'report_dat.rda'))
-
+  save_bin_results(output, report_dat, prefix_for_names)
+  save_bin_report(output, report_dat, prefix_for_names)
+  save(report_dat, file = file.path(output, paste(prefix_for_names, 
+                                                  'binning_dat.rda', sep = '_')))
   return(report_dat)
 }
 

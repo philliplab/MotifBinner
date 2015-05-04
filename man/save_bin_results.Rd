@@ -5,12 +5,15 @@
 \title{Given a report_dat data list, save the important results into the output
 directory}
 \usage{
-save_bin_results(output, report_dat)
+save_bin_results(output, report_dat, prefix_for_names)
 }
 \arguments{
 \item{output}{The directory where the binning results are to be saved}
 
 \item{report_dat}{The binning results as produced by process_file}
+
+\item{prefix_for_names}{Add this bit of text to the front of each
+sequence in the resulting consensus sequences.}
 }
 \description{
 Given a report_dat data list, save the important results into the output

@@ -47,7 +47,7 @@ make_option("--n_bins_to_process",
 make_option("--verbose", 
             default = FALSE, action = 'store_true',
             help = "Adds fancy progress reporting via printouts to the screen and creation of files in the R'sessions tempory folder."),
-make_option("--prefix_fasta_headers",
+make_option("--prefix_for_names",
             help = "Add this bit of text to the front of each sequence in the resulting consensus sequences.")
 )
 
@@ -59,5 +59,6 @@ dput(opt)
 x <- do.call(process_file, opt)
 rm(x)
 
-# ./MotifBinner.R --file_name=~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq --output=/tmp/MotifBinner --prefix=CCAGCTGGTTATGCGATTCTMARGTG --suffix=CTGAGCGTGTGGCAAGGCCC --motif_length=9 --max_mismatch=5 --threshold=0.01333 --start_threshold=0.01333 --max_sequences=100 --prefix_fasta_headers=test_prefix_no_spaces
+# ./MotifBinner.R --file_name=~/projects/MotifBinner/data/CAP177_2040_v1merged.fastq --output=/tmp/MotifBinner --prefix=CCAGCTGGTTATGCGATTCTMARGTG --suffix=CTGAGCGTGTGGCAAGGCCC --motif_length=9 --max_mismatch=5 --threshold=0.01333 --start_threshold=0.01333 --max_sequences=100 --prefix_for_names=CAP177_2040_v1
+
 
