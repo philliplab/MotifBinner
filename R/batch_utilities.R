@@ -64,21 +64,22 @@ save_bin_results <- function(output, report_dat, prefix_for_names){
 #' @param output The directory where the binning results are to be saved
 #' @param report_dat The binning results as produced by process_file
 #' @param prefix_for_names Add this bit of text to the front of each
-#' sequence in the resulting consensus sequences.
+#' sequence in the resulting consensus sequences. currently deactivated
 #' @export
-save_bin_report <- function(output, report_dat, prefix_for_names){
-  new_report_name <- paste(prefix_for_names, 'bin_report.Rmd', sep = '_')
+save_bin_report <- function(output, report_dat, prefix_for_name=NULL){
+#  new_report_name <- paste(prefix_for_names, 'bin_report.Rmd', sep = '_')
   knitr_file_location <- file.path(find.package('MotifBinner'),
                                    'report_bin_file.Rmd')
   if (!file.exists(knitr_file_location)){
     knitr_file_location <- file.path(find.package('MotifBinner'),
                                      'inst', 'report_bin_file.Rmd')
   }
-  output_knitr_file_location <- gsub('report_bin_file.Rmd', new_report_name, 
-                                     knitr_file_location)
+#  output_knitr_file_location <- gsub('report_bin_file.Rmd', new_report_name, 
+#                                     knitr_file_location)
   cwd <- getwd()
   setwd(output)
-  knit2html(knitr_file_location, output=output_knitr_file_location)
+  knit2html(knitr_file_location)
+  #knit2html(knitr_file_location, output=output_knitr_file_location)
   setwd(cwd)
 }
 

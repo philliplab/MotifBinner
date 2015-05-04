@@ -5,7 +5,7 @@
 \title{Given a report_dat data list, generate and save the reports/log files into
 the output directory}
 \usage{
-save_bin_report(output, report_dat, prefix_for_names)
+save_bin_report(output, report_dat, prefix_for_name = NULL)
 }
 \arguments{
 \item{output}{The directory where the binning results are to be saved}
@@ -13,7 +13,7 @@ save_bin_report(output, report_dat, prefix_for_names)
 \item{report_dat}{The binning results as produced by process_file}
 
 \item{prefix_for_names}{Add this bit of text to the front of each
-sequence in the resulting consensus sequences.}
+sequence in the resulting consensus sequences. currently deactivated}
 }
 \description{
 Given a report_dat data list, generate and save the reports/log files into
