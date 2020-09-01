@@ -1,2 +1,1 @@
-Project Moved to bitbucket
-==========================
+Deprecated - See https://github.com/philliplab/MotifBinner2
